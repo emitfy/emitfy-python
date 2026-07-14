@@ -1,6 +1,6 @@
 [project]
 name = "emitfy"
-version = "0.2.2"
+version = "0.2.3"
 description = "Official Emitfy API SDK for Python"
 readme = "README.md"
 requires-python = ">=3.10"

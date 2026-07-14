@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+emitfy/__init__.py
+emitfy.egg-info/PKG-INFO
+emitfy.egg-info/SOURCES.txt
+emitfy.egg-info/dependency_links.txt
+emitfy.egg-info/top_level.txt

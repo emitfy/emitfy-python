@@ -7,6 +7,8 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+__version__ = "0.2.3"
+
 
 class EmitfyError(Exception):
     def __init__(
