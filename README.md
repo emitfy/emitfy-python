@@ -27,6 +27,4 @@ api = emitfy.webhooks_api()
 api.webhooks_create(WebhookCreate(url="https://seu-sistema.com/webhooks/emitfy", events={...}))
 ```
 
-Regenerate in the Emitfy monorepo: `pnpm run sdk:generate`.
-
 Docs: https://api.emitfy.com/docs/sdks
