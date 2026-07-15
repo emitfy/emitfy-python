@@ -59,11 +59,19 @@ function readLocalVersion() {
 function contentHash(base) {
   const hash = createHash('sha256')
   const pyproject = join(base, 'pyproject.toml')
+  const readmePath = join(base, 'README.md')
+
   if (existsSync(pyproject)) {
     const text = readFileSync(pyproject, 'utf8').replaceAll('\r\n', '\n')
     const withoutVersion = text.replace(/^version\s*=\s*"[^"]+"/m, 'version = "0.0.0"')
     hash.update('pyproject.toml\0')
     hash.update(withoutVersion)
+    hash.update('\0')
+  }
+
+  if (existsSync(readmePath)) {
+    hash.update('README.md\0')
+    hash.update(readFileSync(readmePath, 'utf8').replaceAll('\r\n', '\n'))
     hash.update('\0')
   }
 
