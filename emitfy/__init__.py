@@ -7,7 +7,15 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-__version__ = "0.2.3"
+__version__ = "0.3.0"
+
+# Camada tipada gerada do OpenAPI (`pnpm run sdk:generate`)
+from emitfy import generated as generated
+from emitfy.generated.models.webhook_create import WebhookCreate
+from emitfy.generated.api.webhooks_api import WebhooksApi
+from emitfy.generated.api.nfse_api import NfseApi
+from emitfy.generated.api_client import ApiClient
+from emitfy.generated.configuration import Configuration as OpenApiConfiguration
 
 
 class EmitfyError(Exception):
@@ -181,6 +189,16 @@ class Emitfy:
         self._http = _HttpClient(api_key, api_secret, base_url, max_retries)
         self.webhooks = _Webhooks(self._http)
         self.companies = _Companies(self._http)
+        self._open_api_config = OpenApiConfiguration(host=base_url.rstrip("/"))
+        self._open_api_config.api_key["ApiKeyAuth"] = api_key
+        self._open_api_config.api_key["ApiSecretAuth"] = api_secret
+
+    def open_api_client(self) -> ApiClient:
+        """Client OpenAPI tipado (`emitfy.generated.*`)."""
+        return ApiClient(self._open_api_config)
+
+    def webhooks_api(self) -> WebhooksApi:
+        return WebhooksApi(self.open_api_client())
 
     def company(self, company_id: str) -> CompanyContext:
         company_id = (company_id or "").strip()
@@ -224,4 +242,14 @@ class _Companies:
         return self._http.request("POST", "/companies", payload)
 
 
-__all__ = ["Emitfy", "EmitfyError", "CompanyContext"]
+__all__ = [
+    "Emitfy",
+    "EmitfyError",
+    "CompanyContext",
+    "generated",
+    "WebhookCreate",
+    "WebhooksApi",
+    "NfseApi",
+    "ApiClient",
+    "OpenApiConfiguration",
+]

@@ -1,13 +1,18 @@
 [project]
 name = "emitfy"
-version = "0.2.3"
-description = "Official Emitfy API SDK for Python"
+version = "0.3.0"
+description = "Official Emitfy API SDK for Python (OpenAPI-typed)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Emitfy" }]
-keywords = ["emitfy", "nfe", "nfse", "fiscal", "brazil", "sdk"]
-dependencies = []
+keywords = ["emitfy", "nfe", "nfse", "fiscal", "brazil", "sdk", "openapi"]
+dependencies = [
+  "urllib3>=2.0.0",
+  "python-dateutil>=2.8.0",
+  "pydantic>=2.0.0",
+  "typing-extensions>=4.0.0",
+]
 
 [project.urls]
 Homepage = "https://api.emitfy.com/docs/sdks"
