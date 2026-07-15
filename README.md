@@ -27,4 +27,5 @@ api = emitfy.webhooks_api()
 api.webhooks_create(WebhookCreate(url="https://seu-sistema.com/webhooks/emitfy", events={...}))
 ```
 
-Docs: https://api.emitfy.com/docs/sdks
+Docs: https://api.emitfy.com/docs/sdks  
+OpenAPI: https://api.emitfy.com/openapi.yaml

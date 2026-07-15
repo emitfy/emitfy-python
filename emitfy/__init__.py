@@ -9,7 +9,7 @@ from typing import Any
 
 __version__ = "0.3.0"
 
-# Camada tipada gerada do OpenAPI (`pnpm run sdk:generate`)
+# Camada tipada gerada a partir do OpenAPI público
 from emitfy import generated as generated
 from emitfy.generated.models.webhook_create import WebhookCreate
 from emitfy.generated.api.webhooks_api import WebhooksApi
