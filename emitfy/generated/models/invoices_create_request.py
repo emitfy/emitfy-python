@@ -17,19 +17,40 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class WebhookCreateEvents(BaseModel):
+class InvoicesCreateRequest(BaseModel):
     """
-    WebhookCreateEvents
+    InvoicesCreateRequest
     """ # noqa: E501
-    invoice: Optional[List[StrictStr]] = None
-    cte: Optional[List[StrictStr]] = None
-    __properties: ClassVar[List[str]] = ["invoice", "cte"]
+    type: StrictStr
+    issue_mode: Optional[StrictStr] = Field(default=None, alias="issueMode")
+    commercial: Dict[str, Any]
+    external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
+    source_key: Optional[StrictStr] = Field(default=None, alias="sourceKey")
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["type", "issueMode", "commercial", "externalId", "sourceKey"]
+
+    @field_validator('type')
+    def type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value not in set(['nfse', 'nfe', 'nfce']):
+            raise ValueError("must be one of enum values ('nfse', 'nfe', 'nfce')")
+        return value
+
+    @field_validator('issue_mode')
+    def issue_mode_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['draft', 'immediate', 'scheduled']):
+            raise ValueError("must be one of enum values ('draft', 'immediate', 'scheduled')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -49,7 +70,7 @@ class WebhookCreateEvents(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of WebhookCreateEvents from a JSON string"""
+        """Create an instance of InvoicesCreateRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -61,8 +82,10 @@ class WebhookCreateEvents(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -70,11 +93,16 @@ class WebhookCreateEvents(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of WebhookCreateEvents from a dict"""
+        """Create an instance of InvoicesCreateRequest from a dict"""
         if obj is None:
             return None
 
@@ -82,9 +110,17 @@ class WebhookCreateEvents(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "invoice": obj.get("invoice"),
-            "cte": obj.get("cte")
+            "type": obj.get("type"),
+            "issueMode": obj.get("issueMode"),
+            "commercial": obj.get("commercial"),
+            "externalId": obj.get("externalId"),
+            "sourceKey": obj.get("sourceKey")
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

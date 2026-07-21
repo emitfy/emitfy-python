@@ -155,7 +155,6 @@ class CompanyContext:
         self.cte = CompanyResource(http, f"{prefix}/cte")
         self.customers = CompanyResource(http, f"{prefix}/customers")
         self.products = CompanyResource(http, f"{prefix}/products")
-        self.sales = CompanyResource(http, f"{prefix}/sales")
         self.invoices = CompanyResource(http, f"{prefix}/invoices")
         self.received_nfes = CompanyResource(http, f"{prefix}/received-nfes")
 
