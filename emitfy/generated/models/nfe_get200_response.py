@@ -17,25 +17,29 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, StrictBool, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
+from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class ReceivedNfesManifestRequest(BaseModel):
+class NfeGet200Response(BaseModel):
     """
-    ReceivedNfesManifestRequest
+    NfeGet200Response
     """ # noqa: E501
-    type: StrictStr
-    justification: Optional[StrictStr] = Field(default=None, description="Obrigatório para notPerformed (15–255 chars)")
-    __properties: ClassVar[List[str]] = ["type", "justification"]
+    success: Optional[StrictBool] = None
+    data: Optional[NfeGet200ResponseData] = None
+    __properties: ClassVar[List[str]] = ["success", "data"]
 
-    @field_validator('type')
-    def type_validate_enum(cls, value):
+    @field_validator('success')
+    def success_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(['confirmed', 'unknown', 'notPerformed']):
-            raise ValueError("must be one of enum values ('confirmed', 'unknown', 'notPerformed')")
+        if value is None:
+            return value
+
+        if value not in set(['true']):
+            raise ValueError("must be one of enum values ('true')")
         return value
 
     model_config = ConfigDict(
@@ -56,7 +60,7 @@ class ReceivedNfesManifestRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a JSON string"""
+        """Create an instance of NfeGet200Response from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -77,11 +81,14 @@ class ReceivedNfesManifestRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of data
+        if self.data:
+            _dict['data'] = self.data.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a dict"""
+        """Create an instance of NfeGet200Response from a dict"""
         if obj is None:
             return None
 
@@ -89,8 +96,8 @@ class ReceivedNfesManifestRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "type": obj.get("type"),
-            "justification": obj.get("justification")
+            "success": obj.get("success"),
+            "data": NfeGet200ResponseData.from_dict(obj["data"]) if obj.get("data") is not None else None
         })
         return _obj
 

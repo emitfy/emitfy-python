@@ -17,26 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class ReceivedNfesManifestRequest(BaseModel):
+class TransportCarrierVehicle(BaseModel):
     """
-    ReceivedNfesManifestRequest
+    TransportCarrierVehicle
     """ # noqa: E501
-    type: StrictStr
-    justification: Optional[StrictStr] = Field(default=None, description="Obrigatório para notPerformed (15–255 chars)")
-    __properties: ClassVar[List[str]] = ["type", "justification"]
-
-    @field_validator('type')
-    def type_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['confirmed', 'unknown', 'notPerformed']):
-            raise ValueError("must be one of enum values ('confirmed', 'unknown', 'notPerformed')")
-        return value
+    plate: StrictStr
+    state: Optional[StrictStr] = None
+    rntc: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = ["plate", "state", "rntc"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -56,7 +50,7 @@ class ReceivedNfesManifestRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a JSON string"""
+        """Create an instance of TransportCarrierVehicle from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,7 +75,7 @@ class ReceivedNfesManifestRequest(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a dict"""
+        """Create an instance of TransportCarrierVehicle from a dict"""
         if obj is None:
             return None
 
@@ -89,8 +83,9 @@ class ReceivedNfesManifestRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "type": obj.get("type"),
-            "justification": obj.get("justification")
+            "plate": obj.get("plate"),
+            "state": obj.get("state"),
+            "rntc": obj.get("rntc")
         })
         return _obj
 

@@ -18,24 +18,30 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing_extensions import Annotated
+from emitfy.generated.models.transport_carrier import TransportCarrier
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class ReceivedNfesManifestRequest(BaseModel):
+class NfeCreateRequestTransport(BaseModel):
     """
-    ReceivedNfesManifestRequest
+    Dados de transporte inline (opcional). `freightModality` é obrigatório quando `carrier` é enviado; `noShipping` com `carrier` retorna 400. 
     """ # noqa: E501
-    type: StrictStr
-    justification: Optional[StrictStr] = Field(default=None, description="Obrigatório para notPerformed (15–255 chars)")
-    __properties: ClassVar[List[str]] = ["type", "justification"]
+    freight_modality: Optional[StrictStr] = Field(default=None, description="Também aceita os códigos SEFAZ 0/1/2/3/4/9 como alias", alias="freightModality")
+    value: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Valor do frete; compõe o total quando por conta do emitente")
+    carrier: Optional[TransportCarrier] = None
+    __properties: ClassVar[List[str]] = ["freightModality", "value", "carrier"]
 
-    @field_validator('type')
-    def type_validate_enum(cls, value):
+    @field_validator('freight_modality')
+    def freight_modality_validate_enum(cls, value):
         """Validates the enum"""
-        if value not in set(['confirmed', 'unknown', 'notPerformed']):
-            raise ValueError("must be one of enum values ('confirmed', 'unknown', 'notPerformed')")
+        if value is None:
+            return value
+
+        if value not in set(['bySender', 'byRecipient', 'byThirdParties', 'ownBySender', 'ownByRecipient', 'noShipping']):
+            raise ValueError("must be one of enum values ('bySender', 'byRecipient', 'byThirdParties', 'ownBySender', 'ownByRecipient', 'noShipping')")
         return value
 
     model_config = ConfigDict(
@@ -56,7 +62,7 @@ class ReceivedNfesManifestRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a JSON string"""
+        """Create an instance of NfeCreateRequestTransport from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -77,11 +83,14 @@ class ReceivedNfesManifestRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of carrier
+        if self.carrier:
+            _dict['carrier'] = self.carrier.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ReceivedNfesManifestRequest from a dict"""
+        """Create an instance of NfeCreateRequestTransport from a dict"""
         if obj is None:
             return None
 
@@ -89,8 +98,9 @@ class ReceivedNfesManifestRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "type": obj.get("type"),
-            "justification": obj.get("justification")
+            "freightModality": obj.get("freightModality"),
+            "value": obj.get("value"),
+            "carrier": TransportCarrier.from_dict(obj["carrier"]) if obj.get("carrier") is not None else None
         })
         return _obj
 
