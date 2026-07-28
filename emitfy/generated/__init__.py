@@ -28,6 +28,7 @@ __all__ = [
     "NfseApi",
     "ProductsApi",
     "ReceivedNfesApi",
+    "UtilsApi",
     "WebhooksApi",
     "ApiResponse",
     "ApiClient",
@@ -69,6 +70,7 @@ from emitfy.generated.api.nfe_api import NfeApi as NfeApi
 from emitfy.generated.api.nfse_api import NfseApi as NfseApi
 from emitfy.generated.api.products_api import ProductsApi as ProductsApi
 from emitfy.generated.api.received_nfes_api import ReceivedNfesApi as ReceivedNfesApi
+from emitfy.generated.api.utils_api import UtilsApi as UtilsApi
 from emitfy.generated.api.webhooks_api import WebhooksApi as WebhooksApi
 
 # import ApiClient
