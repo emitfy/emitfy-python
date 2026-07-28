@@ -333,7 +333,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
@@ -407,7 +407,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
@@ -481,7 +481,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1201,7 +1201,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1276,7 +1276,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one
@@ -1351,7 +1351,7 @@ class CteApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param idempotency_key:
         :type idempotency_key: str
         :param _request_timeout: timeout setting for this request. If one

@@ -59,7 +59,7 @@ class CompaniesApi:
 
 
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -125,7 +125,7 @@ class CompaniesApi:
 
 
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -191,7 +191,7 @@ class CompaniesApi:
 
 
         :param request_body: (required)
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1071,7 +1071,7 @@ class CompaniesApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body:
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1141,7 +1141,7 @@ class CompaniesApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body:
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1211,7 +1211,7 @@ class CompaniesApi:
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
         :param request_body:
-        :type request_body: Dict[str, object]
+        :type request_body: Dict[str, Optional[object]]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
