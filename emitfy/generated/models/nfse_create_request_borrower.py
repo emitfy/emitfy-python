@@ -17,20 +17,22 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class TransportCarrierVehicle(BaseModel):
+class NfseCreateRequestBorrower(BaseModel):
     """
-    TransportCarrierVehicle
+    NfseCreateRequestBorrower
     """ # noqa: E501
-    plate: StrictStr
-    state: Optional[StrictStr] = None
-    rntc: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["plate", "state", "rntc"]
+    tax_id: Optional[StrictStr] = Field(default=None, alias="taxId")
+    name: StrictStr
+    email: Optional[StrictStr] = None
+    phone: Optional[StrictStr] = None
+    address: Optional[Dict[str, Any]] = None
+    __properties: ClassVar[List[str]] = ["taxId", "name", "email", "phone", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -50,7 +52,7 @@ class TransportCarrierVehicle(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of TransportCarrierVehicle from a JSON string"""
+        """Create an instance of NfseCreateRequestBorrower from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -75,7 +77,7 @@ class TransportCarrierVehicle(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of TransportCarrierVehicle from a dict"""
+        """Create an instance of NfseCreateRequestBorrower from a dict"""
         if obj is None:
             return None
 
@@ -83,9 +85,11 @@ class TransportCarrierVehicle(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "plate": obj.get("plate"),
-            "state": obj.get("state"),
-            "rntc": obj.get("rntc")
+            "taxId": obj.get("taxId"),
+            "name": obj.get("name"),
+            "email": obj.get("email"),
+            "phone": obj.get("phone"),
+            "address": obj.get("address")
         })
         return _obj
 
