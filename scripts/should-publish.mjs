@@ -1,6 +1,6 @@
 /**
  * Decide se emitfy (PyPI) deve publicar.
- * exit 0 = publish, 10 = skip, 1 = erro (mudou sem bump)
+ * exit 0 = publish, 10 = skip (igual ou versão já no PyPI), 1 = erro inesperado
  */
 import { createHash } from 'node:crypto'
 import {
@@ -146,10 +146,10 @@ try {
   }
 
   if (remote.releases?.[version]) {
-    console.error(
-      `SDK changed, but ${packageName}==${version} already on PyPI. Bump version in pyproject.toml.`
+    console.log(
+      `SDK changed, but ${packageName}==${version} already on PyPI — skip (bump pyproject.toml to publish).`
     )
-    process.exit(1)
+    process.exit(10)
   }
 
   console.log(

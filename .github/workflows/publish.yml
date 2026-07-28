@@ -57,4 +57,4 @@ jobs:
 
       - name: Skipped
         if: steps.decide.outputs.publish != 'true'
-        run: echo "Nenhuma alteração no SDK Python — publish ignorado."
+        run: echo "Publish ignorado (sem mudanças ou versão já publicada)."
