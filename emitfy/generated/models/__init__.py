@@ -15,6 +15,8 @@
 # import models into model package
 from emitfy.generated.models.error_body import ErrorBody
 from emitfy.generated.models.error_body_error import ErrorBodyError
+from emitfy.generated.models.invoices_get200_response import InvoicesGet200Response
+from emitfy.generated.models.invoices_get200_response_data import InvoicesGet200ResponseData
 from emitfy.generated.models.nfce_create_request import NfceCreateRequest
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency
 from emitfy.generated.models.nfe_create_request import NfeCreateRequest

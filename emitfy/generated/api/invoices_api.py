@@ -19,7 +19,7 @@ from pydantic import Field, StrictStr
 from typing import Optional
 from typing_extensions import Annotated
 from uuid import UUID
-from emitfy.generated.models.nfe_get200_response import NfeGet200Response
+from emitfy.generated.models.invoices_get200_response import InvoicesGet200Response
 
 from emitfy.generated.api_client import ApiClient, RequestSerialized
 from emitfy.generated.api_response import ApiResponse
@@ -56,7 +56,7 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> NfeGet200Response:
+    ) -> InvoicesGet200Response:
         """Get invoice
 
 
@@ -96,7 +96,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "NfeGet200Response",
+            '200': "InvoicesGet200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -126,7 +126,7 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[NfeGet200Response]:
+    ) -> ApiResponse[InvoicesGet200Response]:
         """Get invoice
 
 
@@ -166,7 +166,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "NfeGet200Response",
+            '200': "InvoicesGet200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -236,7 +236,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "NfeGet200Response",
+            '200': "InvoicesGet200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
