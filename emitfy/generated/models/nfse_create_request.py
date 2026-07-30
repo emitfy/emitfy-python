@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, Stric
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower
+from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -35,9 +36,9 @@ class NfseCreateRequest(BaseModel):
     sku: Optional[StrictStr] = Field(default=None, description="Default direct-api-nfse")
     category: Optional[StrictStr] = Field(default=None, description="Default other_service")
     guarantee: Optional[Annotated[int, Field(le=365, strict=True, ge=1)]] = None
-    city_service_code: Optional[StrictStr] = Field(default=None, alias="cityServiceCode")
+    city_service_code: StrictStr = Field(description="Código municipal do serviço (obrigatório; alias legado serviceCode ainda aceito na API)", alias="cityServiceCode")
     service_code: Optional[StrictStr] = Field(default=None, description="Alias legado de cityServiceCode", alias="serviceCode")
-    service_item_code: Optional[StrictStr] = Field(default=None, alias="serviceItemCode")
+    service_item_code: StrictStr = Field(description="Item LC 116", alias="serviceItemCode")
     nbs_code: Optional[StrictStr] = Field(default=None, alias="nbsCode")
     cnae_code: Optional[StrictStr] = Field(default=None, alias="cnaeCode")
     tax_classification: Optional[StrictStr] = Field(default=None, alias="taxClassification")
@@ -46,7 +47,7 @@ class NfseCreateRequest(BaseModel):
     nature_of_operation: Optional[StrictStr] = Field(default=None, alias="natureOfOperation")
     service_location: Optional[StrictStr] = Field(default=None, alias="serviceLocation")
     municipality_of_incidence: Optional[StrictStr] = Field(default=None, alias="municipalityOfIncidence")
-    taxes: Optional[Dict[str, Any]] = None
+    taxes: NfseCreateRequestTaxes
     amount: Union[StrictFloat, StrictInt]
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
     external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
@@ -95,6 +96,9 @@ class NfseCreateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of taxes
+        if self.taxes:
+            _dict['taxes'] = self.taxes.to_dict()
         # override the default output from pydantic by calling `to_dict()` of borrower
         if self.borrower:
             _dict['borrower'] = self.borrower.to_dict()
@@ -131,7 +135,7 @@ class NfseCreateRequest(BaseModel):
             "natureOfOperation": obj.get("natureOfOperation"),
             "serviceLocation": obj.get("serviceLocation"),
             "municipalityOfIncidence": obj.get("municipalityOfIncidence"),
-            "taxes": obj.get("taxes"),
+            "taxes": NfseCreateRequestTaxes.from_dict(obj["taxes"]) if obj.get("taxes") is not None else None,
             "amount": obj.get("amount"),
             "issueDate": obj.get("issueDate"),
             "externalId": obj.get("externalId"),

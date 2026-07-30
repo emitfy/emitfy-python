@@ -51,6 +51,8 @@ __all__ = [
     "NfeGet200ResponseData",
     "NfseCreateRequest",
     "NfseCreateRequestBorrower",
+    "NfseCreateRequestTaxes",
+    "NfseCreateRequestTaxesIss",
     "ProductEmitItem",
     "ReceivedNfesManifestRequest",
     "SuccessEnvelope",
@@ -102,6 +104,8 @@ from emitfy.generated.models.nfe_get200_response import NfeGet200Response as Nfe
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest as NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower as NfseCreateRequestBorrower
+from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes as NfseCreateRequestTaxes
+from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss as NfseCreateRequestTaxesIss
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest as ReceivedNfesManifestRequest
 from emitfy.generated.models.success_envelope import SuccessEnvelope as SuccessEnvelope

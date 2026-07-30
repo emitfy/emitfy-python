@@ -17,22 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Any, ClassVar, Dict, List
+from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class NfseCreateRequestBorrower(BaseModel):
+class NfseCreateRequestTaxes(BaseModel):
     """
-    NfseCreateRequestBorrower
+    NfseCreateRequestTaxes
     """ # noqa: E501
-    tax_id: Optional[StrictStr] = Field(default=None, alias="taxId")
-    name: StrictStr
-    email: StrictStr
-    phone: Optional[StrictStr] = None
-    address: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["taxId", "name", "email", "phone", "address"]
+    iss: NfseCreateRequestTaxesIss
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["iss"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -52,7 +50,7 @@ class NfseCreateRequestBorrower(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestBorrower from a JSON string"""
+        """Create an instance of NfseCreateRequestTaxes from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -64,8 +62,10 @@ class NfseCreateRequestBorrower(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -73,11 +73,19 @@ class NfseCreateRequestBorrower(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of iss
+        if self.iss:
+            _dict['iss'] = self.iss.to_dict()
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestBorrower from a dict"""
+        """Create an instance of NfseCreateRequestTaxes from a dict"""
         if obj is None:
             return None
 
@@ -85,12 +93,13 @@ class NfseCreateRequestBorrower(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "taxId": obj.get("taxId"),
-            "name": obj.get("name"),
-            "email": obj.get("email"),
-            "phone": obj.get("phone"),
-            "address": obj.get("address")
+            "iss": NfseCreateRequestTaxesIss.from_dict(obj["iss"]) if obj.get("iss") is not None else None
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

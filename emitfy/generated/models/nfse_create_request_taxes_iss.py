@@ -17,22 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class NfseCreateRequestBorrower(BaseModel):
+class NfseCreateRequestTaxesIss(BaseModel):
     """
-    NfseCreateRequestBorrower
+    NfseCreateRequestTaxesIss
     """ # noqa: E501
-    tax_id: Optional[StrictStr] = Field(default=None, alias="taxId")
-    name: StrictStr
-    email: StrictStr
-    phone: Optional[StrictStr] = None
-    address: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["taxId", "name", "email", "phone", "address"]
+    rate: Union[Annotated[float, Field(le=100, strict=True, ge=0)], Annotated[int, Field(le=100, strict=True, ge=0)]]
+    is_withheld: Optional[StrictBool] = Field(default=None, alias="isWithheld")
+    __properties: ClassVar[List[str]] = ["rate", "isWithheld"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -52,7 +50,7 @@ class NfseCreateRequestBorrower(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestBorrower from a JSON string"""
+        """Create an instance of NfseCreateRequestTaxesIss from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -77,7 +75,7 @@ class NfseCreateRequestBorrower(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestBorrower from a dict"""
+        """Create an instance of NfseCreateRequestTaxesIss from a dict"""
         if obj is None:
             return None
 
@@ -85,11 +83,8 @@ class NfseCreateRequestBorrower(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "taxId": obj.get("taxId"),
-            "name": obj.get("name"),
-            "email": obj.get("email"),
-            "phone": obj.get("phone"),
-            "address": obj.get("address")
+            "rate": obj.get("rate"),
+            "isWithheld": obj.get("isWithheld")
         })
         return _obj
 
