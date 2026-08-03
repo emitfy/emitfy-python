@@ -19,19 +19,24 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from emitfy.generated.models.transport_detail import TransportDetail
+from emitfy.generated.models.public_invoice_resource_document_rps import PublicInvoiceResourceDocumentRps
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class InvoicesGet200ResponseData(BaseModel):
+class PublicInvoiceResourceDocument(BaseModel):
     """
-    InvoicesGet200ResponseData
+    PublicInvoiceResourceDocument
     """ # noqa: E501
-    external_id: Optional[StrictStr] = Field(default=None, description="ID externo do pedido/ordem (API ou integração)", alias="externalId")
-    transport: Optional[TransportDetail] = None
-    additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["externalId", "transport"]
+    number: Optional[StrictStr] = None
+    series: Optional[StrictStr] = None
+    access_key: Optional[StrictStr] = Field(default=None, alias="accessKey")
+    protocol: Optional[StrictStr] = None
+    rps: Optional[PublicInvoiceResourceDocumentRps] = None
+    nfse: Optional[Dict[str, Any]] = None
+    nfe: Optional[Dict[str, Any]] = None
+    nfce: Optional[Dict[str, Any]] = None
+    __properties: ClassVar[List[str]] = ["number", "series", "accessKey", "protocol", "rps", "nfse", "nfe", "nfce"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -51,7 +56,7 @@ class InvoicesGet200ResponseData(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of InvoicesGet200ResponseData from a JSON string"""
+        """Create an instance of PublicInvoiceResourceDocument from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -63,10 +68,8 @@ class InvoicesGet200ResponseData(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
-        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
-            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -74,19 +77,14 @@ class InvoicesGet200ResponseData(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of transport
-        if self.transport:
-            _dict['transport'] = self.transport.to_dict()
-        # puts key-value pairs in additional_properties in the top level
-        if self.additional_properties is not None:
-            for _key, _value in self.additional_properties.items():
-                _dict[_key] = _value
-
+        # override the default output from pydantic by calling `to_dict()` of rps
+        if self.rps:
+            _dict['rps'] = self.rps.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of InvoicesGet200ResponseData from a dict"""
+        """Create an instance of PublicInvoiceResourceDocument from a dict"""
         if obj is None:
             return None
 
@@ -94,14 +92,15 @@ class InvoicesGet200ResponseData(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "externalId": obj.get("externalId"),
-            "transport": TransportDetail.from_dict(obj["transport"]) if obj.get("transport") is not None else None
+            "number": obj.get("number"),
+            "series": obj.get("series"),
+            "accessKey": obj.get("accessKey"),
+            "protocol": obj.get("protocol"),
+            "rps": PublicInvoiceResourceDocumentRps.from_dict(obj["rps"]) if obj.get("rps") is not None else None,
+            "nfse": obj.get("nfse"),
+            "nfe": obj.get("nfe"),
+            "nfce": obj.get("nfce")
         })
-        # store additional fields in additional_properties
-        for _key in obj.keys():
-            if _key not in cls.__properties:
-                _obj.additional_properties[_key] = obj.get(_key)
-
         return _obj
 
 

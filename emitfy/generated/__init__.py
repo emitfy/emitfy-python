@@ -42,7 +42,6 @@ __all__ = [
     "ErrorBody",
     "ErrorBodyError",
     "InvoicesGet200Response",
-    "InvoicesGet200ResponseData",
     "NfceCreateRequest",
     "NfceCreateRequestContingency",
     "NfeCreateRequest",
@@ -54,6 +53,11 @@ __all__ = [
     "NfseCreateRequestTaxes",
     "NfseCreateRequestTaxesIss",
     "ProductEmitItem",
+    "PublicInvoiceResource",
+    "PublicInvoiceResourceAssets",
+    "PublicInvoiceResourceDocument",
+    "PublicInvoiceResourceDocumentRps",
+    "PublicInvoiceResourceEmission",
     "ReceivedNfesManifestRequest",
     "SuccessEnvelope",
     "TransportCarrier",
@@ -95,7 +99,6 @@ from emitfy.generated.exceptions import ApiException as ApiException
 from emitfy.generated.models.error_body import ErrorBody as ErrorBody
 from emitfy.generated.models.error_body_error import ErrorBodyError as ErrorBodyError
 from emitfy.generated.models.invoices_get200_response import InvoicesGet200Response as InvoicesGet200Response
-from emitfy.generated.models.invoices_get200_response_data import InvoicesGet200ResponseData as InvoicesGet200ResponseData
 from emitfy.generated.models.nfce_create_request import NfceCreateRequest as NfceCreateRequest
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency as NfceCreateRequestContingency
 from emitfy.generated.models.nfe_create_request import NfeCreateRequest as NfeCreateRequest
@@ -107,6 +110,11 @@ from emitfy.generated.models.nfse_create_request_borrower import NfseCreateReque
 from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes as NfseCreateRequestTaxes
 from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss as NfseCreateRequestTaxesIss
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
+from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource as PublicInvoiceResource
+from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets as PublicInvoiceResourceAssets
+from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument as PublicInvoiceResourceDocument
+from emitfy.generated.models.public_invoice_resource_document_rps import PublicInvoiceResourceDocumentRps as PublicInvoiceResourceDocumentRps
+from emitfy.generated.models.public_invoice_resource_emission import PublicInvoiceResourceEmission as PublicInvoiceResourceEmission
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest as ReceivedNfesManifestRequest
 from emitfy.generated.models.success_envelope import SuccessEnvelope as SuccessEnvelope
 from emitfy.generated.models.transport_carrier import TransportCarrier as TransportCarrier

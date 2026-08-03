@@ -17,30 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictBool, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class InvoicesGet200Response(BaseModel):
+class PublicInvoiceResourceAssets(BaseModel):
     """
-    InvoicesGet200Response
+    PublicInvoiceResourceAssets
     """ # noqa: E501
-    success: Optional[StrictBool] = None
-    data: Optional[PublicInvoiceResource] = None
-    __properties: ClassVar[List[str]] = ["success", "data"]
-
-    @field_validator('success')
-    def success_validate_enum(cls, value):
-        """Validates the enum"""
-        if value is None:
-            return value
-
-        if value not in set(['true']):
-            raise ValueError("must be one of enum values ('true')")
-        return value
+    pdf: Optional[StrictStr] = None
+    xml: Optional[StrictStr] = None
+    verification_url: Optional[StrictStr] = Field(default=None, alias="verificationUrl")
+    __properties: ClassVar[List[str]] = ["pdf", "xml", "verificationUrl"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -60,7 +50,7 @@ class InvoicesGet200Response(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of InvoicesGet200Response from a JSON string"""
+        """Create an instance of PublicInvoiceResourceAssets from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -81,14 +71,11 @@ class InvoicesGet200Response(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of data
-        if self.data:
-            _dict['data'] = self.data.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of InvoicesGet200Response from a dict"""
+        """Create an instance of PublicInvoiceResourceAssets from a dict"""
         if obj is None:
             return None
 
@@ -96,8 +83,9 @@ class InvoicesGet200Response(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "success": obj.get("success"),
-            "data": PublicInvoiceResource.from_dict(obj["data"]) if obj.get("data") is not None else None
+            "pdf": obj.get("pdf"),
+            "xml": obj.get("xml"),
+            "verificationUrl": obj.get("verificationUrl")
         })
         return _obj
 
