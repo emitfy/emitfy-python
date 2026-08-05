@@ -2395,6 +2395,7 @@ class CompaniesApi:
     ) -> None:
         """Company fiscal status
 
+        Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
@@ -2461,6 +2462,7 @@ class CompaniesApi:
     ) -> ApiResponse[None]:
         """Company fiscal status
 
+        Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
@@ -2527,6 +2529,7 @@ class CompaniesApi:
     ) -> RESTResponseType:
         """Company fiscal status
 
+        Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
         :param company_id: ID da empresa (CNPJ operacional) no path (required)
         :type company_id: UUID
