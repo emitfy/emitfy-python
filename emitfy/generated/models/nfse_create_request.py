@@ -22,7 +22,8 @@ from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, Stric
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower
-from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes
+from emitfy.generated.models.nfse_create_request_ibs_cbs import NfseCreateRequestIbsCbs
+from emitfy.generated.models.nfse_create_request_iss import NfseCreateRequestIss
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -36,24 +37,28 @@ class NfseCreateRequest(BaseModel):
     sku: Optional[StrictStr] = Field(default=None, description="Default direct-api-nfse")
     category: Optional[StrictStr] = Field(default=None, description="Default other_service")
     guarantee: Optional[Annotated[int, Field(le=365, strict=True, ge=1)]] = None
-    city_service_code: StrictStr = Field(description="Código municipal do serviço (obrigatório; alias legado serviceCode ainda aceito na API)", alias="cityServiceCode")
-    service_code: Optional[StrictStr] = Field(default=None, description="Alias legado de cityServiceCode", alias="serviceCode")
-    service_item_code: StrictStr = Field(description="Item LC 116", alias="serviceItemCode")
-    nbs_code: Optional[StrictStr] = Field(default=None, alias="nbsCode")
+    city_service_code: StrictStr = Field(description="Código municipal do serviço", alias="cityServiceCode")
+    federal_service_code: StrictStr = Field(description="Item LC 116 (cTribNac)", alias="federalServiceCode")
+    nbs: Optional[StrictStr] = Field(default=None, description="Código NBS (reforma)")
     cnae_code: Optional[StrictStr] = Field(default=None, alias="cnaeCode")
-    tax_classification: Optional[StrictStr] = Field(default=None, alias="taxClassification")
-    ibs_cst: Optional[StrictStr] = Field(default=None, alias="ibsCst")
-    ibs_operation_indicator: Optional[StrictStr] = Field(default=None, alias="ibsOperationIndicator")
+    iss: NfseCreateRequestIss
+    ibs_cbs: Optional[NfseCreateRequestIbsCbs] = Field(default=None, alias="ibsCbs")
     nature_of_operation: Optional[StrictStr] = Field(default=None, alias="natureOfOperation")
     service_location: Optional[StrictStr] = Field(default=None, alias="serviceLocation")
     municipality_of_incidence: Optional[StrictStr] = Field(default=None, alias="municipalityOfIncidence")
-    taxes: NfseCreateRequestTaxes
+    taxes: Optional[Dict[str, Any]] = Field(default=None, description="Retenções federais opcionais (pis/cofins/csll/ir/inss). ISS canônico é iss no topo.")
     amount: Union[StrictFloat, StrictInt]
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
     external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
     borrower: NfseCreateRequestBorrower
+    service_code: Optional[StrictStr] = Field(default=None, description="Alias legado de cityServiceCode", alias="serviceCode")
+    service_item_code: Optional[StrictStr] = Field(default=None, description="Alias legado de federalServiceCode", alias="serviceItemCode")
+    nbs_code: Optional[StrictStr] = Field(default=None, description="Alias legado de nbs", alias="nbsCode")
+    tax_classification: Optional[StrictStr] = Field(default=None, description="Alias legado de ibsCbs.taxClassCode", alias="taxClassification")
+    ibs_cst: Optional[StrictStr] = Field(default=None, description="Alias legado de ibsCbs.cst", alias="ibsCst")
+    ibs_operation_indicator: Optional[StrictStr] = Field(default=None, description="Alias legado de ibsCbs.operationIndicator", alias="ibsOperationIndicator")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["serviceDescription", "name", "sku", "category", "guarantee", "cityServiceCode", "serviceCode", "serviceItemCode", "nbsCode", "cnaeCode", "taxClassification", "ibsCst", "ibsOperationIndicator", "natureOfOperation", "serviceLocation", "municipalityOfIncidence", "taxes", "amount", "issueDate", "externalId", "borrower"]
+    __properties: ClassVar[List[str]] = ["serviceDescription", "name", "sku", "category", "guarantee", "cityServiceCode", "federalServiceCode", "nbs", "cnaeCode", "iss", "ibsCbs", "natureOfOperation", "serviceLocation", "municipalityOfIncidence", "taxes", "amount", "issueDate", "externalId", "borrower", "serviceCode", "serviceItemCode", "nbsCode", "taxClassification", "ibsCst", "ibsOperationIndicator"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -96,9 +101,12 @@ class NfseCreateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of taxes
-        if self.taxes:
-            _dict['taxes'] = self.taxes.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of iss
+        if self.iss:
+            _dict['iss'] = self.iss.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of ibs_cbs
+        if self.ibs_cbs:
+            _dict['ibsCbs'] = self.ibs_cbs.to_dict()
         # override the default output from pydantic by calling `to_dict()` of borrower
         if self.borrower:
             _dict['borrower'] = self.borrower.to_dict()
@@ -125,21 +133,25 @@ class NfseCreateRequest(BaseModel):
             "category": obj.get("category"),
             "guarantee": obj.get("guarantee"),
             "cityServiceCode": obj.get("cityServiceCode"),
-            "serviceCode": obj.get("serviceCode"),
-            "serviceItemCode": obj.get("serviceItemCode"),
-            "nbsCode": obj.get("nbsCode"),
+            "federalServiceCode": obj.get("federalServiceCode"),
+            "nbs": obj.get("nbs"),
             "cnaeCode": obj.get("cnaeCode"),
-            "taxClassification": obj.get("taxClassification"),
-            "ibsCst": obj.get("ibsCst"),
-            "ibsOperationIndicator": obj.get("ibsOperationIndicator"),
+            "iss": NfseCreateRequestIss.from_dict(obj["iss"]) if obj.get("iss") is not None else None,
+            "ibsCbs": NfseCreateRequestIbsCbs.from_dict(obj["ibsCbs"]) if obj.get("ibsCbs") is not None else None,
             "natureOfOperation": obj.get("natureOfOperation"),
             "serviceLocation": obj.get("serviceLocation"),
             "municipalityOfIncidence": obj.get("municipalityOfIncidence"),
-            "taxes": NfseCreateRequestTaxes.from_dict(obj["taxes"]) if obj.get("taxes") is not None else None,
+            "taxes": obj.get("taxes"),
             "amount": obj.get("amount"),
             "issueDate": obj.get("issueDate"),
             "externalId": obj.get("externalId"),
-            "borrower": NfseCreateRequestBorrower.from_dict(obj["borrower"]) if obj.get("borrower") is not None else None
+            "borrower": NfseCreateRequestBorrower.from_dict(obj["borrower"]) if obj.get("borrower") is not None else None,
+            "serviceCode": obj.get("serviceCode"),
+            "serviceItemCode": obj.get("serviceItemCode"),
+            "nbsCode": obj.get("nbsCode"),
+            "taxClassification": obj.get("taxClassification"),
+            "ibsCst": obj.get("ibsCst"),
+            "ibsOperationIndicator": obj.get("ibsOperationIndicator")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

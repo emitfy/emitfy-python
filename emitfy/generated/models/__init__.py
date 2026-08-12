@@ -24,8 +24,8 @@ from emitfy.generated.models.nfe_get200_response import NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower
-from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes
-from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss
+from emitfy.generated.models.nfse_create_request_ibs_cbs import NfseCreateRequestIbsCbs
+from emitfy.generated.models.nfse_create_request_iss import NfseCreateRequestIss
 from emitfy.generated.models.product_emit_item import ProductEmitItem
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets

@@ -50,8 +50,8 @@ __all__ = [
     "NfeGet200ResponseData",
     "NfseCreateRequest",
     "NfseCreateRequestBorrower",
-    "NfseCreateRequestTaxes",
-    "NfseCreateRequestTaxesIss",
+    "NfseCreateRequestIbsCbs",
+    "NfseCreateRequestIss",
     "ProductEmitItem",
     "PublicInvoiceResource",
     "PublicInvoiceResourceAssets",
@@ -107,8 +107,8 @@ from emitfy.generated.models.nfe_get200_response import NfeGet200Response as Nfe
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest as NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower as NfseCreateRequestBorrower
-from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes as NfseCreateRequestTaxes
-from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss as NfseCreateRequestTaxesIss
+from emitfy.generated.models.nfse_create_request_ibs_cbs import NfseCreateRequestIbsCbs as NfseCreateRequestIbsCbs
+from emitfy.generated.models.nfse_create_request_iss import NfseCreateRequestIss as NfseCreateRequestIss
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource as PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets as PublicInvoiceResourceAssets
