@@ -7,7 +7,7 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-__version__ = "0.3.0"
+__version__ = "0.6.0"
 
 # Camada tipada gerada a partir do OpenAPI público
 from emitfy import generated as generated
@@ -143,6 +143,48 @@ class CompanyResource:
             headers,
         )
 
+    def xml(self, id: str) -> Any:
+        return self._http.request("GET", f"{self._base_path}/{urllib.parse.quote(id)}/xml")
+
+    def pdf(self, id: str) -> Any:
+        return self._http.request("GET", f"{self._base_path}/{urllib.parse.quote(id)}/pdf")
+
+
+class InvoicesResource(CompanyResource):
+    def update(self, id: str, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "PATCH", f"{self._base_path}/{urllib.parse.quote(id)}", payload
+        )
+
+    def emit(self, id: str) -> Any:
+        return self._http.request(
+            "POST", f"{self._base_path}/{urllib.parse.quote(id)}/emit", {}
+        )
+
+    def cancel(self, id: str, payload: dict[str, Any] | None = None) -> Any:
+        return self._http.request(
+            "POST",
+            f"{self._base_path}/{urllib.parse.quote(id)}/cancel",
+            payload or {},
+        )
+
+    def consult(self, id: str) -> Any:
+        return self._http.request(
+            "GET", f"{self._base_path}/{urllib.parse.quote(id)}/consult"
+        )
+
+    def events(self, id: str) -> Any:
+        return self._http.request(
+            "GET", f"{self._base_path}/{urllib.parse.quote(id)}/events"
+        )
+
+    def send_email(self, id: str, payload: dict[str, Any] | None = None) -> Any:
+        return self._http.request(
+            "POST",
+            f"{self._base_path}/{urllib.parse.quote(id)}/send-borrower-email",
+            payload or {},
+        )
+
 
 class CompanyContext:
     def __init__(self, http: _HttpClient, company_id: str) -> None:
@@ -155,7 +197,7 @@ class CompanyContext:
         self.cte = CompanyResource(http, f"{prefix}/cte")
         self.customers = CompanyResource(http, f"{prefix}/customers")
         self.products = CompanyResource(http, f"{prefix}/products")
-        self.invoices = CompanyResource(http, f"{prefix}/invoices")
+        self.invoices = InvoicesResource(http, f"{prefix}/invoices")
         self.received_nfes = CompanyResource(http, f"{prefix}/received-nfes")
 
     def id(self) -> str:
@@ -170,6 +212,63 @@ class CompanyContext:
             f"/companies/{urllib.parse.quote(self._company_id)}/cte-os",
             payload,
             headers,
+        )
+
+    def status(self) -> Any:
+        return self._http.request(
+            "GET", f"/companies/{urllib.parse.quote(self._company_id)}/status"
+        )
+
+    def set_environment(self, environment: str) -> Any:
+        return self._http.request(
+            "PATCH",
+            f"/companies/{urllib.parse.quote(self._company_id)}/environment",
+            {"environment": environment},
+        )
+
+    def certificate_status(self) -> Any:
+        return self._http.request(
+            "GET", f"/companies/{urllib.parse.quote(self._company_id)}/certificate"
+        )
+
+    def upload_certificate(self, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "POST",
+            f"/companies/{urllib.parse.quote(self._company_id)}/certificate",
+            payload,
+        )
+
+    def delete_certificate(self) -> Any:
+        return self._http.request(
+            "DELETE", f"/companies/{urllib.parse.quote(self._company_id)}/certificate"
+        )
+
+    def create_correction_letter(self, id: str, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "POST",
+            f"/companies/{urllib.parse.quote(self._company_id)}/nfe/{urllib.parse.quote(id)}/correction",
+            payload,
+        )
+
+    def inutilize_nfe(self, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "POST",
+            f"/companies/{urllib.parse.quote(self._company_id)}/nfe/inutilizations",
+            payload,
+        )
+
+    def transmit_nfce(self, id: str) -> Any:
+        return self._http.request(
+            "POST",
+            f"/companies/{urllib.parse.quote(self._company_id)}/nfce/{urllib.parse.quote(id)}/transmit",
+            {},
+        )
+
+    def inutilize_nfce(self, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "POST",
+            f"/companies/{urllib.parse.quote(self._company_id)}/nfce/inutilizations",
+            payload,
         )
 
 
@@ -240,11 +339,25 @@ class _Companies:
     def create(self, payload: dict[str, Any]) -> Any:
         return self._http.request("POST", "/companies", payload)
 
+    def get(self, company_id: str) -> Any:
+        return self._http.request("GET", f"/companies/{urllib.parse.quote(company_id)}")
+
+    def update(self, company_id: str, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "PUT", f"/companies/{urllib.parse.quote(company_id)}", payload
+        )
+
+    def delete(self, company_id: str) -> Any:
+        return self._http.request(
+            "DELETE", f"/companies/{urllib.parse.quote(company_id)}"
+        )
+
 
 __all__ = [
     "Emitfy",
     "EmitfyError",
     "CompanyContext",
+    "InvoicesResource",
     "generated",
     "WebhookCreate",
     "WebhooksApi",

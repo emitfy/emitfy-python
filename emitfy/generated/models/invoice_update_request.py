@@ -17,31 +17,34 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr, field_validator
+from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
-from emitfy.generated.models.transport_carrier import TransportCarrier
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class NfeCreateRequestTransport(BaseModel):
+class InvoiceUpdateRequest(BaseModel):
     """
-    Dados de transporte inline (opcional). `freightModality` é obrigatório quando `carrier` é enviado; `noShipping` com `carrier` retorna 400. 
+    InvoiceUpdateRequest
     """ # noqa: E501
-    freight_modality: Optional[StrictStr] = Field(default=None, description="Também aceita os códigos SEFAZ 0/1/2/3/4/9 como alias", alias="freightModality")
-    value: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Valor do frete; compõe o total quando por conta do emitente")
-    carrier: Optional[TransportCarrier] = None
-    __properties: ClassVar[List[str]] = ["freightModality", "value", "carrier"]
+    version: Annotated[int, Field(strict=True, ge=1)] = Field(description="Versão atual da nota (concorrência). 409 INVOICE_VERSION_CONFLICT se desatualizada.")
+    commercial: Optional[Dict[str, Any]] = Field(default=None, description="Snapshot comercial parcial (merge no servidor)")
+    issue_mode: Optional[StrictStr] = Field(default=None, alias="issueMode")
+    scheduled_at: Optional[datetime] = Field(default=None, alias="scheduledAt")
+    send_email: Optional[StrictBool] = Field(default=None, alias="sendEmail")
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["version", "commercial", "issueMode", "scheduledAt", "sendEmail"]
 
-    @field_validator('freight_modality')
-    def freight_modality_validate_enum(cls, value):
+    @field_validator('issue_mode')
+    def issue_mode_validate_enum(cls, value):
         """Validates the enum"""
         if value is None:
             return value
 
-        if value not in set(['bySender', 'byRecipient', 'byThirdParties', 'ownBySender', 'ownByRecipient', 'noShipping']):
-            raise ValueError("must be one of enum values ('bySender', 'byRecipient', 'byThirdParties', 'ownBySender', 'ownByRecipient', 'noShipping')")
+        if value not in set(['draft', 'immediate', 'scheduled']):
+            raise ValueError("must be one of enum values ('draft', 'immediate', 'scheduled')")
         return value
 
     model_config = ConfigDict(
@@ -62,7 +65,7 @@ class NfeCreateRequestTransport(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NfeCreateRequestTransport from a JSON string"""
+        """Create an instance of InvoiceUpdateRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,8 +77,10 @@ class NfeCreateRequestTransport(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -83,14 +88,16 @@ class NfeCreateRequestTransport(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of carrier
-        if self.carrier:
-            _dict['carrier'] = self.carrier.to_dict()
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NfeCreateRequestTransport from a dict"""
+        """Create an instance of InvoiceUpdateRequest from a dict"""
         if obj is None:
             return None
 
@@ -98,10 +105,17 @@ class NfeCreateRequestTransport(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "freightModality": obj.get("freightModality"),
-            "value": obj.get("value"),
-            "carrier": TransportCarrier.from_dict(obj["carrier"]) if obj.get("carrier") is not None else None
+            "version": obj.get("version"),
+            "commercial": obj.get("commercial"),
+            "issueMode": obj.get("issueMode"),
+            "scheduledAt": obj.get("scheduledAt"),
+            "sendEmail": obj.get("sendEmail")
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 
