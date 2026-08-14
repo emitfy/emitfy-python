@@ -80,9 +80,7 @@ function contentHash(base) {
     throw new Error(`emitfy/ missing in ${base}`)
   }
 
-  const files = walkFiles(pkgDir).sort((a, b) =>
-    relative(base, a).localeCompare(relative(base, b))
-  )
+  const files = walkFiles(pkgDir).sort((a, b) => relative(base, a).localeCompare(relative(base, b)))
   for (const file of files) {
     const rel = relative(base, file).replaceAll('\\', '/')
     hash.update(rel)
@@ -117,7 +115,9 @@ if (!remote) {
 
 const remoteVersion = remote.info.version
 const urls = remote.releases?.[remoteVersion] || remote.urls || []
-const sdist = urls.find((u) => u.packagetype === 'sdist') || urls.find((u) => String(u.filename).endsWith('.tar.gz'))
+const sdist =
+  urls.find((u) => u.packagetype === 'sdist') ||
+  urls.find((u) => String(u.filename).endsWith('.tar.gz'))
 
 if (!sdist?.url) {
   throw new Error(`no sdist for ${packageName}==${remoteVersion}`)
