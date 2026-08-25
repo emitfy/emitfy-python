@@ -7,7 +7,7 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 # Camada tipada gerada a partir do OpenAPI público
 from emitfy import generated as generated
@@ -129,6 +129,11 @@ class CompanyResource:
     def delete(self, id: str) -> Any:
         return self._http.request("DELETE", f"{self._base_path}/{urllib.parse.quote(id)}")
 
+    def cancel(self, id: str, payload: dict[str, Any]) -> Any:
+        return self._http.request(
+            "DELETE", f"{self._base_path}/{urllib.parse.quote(id)}", payload
+        )
+
     def post(
         self,
         suffix: str,
@@ -195,6 +200,7 @@ class CompanyContext:
         self.nfe = CompanyResource(http, f"{prefix}/nfe")
         self.nfce = CompanyResource(http, f"{prefix}/nfce")
         self.cte = CompanyResource(http, f"{prefix}/cte")
+        self.mdfe = CompanyResource(http, f"{prefix}/mdfe")
         self.customers = CompanyResource(http, f"{prefix}/customers")
         self.products = CompanyResource(http, f"{prefix}/products")
         self.invoices = InvoicesResource(http, f"{prefix}/invoices")
@@ -220,6 +226,7 @@ class CompanyContext:
         )
 
     def set_environment(self, environment: str) -> Any:
+        """Deprecated. Public emission is always production. This endpoint returns 410."""
         return self._http.request(
             "PATCH",
             f"/companies/{urllib.parse.quote(self._company_id)}/environment",
