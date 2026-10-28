@@ -7,7 +7,7 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 # Camada tipada gerada a partir do OpenAPI público
 from emitfy import generated as generated
@@ -223,14 +223,6 @@ class CompanyContext:
     def status(self) -> Any:
         return self._http.request(
             "GET", f"/companies/{urllib.parse.quote(self._company_id)}/status"
-        )
-
-    def set_environment(self, environment: str) -> Any:
-        """Deprecated. Public emission is always production. This endpoint returns 410."""
-        return self._http.request(
-            "PATCH",
-            f"/companies/{urllib.parse.quote(self._company_id)}/environment",
-            {"environment": environment},
         )
 
     def certificate_status(self) -> Any:
