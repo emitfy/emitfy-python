@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
@@ -25,12 +25,45 @@ from pydantic_core import to_jsonable_python
 
 class WebhookCreateEvents(BaseModel):
     """
-    WebhookCreateEvents
+    Informe ao menos um evento (422 se todas as listas vierem vazias).
     """ # noqa: E501
     invoice: Optional[List[StrictStr]] = None
     cte: Optional[List[StrictStr]] = None
     mdfe: Optional[List[StrictStr]] = None
     __properties: ClassVar[List[str]] = ["invoice", "cte", "mdfe"]
+
+    @field_validator('invoice')
+    def invoice_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        for i in value:
+            if i not in set(['nfse.authorized', 'nfse.cancelled', 'nfse.rejected', 'nfe.authorized', 'nfe.cancelled', 'nfe.rejected']):
+                raise ValueError("each list item must be one of ('nfse.authorized', 'nfse.cancelled', 'nfse.rejected', 'nfe.authorized', 'nfe.cancelled', 'nfe.rejected')")
+        return value
+
+    @field_validator('cte')
+    def cte_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        for i in value:
+            if i not in set(['cte.authorized', 'cte.cancelled', 'cte.rejected']):
+                raise ValueError("each list item must be one of ('cte.authorized', 'cte.cancelled', 'cte.rejected')")
+        return value
+
+    @field_validator('mdfe')
+    def mdfe_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        for i in value:
+            if i not in set(['mdfe.authorized', 'mdfe.cancelled', 'mdfe.rejected', 'mdfe.closed']):
+                raise ValueError("each list item must be one of ('mdfe.authorized', 'mdfe.cancelled', 'mdfe.rejected', 'mdfe.closed')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,

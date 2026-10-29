@@ -19,6 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -27,7 +28,7 @@ class NfseCreateRequestSubstitution(BaseModel):
     """
     NfseCreateRequestSubstitution
     """ # noqa: E501
-    replaced_key: Optional[StrictStr] = Field(default=None, alias="replacedKey")
+    replaced_key: Annotated[str, Field(min_length=1, strict=True)] = Field(alias="replacedKey")
     reason_code: Optional[StrictStr] = Field(default=None, alias="reasonCode")
     reason: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["replacedKey", "reasonCode", "reason"]

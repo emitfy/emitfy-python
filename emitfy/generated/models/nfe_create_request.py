@@ -17,10 +17,16 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
+from uuid import UUID
+from emitfy.generated.models.dfe_aut_xml import DfeAutXml
+from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
+from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient
+from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequestRetirada
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport
 from emitfy.generated.models.product_emit_item import ProductEmitItem
 from typing import Optional, Set
@@ -34,23 +40,76 @@ class NfeCreateRequest(BaseModel):
     items: Annotated[List[ProductEmitItem], Field(min_length=1)]
     recipient: NfeCreateRequestRecipient
     transport: Optional[NfeCreateRequestTransport] = None
-    external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
-    operation_nature: Optional[StrictStr] = Field(default=None, alias="operationNature")
-    nature: Optional[StrictStr] = None
+    external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
+    operation_nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, alias="operationNature")
+    nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, description="Alias legado de operationNature")
+    operation_type: Optional[StrictStr] = Field(default=None, alias="operationType")
+    print_type: Optional[StrictStr] = Field(default=None, alias="printType")
+    consumer_type: Optional[StrictStr] = Field(default=None, alias="consumerType")
+    presence_type: Optional[StrictStr] = Field(default=None, alias="presenceType")
+    ibs_consumption_city_code: Optional[StrictStr] = Field(default=None, alias="ibsConsumptionCityCode")
+    state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada na emissão", alias="stateRegistrationId")
+    cfop: Optional[StrictStr] = None
+    issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
+    ide: Optional[Dict[str, Any]] = Field(default=None, description="Grupo ide (campos avançados)")
+    avulsa: Optional[Dict[str, Any]] = None
+    retirada: Optional[NfeCreateRequestRetirada] = None
+    entrega: Optional[NfeCreateRequestEntrega] = None
+    aut_xml: Optional[List[DfeAutXml]] = Field(default=None, alias="autXml")
     billing: Optional[Dict[str, Any]] = None
-    additional: Optional[Dict[str, Any]] = None
-    tech_responsible: Optional[Dict[str, Any]] = Field(default=None, alias="techResponsible")
+    payments: Optional[List[Dict[str, Any]]] = None
+    change: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Troco")
     intermediary: Optional[Dict[str, Any]] = None
-    aut_xml: Optional[List[Dict[str, Any]]] = Field(default=None, alias="autXml")
-    retirada: Optional[Dict[str, Any]] = None
-    entrega: Optional[Dict[str, Any]] = None
+    additional: Optional[Dict[str, Any]] = None
     export: Optional[Dict[str, Any]] = None
     purchase: Optional[Dict[str, Any]] = None
     sugarcane: Optional[Dict[str, Any]] = None
-    farming: Optional[Dict[str, Any]] = None
+    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
     nff_request: Optional[StrictStr] = Field(default=None, alias="nffRequest")
+    farming: Optional[Dict[str, Any]] = None
+    totals: Optional[Dict[str, Any]] = Field(default=None, description="Override de totais")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["items", "recipient", "transport", "externalId", "operationNature", "nature", "billing", "additional", "techResponsible", "intermediary", "autXml", "retirada", "entrega", "export", "purchase", "sugarcane", "farming", "nffRequest"]
+    __properties: ClassVar[List[str]] = ["items", "recipient", "transport", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+
+    @field_validator('operation_type')
+    def operation_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['outgoing', 'incoming']):
+            raise ValueError("must be one of enum values ('outgoing', 'incoming')")
+        return value
+
+    @field_validator('print_type')
+    def print_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['nfeNormalPortrait', 'nfeNormalLandscape', 'nfeSimplified']):
+            raise ValueError("must be one of enum values ('nfeNormalPortrait', 'nfeNormalLandscape', 'nfeSimplified')")
+        return value
+
+    @field_validator('consumer_type')
+    def consumer_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['normal', 'finalConsumer']):
+            raise ValueError("must be one of enum values ('normal', 'finalConsumer')")
+        return value
+
+    @field_validator('presence_type')
+    def presence_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['presential', 'internet', 'telephone', 'delivery', 'others']):
+            raise ValueError("must be one of enum values ('presential', 'internet', 'telephone', 'delivery', 'others')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -106,6 +165,22 @@ class NfeCreateRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of transport
         if self.transport:
             _dict['transport'] = self.transport.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of retirada
+        if self.retirada:
+            _dict['retirada'] = self.retirada.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of entrega
+        if self.entrega:
+            _dict['entrega'] = self.entrega.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in aut_xml (list)
+        _items = []
+        if self.aut_xml:
+            for _item_aut_xml in self.aut_xml:
+                if _item_aut_xml:
+                    _items.append(_item_aut_xml.to_dict())
+            _dict['autXml'] = _items
+        # override the default output from pydantic by calling `to_dict()` of tech_responsible
+        if self.tech_responsible:
+            _dict['techResponsible'] = self.tech_responsible.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -129,18 +204,31 @@ class NfeCreateRequest(BaseModel):
             "externalId": obj.get("externalId"),
             "operationNature": obj.get("operationNature"),
             "nature": obj.get("nature"),
+            "operationType": obj.get("operationType"),
+            "printType": obj.get("printType"),
+            "consumerType": obj.get("consumerType"),
+            "presenceType": obj.get("presenceType"),
+            "ibsConsumptionCityCode": obj.get("ibsConsumptionCityCode"),
+            "stateRegistrationId": obj.get("stateRegistrationId"),
+            "cfop": obj.get("cfop"),
+            "issueDate": obj.get("issueDate"),
+            "ide": obj.get("ide"),
+            "avulsa": obj.get("avulsa"),
+            "retirada": NfeCreateRequestRetirada.from_dict(obj["retirada"]) if obj.get("retirada") is not None else None,
+            "entrega": NfeCreateRequestEntrega.from_dict(obj["entrega"]) if obj.get("entrega") is not None else None,
+            "autXml": [DfeAutXml.from_dict(_item) for _item in obj["autXml"]] if obj.get("autXml") is not None else None,
             "billing": obj.get("billing"),
-            "additional": obj.get("additional"),
-            "techResponsible": obj.get("techResponsible"),
+            "payments": obj.get("payments"),
+            "change": obj.get("change"),
             "intermediary": obj.get("intermediary"),
-            "autXml": obj.get("autXml"),
-            "retirada": obj.get("retirada"),
-            "entrega": obj.get("entrega"),
+            "additional": obj.get("additional"),
             "export": obj.get("export"),
             "purchase": obj.get("purchase"),
             "sugarcane": obj.get("sugarcane"),
+            "techResponsible": DfeTechResponsible.from_dict(obj["techResponsible"]) if obj.get("techResponsible") is not None else None,
+            "nffRequest": obj.get("nffRequest"),
             "farming": obj.get("farming"),
-            "nffRequest": obj.get("nffRequest")
+            "totals": obj.get("totals")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

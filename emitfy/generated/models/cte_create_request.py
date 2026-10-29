@@ -17,8 +17,16 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing_extensions import Annotated
+from emitfy.generated.models.cte_cargo_quantity import CteCargoQuantity
+from emitfy.generated.models.cte_create_request_complement import CteCreateRequestComplement
+from emitfy.generated.models.cte_icms import CteIcms
+from emitfy.generated.models.cte_party import CteParty
+from emitfy.generated.models.dfe_aut_xml import DfeAutXml
+from emitfy.generated.models.dfe_component import DfeComponent
+from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -27,23 +35,42 @@ class CteCreateRequest(BaseModel):
     """
     CteCreateRequest
     """ # noqa: E501
-    cfop: StrictStr
-    nature: StrictStr
-    shipper: Dict[str, Any]
-    recipient: Dict[str, Any]
-    municipality_start_ibge: StrictStr = Field(alias="municipalityStartIbge")
-    municipality_end_ibge: StrictStr = Field(alias="municipalityEndIbge")
-    cargo_value: Union[StrictFloat, StrictInt] = Field(alias="cargoValue")
-    cargo_product: StrictStr = Field(alias="cargoProduct")
-    cargo_quantities: List[Dict[str, Any]] = Field(alias="cargoQuantities")
-    service_amount: Union[StrictFloat, StrictInt] = Field(alias="serviceAmount")
-    icms: Dict[str, Any]
-    components: Optional[List[Dict[str, Any]]] = None
-    complement: Optional[Dict[str, Any]] = None
-    aut_xml: Optional[List[Dict[str, Any]]] = Field(default=None, alias="autXml")
-    tech_responsible: Optional[Dict[str, Any]] = Field(default=None, alias="techResponsible")
+    external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência. Obrigatório se não enviar o header `Idempotency-Key` (400 `CTE_EXTERNAL_ID_REQUIRED`).", alias="externalId")
+    cfop: Annotated[str, Field(min_length=4, strict=True, max_length=4)]
+    nature: Annotated[str, Field(min_length=1, strict=True, max_length=60)]
+    service_type: Optional[StrictStr] = Field(default='0', description="Tipo do serviço (tpServ). Default 0.", alias="serviceType")
+    taker: Optional[StrictStr] = Field(default='3', description="Tomador (toma). `4` = outro — informe `takerParty`.")
+    shipper: CteParty
+    recipient: CteParty
+    dispatcher: Optional[CteParty] = None
+    receiver: Optional[CteParty] = None
+    taker_party: Optional[CteParty] = Field(default=None, alias="takerParty")
+    municipality_start_ibge: Annotated[str, Field(min_length=7, strict=True, max_length=7)] = Field(alias="municipalityStartIbge")
+    municipality_end_ibge: Annotated[str, Field(min_length=7, strict=True, max_length=7)] = Field(alias="municipalityEndIbge")
+    cargo_value: Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]] = Field(alias="cargoValue")
+    cargo_product: Annotated[str, Field(min_length=1, strict=True, max_length=60)] = Field(alias="cargoProduct")
+    cargo_quantities: Annotated[List[CteCargoQuantity], Field(min_length=1)] = Field(alias="cargoQuantities")
+    linked_nfe_access_keys: Optional[List[Annotated[str, Field(min_length=44, strict=True, max_length=44)]]] = Field(default=None, alias="linkedNfeAccessKeys")
+    service_amount: Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]] = Field(alias="serviceAmount")
+    icms: CteIcms
+    rntrc: Optional[StrictStr] = None
+    complement: Optional[CteCreateRequestComplement] = None
+    components: Optional[List[DfeComponent]] = None
+    aut_xml: Optional[List[DfeAutXml]] = Field(default=None, alias="autXml")
+    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
+    modal: Optional[StrictStr] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["cfop", "nature", "shipper", "recipient", "municipalityStartIbge", "municipalityEndIbge", "cargoValue", "cargoProduct", "cargoQuantities", "serviceAmount", "icms", "components", "complement", "autXml", "techResponsible"]
+    __properties: ClassVar[List[str]] = ["externalId", "cfop", "nature", "serviceType", "taker", "shipper", "recipient", "dispatcher", "receiver", "takerParty", "municipalityStartIbge", "municipalityEndIbge", "cargoValue", "cargoProduct", "cargoQuantities", "linkedNfeAccessKeys", "serviceAmount", "icms", "rntrc", "complement", "components", "autXml", "techResponsible", "modal"]
+
+    @field_validator('taker')
+    def taker_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['0', '1', '2', '3', '4']):
+            raise ValueError("must be one of enum values ('0', '1', '2', '3', '4')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -86,6 +113,51 @@ class CteCreateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of shipper
+        if self.shipper:
+            _dict['shipper'] = self.shipper.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of recipient
+        if self.recipient:
+            _dict['recipient'] = self.recipient.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of dispatcher
+        if self.dispatcher:
+            _dict['dispatcher'] = self.dispatcher.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of receiver
+        if self.receiver:
+            _dict['receiver'] = self.receiver.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of taker_party
+        if self.taker_party:
+            _dict['takerParty'] = self.taker_party.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in cargo_quantities (list)
+        _items = []
+        if self.cargo_quantities:
+            for _item_cargo_quantities in self.cargo_quantities:
+                if _item_cargo_quantities:
+                    _items.append(_item_cargo_quantities.to_dict())
+            _dict['cargoQuantities'] = _items
+        # override the default output from pydantic by calling `to_dict()` of icms
+        if self.icms:
+            _dict['icms'] = self.icms.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of complement
+        if self.complement:
+            _dict['complement'] = self.complement.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in components (list)
+        _items = []
+        if self.components:
+            for _item_components in self.components:
+                if _item_components:
+                    _items.append(_item_components.to_dict())
+            _dict['components'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in aut_xml (list)
+        _items = []
+        if self.aut_xml:
+            for _item_aut_xml in self.aut_xml:
+                if _item_aut_xml:
+                    _items.append(_item_aut_xml.to_dict())
+            _dict['autXml'] = _items
+        # override the default output from pydantic by calling `to_dict()` of tech_responsible
+        if self.tech_responsible:
+            _dict['techResponsible'] = self.tech_responsible.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -103,21 +175,30 @@ class CteCreateRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "externalId": obj.get("externalId"),
             "cfop": obj.get("cfop"),
             "nature": obj.get("nature"),
-            "shipper": obj.get("shipper"),
-            "recipient": obj.get("recipient"),
+            "serviceType": obj.get("serviceType") if obj.get("serviceType") is not None else '0',
+            "taker": obj.get("taker") if obj.get("taker") is not None else '3',
+            "shipper": CteParty.from_dict(obj["shipper"]) if obj.get("shipper") is not None else None,
+            "recipient": CteParty.from_dict(obj["recipient"]) if obj.get("recipient") is not None else None,
+            "dispatcher": CteParty.from_dict(obj["dispatcher"]) if obj.get("dispatcher") is not None else None,
+            "receiver": CteParty.from_dict(obj["receiver"]) if obj.get("receiver") is not None else None,
+            "takerParty": CteParty.from_dict(obj["takerParty"]) if obj.get("takerParty") is not None else None,
             "municipalityStartIbge": obj.get("municipalityStartIbge"),
             "municipalityEndIbge": obj.get("municipalityEndIbge"),
             "cargoValue": obj.get("cargoValue"),
             "cargoProduct": obj.get("cargoProduct"),
-            "cargoQuantities": obj.get("cargoQuantities"),
+            "cargoQuantities": [CteCargoQuantity.from_dict(_item) for _item in obj["cargoQuantities"]] if obj.get("cargoQuantities") is not None else None,
+            "linkedNfeAccessKeys": obj.get("linkedNfeAccessKeys"),
             "serviceAmount": obj.get("serviceAmount"),
-            "icms": obj.get("icms"),
-            "components": obj.get("components"),
-            "complement": obj.get("complement"),
-            "autXml": obj.get("autXml"),
-            "techResponsible": obj.get("techResponsible")
+            "icms": CteIcms.from_dict(obj["icms"]) if obj.get("icms") is not None else None,
+            "rntrc": obj.get("rntrc"),
+            "complement": CteCreateRequestComplement.from_dict(obj["complement"]) if obj.get("complement") is not None else None,
+            "components": [DfeComponent.from_dict(_item) for _item in obj["components"]] if obj.get("components") is not None else None,
+            "autXml": [DfeAutXml.from_dict(_item) for _item in obj["autXml"]] if obj.get("autXml") is not None else None,
+            "techResponsible": DfeTechResponsible.from_dict(obj["techResponsible"]) if obj.get("techResponsible") is not None else None,
+            "modal": obj.get("modal")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

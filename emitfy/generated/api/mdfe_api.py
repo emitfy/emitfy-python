@@ -15,16 +15,19 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictStr, field_validator
+from pydantic import Field, StrictInt, StrictStr, field_validator
 from typing import Optional
 from typing_extensions import Annotated
 from uuid import UUID
 from emitfy.generated.models.mdfe_cancel_request import MdfeCancelRequest
 from emitfy.generated.models.mdfe_close_request import MdfeCloseRequest
+from emitfy.generated.models.mdfe_create200_response import MdfeCreate200Response
 from emitfy.generated.models.mdfe_driver import MdfeDriver
 from emitfy.generated.models.mdfe_emit_request import MdfeEmitRequest
+from emitfy.generated.models.mdfe_list200_response import MdfeList200Response
 from emitfy.generated.models.mdfe_payment import MdfePayment
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity
+from emitfy.generated.models.transport_document_accepted import TransportDocumentAccepted
 
 from emitfy.generated.api_client import ApiClient, RequestSerialized
 from emitfy.generated.api_response import ApiResponse
@@ -47,7 +50,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_document(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_unload_city: MdfeUnloadCity,
         _request_timeout: Union[
@@ -62,11 +65,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> TransportDocumentAccepted:
         """Add document to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -105,7 +108,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -121,7 +127,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_document_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_unload_city: MdfeUnloadCity,
         _request_timeout: Union[
@@ -136,11 +142,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[TransportDocumentAccepted]:
         """Add document to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -179,7 +185,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -195,7 +204,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_document_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_unload_city: MdfeUnloadCity,
         _request_timeout: Union[
@@ -214,7 +223,7 @@ class MdfeApi:
         """Add document to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -253,7 +262,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -300,6 +312,13 @@ class MdfeApi:
             _body_params = mdfe_unload_city
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -342,7 +361,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_driver(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_driver: MdfeDriver,
         _request_timeout: Union[
@@ -357,11 +376,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> TransportDocumentAccepted:
         """Add driver to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -400,7 +419,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -416,7 +438,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_driver_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_driver: MdfeDriver,
         _request_timeout: Union[
@@ -431,11 +453,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[TransportDocumentAccepted]:
         """Add driver to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -474,7 +496,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -490,7 +515,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_driver_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_driver: MdfeDriver,
         _request_timeout: Union[
@@ -509,7 +534,7 @@ class MdfeApi:
         """Add driver to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -548,7 +573,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -595,6 +623,13 @@ class MdfeApi:
             _body_params = mdfe_driver
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -637,7 +672,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_payment(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_payment: MdfePayment,
         _request_timeout: Union[
@@ -652,11 +687,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> TransportDocumentAccepted:
         """Add payment to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -695,7 +730,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -711,7 +749,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_payment_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_payment: MdfePayment,
         _request_timeout: Union[
@@ -726,11 +764,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[TransportDocumentAccepted]:
         """Add payment to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -769,7 +807,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -785,7 +826,7 @@ class MdfeApi:
     @validate_call
     def mdfe_add_payment_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_payment: MdfePayment,
         _request_timeout: Union[
@@ -804,7 +845,7 @@ class MdfeApi:
         """Add payment to MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -843,7 +884,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -890,6 +934,13 @@ class MdfeApi:
             _body_params = mdfe_payment
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -932,7 +983,7 @@ class MdfeApi:
     @validate_call
     def mdfe_cancel(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_cancel_request: MdfeCancelRequest,
         _request_timeout: Union[
@@ -947,11 +998,12 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> TransportDocumentAccepted:
         """Cancel MDF-e
 
+        DELETE com corpo JSON obrigatório (`justification` 15–255 caracteres).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -990,8 +1042,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
             '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1007,7 +1061,7 @@ class MdfeApi:
     @validate_call
     def mdfe_cancel_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_cancel_request: MdfeCancelRequest,
         _request_timeout: Union[
@@ -1022,11 +1076,12 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[TransportDocumentAccepted]:
         """Cancel MDF-e
 
+        DELETE com corpo JSON obrigatório (`justification` 15–255 caracteres).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1065,8 +1120,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
             '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1082,7 +1139,7 @@ class MdfeApi:
     @validate_call
     def mdfe_cancel_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_cancel_request: MdfeCancelRequest,
         _request_timeout: Union[
@@ -1100,8 +1157,9 @@ class MdfeApi:
     ) -> RESTResponseType:
         """Cancel MDF-e
 
+        DELETE com corpo JSON obrigatório (`justification` 15–255 caracteres).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1140,8 +1198,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
             '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1188,6 +1248,13 @@ class MdfeApi:
             _body_params = mdfe_cancel_request
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -1230,7 +1297,7 @@ class MdfeApi:
     @validate_call
     def mdfe_close(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_close_request: MdfeCloseRequest,
         _request_timeout: Union[
@@ -1245,11 +1312,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> TransportDocumentAccepted:
         """Close MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1288,7 +1355,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1304,7 +1374,7 @@ class MdfeApi:
     @validate_call
     def mdfe_close_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_close_request: MdfeCloseRequest,
         _request_timeout: Union[
@@ -1319,11 +1389,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[TransportDocumentAccepted]:
         """Close MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1362,7 +1432,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1378,7 +1451,7 @@ class MdfeApi:
     @validate_call
     def mdfe_close_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         mdfe_close_request: MdfeCloseRequest,
         _request_timeout: Union[
@@ -1397,7 +1470,7 @@ class MdfeApi:
         """Close MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1436,7 +1509,10 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "TransportDocumentAccepted",
+            '404': None,
+            '422': None,
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1483,6 +1559,13 @@ class MdfeApi:
             _body_params = mdfe_close_request
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -1525,7 +1608,7 @@ class MdfeApi:
     @validate_call
     def mdfe_consult(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1543,7 +1626,7 @@ class MdfeApi:
         """Consult MDF-e at SEFAZ
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1580,6 +1663,7 @@ class MdfeApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '404': None,
             '422': None,
         }
         response_data = self.api_client.call_api(
@@ -1596,7 +1680,7 @@ class MdfeApi:
     @validate_call
     def mdfe_consult_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1614,7 +1698,7 @@ class MdfeApi:
         """Consult MDF-e at SEFAZ
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1651,6 +1735,7 @@ class MdfeApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '404': None,
             '422': None,
         }
         response_data = self.api_client.call_api(
@@ -1667,7 +1752,7 @@ class MdfeApi:
     @validate_call
     def mdfe_consult_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1685,7 +1770,7 @@ class MdfeApi:
         """Consult MDF-e at SEFAZ
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1722,6 +1807,7 @@ class MdfeApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '404': None,
             '422': None,
         }
         response_data = self.api_client.call_api(
@@ -1795,7 +1881,7 @@ class MdfeApi:
     @validate_call
     def mdfe_create(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         mdfe_emit_request: MdfeEmitRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -1810,11 +1896,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> MdfeCreate200Response:
         """Emit MDF-e (modelo 58)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param mdfe_emit_request: (required)
         :type mdfe_emit_request: MdfeEmitRequest
@@ -1853,7 +1939,11 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeCreate200Response",
+            '400': None,
+            '402': None,
+            '403': None,
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1869,7 +1959,7 @@ class MdfeApi:
     @validate_call
     def mdfe_create_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         mdfe_emit_request: MdfeEmitRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -1884,11 +1974,11 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[MdfeCreate200Response]:
         """Emit MDF-e (modelo 58)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param mdfe_emit_request: (required)
         :type mdfe_emit_request: MdfeEmitRequest
@@ -1927,7 +2017,11 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeCreate200Response",
+            '400': None,
+            '402': None,
+            '403': None,
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1943,7 +2037,7 @@ class MdfeApi:
     @validate_call
     def mdfe_create_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         mdfe_emit_request: MdfeEmitRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -1962,7 +2056,7 @@ class MdfeApi:
         """Emit MDF-e (modelo 58)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param mdfe_emit_request: (required)
         :type mdfe_emit_request: MdfeEmitRequest
@@ -2001,7 +2095,11 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeCreate200Response",
+            '400': None,
+            '402': None,
+            '403': None,
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -2048,6 +2146,13 @@ class MdfeApi:
             _body_params = mdfe_emit_request
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -2090,7 +2195,7 @@ class MdfeApi:
     @validate_call
     def mdfe_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -2108,7 +2213,7 @@ class MdfeApi:
         """Get MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -2161,7 +2266,7 @@ class MdfeApi:
     @validate_call
     def mdfe_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -2179,7 +2284,7 @@ class MdfeApi:
         """Get MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -2232,7 +2337,7 @@ class MdfeApi:
     @validate_call
     def mdfe_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -2250,7 +2355,7 @@ class MdfeApi:
         """Get MDF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -2360,10 +2465,12 @@ class MdfeApi:
     @validate_call
     def mdfe_list(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2376,11 +2483,12 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> MdfeList200Response:
         """List MDF-e
 
+        Query estrita — parâmetro desconhecido retorna 422.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -2388,6 +2496,10 @@ class MdfeApi:
         :type page_size: int
         :param status:
         :type status: str
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2415,6 +2527,8 @@ class MdfeApi:
             page=page,
             page_size=page_size,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2422,7 +2536,7 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -2438,10 +2552,12 @@ class MdfeApi:
     @validate_call
     def mdfe_list_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2454,11 +2570,12 @@ class MdfeApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[MdfeList200Response]:
         """List MDF-e
 
+        Query estrita — parâmetro desconhecido retorna 422.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -2466,6 +2583,10 @@ class MdfeApi:
         :type page_size: int
         :param status:
         :type status: str
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2493,6 +2614,8 @@ class MdfeApi:
             page=page,
             page_size=page_size,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2500,7 +2623,7 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -2516,10 +2639,12 @@ class MdfeApi:
     @validate_call
     def mdfe_list_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2535,8 +2660,9 @@ class MdfeApi:
     ) -> RESTResponseType:
         """List MDF-e
 
+        Query estrita — parâmetro desconhecido retorna 422.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -2544,6 +2670,10 @@ class MdfeApi:
         :type page_size: int
         :param status:
         :type status: str
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2571,6 +2701,8 @@ class MdfeApi:
             page=page,
             page_size=page_size,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2578,7 +2710,7 @@ class MdfeApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "MdfeList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -2593,6 +2725,8 @@ class MdfeApi:
         page,
         page_size,
         status,
+        start_date,
+        end_date,
         _request_auth,
         _content_type,
         _headers,
@@ -2629,11 +2763,26 @@ class MdfeApi:
             
             _query_params.append(('status', status))
             
+        if start_date is not None:
+            
+            _query_params.append(('startDate', start_date))
+            
+        if end_date is not None:
+            
+            _query_params.append(('endDate', end_date))
+            
         # process the header parameters
         # process the form parameters
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting

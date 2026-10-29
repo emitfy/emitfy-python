@@ -40,34 +40,86 @@ __all__ = [
     "ApiKeyError",
     "ApiAttributeError",
     "ApiException",
+    "CteAddress",
+    "CteCargoQuantity",
     "CteCreateRequest",
+    "CteCreateRequestComplement",
+    "CteEmitAccepted",
+    "CteEmitAcceptedData",
+    "CteIcms",
+    "CteList200Response",
+    "CteList200ResponseData",
+    "CteList200ResponseDataItemsInner",
     "CteOsCreateRequest",
+    "CteParty",
+    "CursorPageInfo",
+    "DfeAddressLayout",
+    "DfeAutXml",
+    "DfeComponent",
+    "DfeTechResponsible",
     "ErrorBody",
     "ErrorBodyError",
+    "InvoiceCancelAccepted",
+    "InvoiceCancelAcceptedData",
+    "InvoiceCreateAccepted",
+    "InvoiceCreateAcceptedData",
+    "InvoiceTypedDetail",
+    "InvoiceTypedDetailData",
+    "InvoiceTypedList",
+    "InvoiceTypedListData",
+    "InvoiceTypedListDataItemsInner",
     "InvoiceUpdateRequest",
     "InvoiceUpdateRequestBorrower",
     "InvoiceUpdateRequestBorrowerAddress",
     "InvoiceUpdateRequestCommercial",
     "InvoiceUpdateRequestRecipient",
+    "InvoicesCancel200Response",
+    "InvoicesCancel200ResponseData",
     "InvoicesGet200Response",
+    "InvoicesList200Response",
+    "InvoicesList200ResponseData",
+    "InvoicesSendEmail200Response",
+    "InvoicesSendEmail200ResponseData",
     "MdfeCancelRequest",
     "MdfeCloseRequest",
+    "MdfeCreate200Response",
+    "MdfeCreate200ResponseData",
     "MdfeDriver",
     "MdfeEmitRequest",
+    "MdfeEmitRequestAdditional",
+    "MdfeEmitRequestInsuranceInner",
+    "MdfeEmitRequestPredominantProduct",
+    "MdfeList200Response",
+    "MdfeList200ResponseData",
+    "MdfeList200ResponseDataItemsInner",
     "MdfeModal",
     "MdfePayment",
+    "MdfePaymentComponentsInner",
     "MdfeUnloadCity",
     "MdfeVehicle",
+    "NfceCreate200Response",
+    "NfceCreate202Response",
+    "NfceCreate202ResponseData",
     "NfceCreateRequest",
     "NfceCreateRequestContingency",
     "NfceCreateRequestRecipient",
+    "NfceDocument",
+    "NfceDocumentContingency",
+    "NfceList200Response",
+    "NfceList200ResponseData",
     "NfeAddress",
+    "NfeCorrection200Response",
+    "NfeCorrection200ResponseData",
     "NfeCorrectionRequest",
     "NfeCreateRequest",
+    "NfeCreateRequestEntrega",
     "NfeCreateRequestRecipient",
+    "NfeCreateRequestRetirada",
     "NfeCreateRequestTransport",
     "NfeGet200Response",
     "NfeGet200ResponseData",
+    "NfeGet200ResponseDataCorrectionsInner",
+    "NfeInutilize200Response",
     "NfseCreateRequest",
     "NfseCreateRequestBorrower",
     "NfseCreateRequestBorrowerAddress",
@@ -77,8 +129,13 @@ __all__ = [
     "NfseCreateRequestIss",
     "NfseCreateRequestSubstitution",
     "NfseCreateRequestTaxes",
-    "NfseCreateRequestTaxesIss",
+    "NfseTaxEntry",
+    "NumberInutilizationList",
+    "NumberInutilizationListData",
+    "NumberInutilizationListDataPagination",
+    "NumberInutilizationRecord",
     "NumberInutilizationRequest",
+    "NumberInutilizationResult",
     "ProductEmitItem",
     "PublicInvoiceResource",
     "PublicInvoiceResourceAssets",
@@ -91,6 +148,9 @@ __all__ = [
     "TransportCarrierAddress",
     "TransportCarrierVehicle",
     "TransportDetail",
+    "TransportDocumentAccepted",
+    "TransportDocumentAcceptedData",
+    "TypedListPagination",
     "WebhookCreate",
     "WebhookCreateEvents",
     "WebhookCreateHeadersInner",
@@ -124,34 +184,86 @@ from emitfy.generated.exceptions import ApiAttributeError as ApiAttributeError
 from emitfy.generated.exceptions import ApiException as ApiException
 
 # import models into sdk package
+from emitfy.generated.models.cte_address import CteAddress as CteAddress
+from emitfy.generated.models.cte_cargo_quantity import CteCargoQuantity as CteCargoQuantity
 from emitfy.generated.models.cte_create_request import CteCreateRequest as CteCreateRequest
+from emitfy.generated.models.cte_create_request_complement import CteCreateRequestComplement as CteCreateRequestComplement
+from emitfy.generated.models.cte_emit_accepted import CteEmitAccepted as CteEmitAccepted
+from emitfy.generated.models.cte_emit_accepted_data import CteEmitAcceptedData as CteEmitAcceptedData
+from emitfy.generated.models.cte_icms import CteIcms as CteIcms
+from emitfy.generated.models.cte_list200_response import CteList200Response as CteList200Response
+from emitfy.generated.models.cte_list200_response_data import CteList200ResponseData as CteList200ResponseData
+from emitfy.generated.models.cte_list200_response_data_items_inner import CteList200ResponseDataItemsInner as CteList200ResponseDataItemsInner
 from emitfy.generated.models.cte_os_create_request import CteOsCreateRequest as CteOsCreateRequest
+from emitfy.generated.models.cte_party import CteParty as CteParty
+from emitfy.generated.models.cursor_page_info import CursorPageInfo as CursorPageInfo
+from emitfy.generated.models.dfe_address_layout import DfeAddressLayout as DfeAddressLayout
+from emitfy.generated.models.dfe_aut_xml import DfeAutXml as DfeAutXml
+from emitfy.generated.models.dfe_component import DfeComponent as DfeComponent
+from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible as DfeTechResponsible
 from emitfy.generated.models.error_body import ErrorBody as ErrorBody
 from emitfy.generated.models.error_body_error import ErrorBodyError as ErrorBodyError
+from emitfy.generated.models.invoice_cancel_accepted import InvoiceCancelAccepted as InvoiceCancelAccepted
+from emitfy.generated.models.invoice_cancel_accepted_data import InvoiceCancelAcceptedData as InvoiceCancelAcceptedData
+from emitfy.generated.models.invoice_create_accepted import InvoiceCreateAccepted as InvoiceCreateAccepted
+from emitfy.generated.models.invoice_create_accepted_data import InvoiceCreateAcceptedData as InvoiceCreateAcceptedData
+from emitfy.generated.models.invoice_typed_detail import InvoiceTypedDetail as InvoiceTypedDetail
+from emitfy.generated.models.invoice_typed_detail_data import InvoiceTypedDetailData as InvoiceTypedDetailData
+from emitfy.generated.models.invoice_typed_list import InvoiceTypedList as InvoiceTypedList
+from emitfy.generated.models.invoice_typed_list_data import InvoiceTypedListData as InvoiceTypedListData
+from emitfy.generated.models.invoice_typed_list_data_items_inner import InvoiceTypedListDataItemsInner as InvoiceTypedListDataItemsInner
 from emitfy.generated.models.invoice_update_request import InvoiceUpdateRequest as InvoiceUpdateRequest
 from emitfy.generated.models.invoice_update_request_borrower import InvoiceUpdateRequestBorrower as InvoiceUpdateRequestBorrower
 from emitfy.generated.models.invoice_update_request_borrower_address import InvoiceUpdateRequestBorrowerAddress as InvoiceUpdateRequestBorrowerAddress
 from emitfy.generated.models.invoice_update_request_commercial import InvoiceUpdateRequestCommercial as InvoiceUpdateRequestCommercial
 from emitfy.generated.models.invoice_update_request_recipient import InvoiceUpdateRequestRecipient as InvoiceUpdateRequestRecipient
+from emitfy.generated.models.invoices_cancel200_response import InvoicesCancel200Response as InvoicesCancel200Response
+from emitfy.generated.models.invoices_cancel200_response_data import InvoicesCancel200ResponseData as InvoicesCancel200ResponseData
 from emitfy.generated.models.invoices_get200_response import InvoicesGet200Response as InvoicesGet200Response
+from emitfy.generated.models.invoices_list200_response import InvoicesList200Response as InvoicesList200Response
+from emitfy.generated.models.invoices_list200_response_data import InvoicesList200ResponseData as InvoicesList200ResponseData
+from emitfy.generated.models.invoices_send_email200_response import InvoicesSendEmail200Response as InvoicesSendEmail200Response
+from emitfy.generated.models.invoices_send_email200_response_data import InvoicesSendEmail200ResponseData as InvoicesSendEmail200ResponseData
 from emitfy.generated.models.mdfe_cancel_request import MdfeCancelRequest as MdfeCancelRequest
 from emitfy.generated.models.mdfe_close_request import MdfeCloseRequest as MdfeCloseRequest
+from emitfy.generated.models.mdfe_create200_response import MdfeCreate200Response as MdfeCreate200Response
+from emitfy.generated.models.mdfe_create200_response_data import MdfeCreate200ResponseData as MdfeCreate200ResponseData
 from emitfy.generated.models.mdfe_driver import MdfeDriver as MdfeDriver
 from emitfy.generated.models.mdfe_emit_request import MdfeEmitRequest as MdfeEmitRequest
+from emitfy.generated.models.mdfe_emit_request_additional import MdfeEmitRequestAdditional as MdfeEmitRequestAdditional
+from emitfy.generated.models.mdfe_emit_request_insurance_inner import MdfeEmitRequestInsuranceInner as MdfeEmitRequestInsuranceInner
+from emitfy.generated.models.mdfe_emit_request_predominant_product import MdfeEmitRequestPredominantProduct as MdfeEmitRequestPredominantProduct
+from emitfy.generated.models.mdfe_list200_response import MdfeList200Response as MdfeList200Response
+from emitfy.generated.models.mdfe_list200_response_data import MdfeList200ResponseData as MdfeList200ResponseData
+from emitfy.generated.models.mdfe_list200_response_data_items_inner import MdfeList200ResponseDataItemsInner as MdfeList200ResponseDataItemsInner
 from emitfy.generated.models.mdfe_modal import MdfeModal as MdfeModal
 from emitfy.generated.models.mdfe_payment import MdfePayment as MdfePayment
+from emitfy.generated.models.mdfe_payment_components_inner import MdfePaymentComponentsInner as MdfePaymentComponentsInner
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity as MdfeUnloadCity
 from emitfy.generated.models.mdfe_vehicle import MdfeVehicle as MdfeVehicle
+from emitfy.generated.models.nfce_create200_response import NfceCreate200Response as NfceCreate200Response
+from emitfy.generated.models.nfce_create202_response import NfceCreate202Response as NfceCreate202Response
+from emitfy.generated.models.nfce_create202_response_data import NfceCreate202ResponseData as NfceCreate202ResponseData
 from emitfy.generated.models.nfce_create_request import NfceCreateRequest as NfceCreateRequest
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency as NfceCreateRequestContingency
 from emitfy.generated.models.nfce_create_request_recipient import NfceCreateRequestRecipient as NfceCreateRequestRecipient
+from emitfy.generated.models.nfce_document import NfceDocument as NfceDocument
+from emitfy.generated.models.nfce_document_contingency import NfceDocumentContingency as NfceDocumentContingency
+from emitfy.generated.models.nfce_list200_response import NfceList200Response as NfceList200Response
+from emitfy.generated.models.nfce_list200_response_data import NfceList200ResponseData as NfceList200ResponseData
 from emitfy.generated.models.nfe_address import NfeAddress as NfeAddress
+from emitfy.generated.models.nfe_correction200_response import NfeCorrection200Response as NfeCorrection200Response
+from emitfy.generated.models.nfe_correction200_response_data import NfeCorrection200ResponseData as NfeCorrection200ResponseData
 from emitfy.generated.models.nfe_correction_request import NfeCorrectionRequest as NfeCorrectionRequest
 from emitfy.generated.models.nfe_create_request import NfeCreateRequest as NfeCreateRequest
+from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega as NfeCreateRequestEntrega
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient as NfeCreateRequestRecipient
+from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequestRetirada as NfeCreateRequestRetirada
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport as NfeCreateRequestTransport
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response as NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
+from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner as NfeGet200ResponseDataCorrectionsInner
+from emitfy.generated.models.nfe_inutilize200_response import NfeInutilize200Response as NfeInutilize200Response
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest as NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower as NfseCreateRequestBorrower
 from emitfy.generated.models.nfse_create_request_borrower_address import NfseCreateRequestBorrowerAddress as NfseCreateRequestBorrowerAddress
@@ -161,8 +273,13 @@ from emitfy.generated.models.nfse_create_request_intermediary import NfseCreateR
 from emitfy.generated.models.nfse_create_request_iss import NfseCreateRequestIss as NfseCreateRequestIss
 from emitfy.generated.models.nfse_create_request_substitution import NfseCreateRequestSubstitution as NfseCreateRequestSubstitution
 from emitfy.generated.models.nfse_create_request_taxes import NfseCreateRequestTaxes as NfseCreateRequestTaxes
-from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss as NfseCreateRequestTaxesIss
+from emitfy.generated.models.nfse_tax_entry import NfseTaxEntry as NfseTaxEntry
+from emitfy.generated.models.number_inutilization_list import NumberInutilizationList as NumberInutilizationList
+from emitfy.generated.models.number_inutilization_list_data import NumberInutilizationListData as NumberInutilizationListData
+from emitfy.generated.models.number_inutilization_list_data_pagination import NumberInutilizationListDataPagination as NumberInutilizationListDataPagination
+from emitfy.generated.models.number_inutilization_record import NumberInutilizationRecord as NumberInutilizationRecord
 from emitfy.generated.models.number_inutilization_request import NumberInutilizationRequest as NumberInutilizationRequest
+from emitfy.generated.models.number_inutilization_result import NumberInutilizationResult as NumberInutilizationResult
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource as PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets as PublicInvoiceResourceAssets
@@ -175,6 +292,9 @@ from emitfy.generated.models.transport_carrier import TransportCarrier as Transp
 from emitfy.generated.models.transport_carrier_address import TransportCarrierAddress as TransportCarrierAddress
 from emitfy.generated.models.transport_carrier_vehicle import TransportCarrierVehicle as TransportCarrierVehicle
 from emitfy.generated.models.transport_detail import TransportDetail as TransportDetail
+from emitfy.generated.models.transport_document_accepted import TransportDocumentAccepted as TransportDocumentAccepted
+from emitfy.generated.models.transport_document_accepted_data import TransportDocumentAcceptedData as TransportDocumentAcceptedData
+from emitfy.generated.models.typed_list_pagination import TypedListPagination as TypedListPagination
 from emitfy.generated.models.webhook_create import WebhookCreate as WebhookCreate
 from emitfy.generated.models.webhook_create_events import WebhookCreateEvents as WebhookCreateEvents
 from emitfy.generated.models.webhook_create_headers_inner import WebhookCreateHeadersInner as WebhookCreateHeadersInner

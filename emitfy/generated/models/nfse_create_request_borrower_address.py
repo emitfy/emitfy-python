@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
@@ -25,7 +25,7 @@ from pydantic_core import to_jsonable_python
 
 class NfseCreateRequestBorrowerAddress(BaseModel):
     """
-    NfseCreateRequestBorrowerAddress
+    Endereço do tomador. Não aceita código IBGE (`cityCode`/`ibge`) — campo desconhecido retorna 422. 
     """ # noqa: E501
     street: Optional[StrictStr] = None
     number: Optional[StrictStr] = None
@@ -34,9 +34,7 @@ class NfseCreateRequestBorrowerAddress(BaseModel):
     city: Optional[StrictStr] = None
     state: Optional[StrictStr] = None
     zipcode: Optional[StrictStr] = None
-    city_code: Optional[StrictStr] = Field(default=None, alias="cityCode")
-    ibge: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["street", "number", "complement", "district", "city", "state", "zipcode", "cityCode", "ibge"]
+    __properties: ClassVar[List[str]] = ["street", "number", "complement", "district", "city", "state", "zipcode"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -95,9 +93,7 @@ class NfseCreateRequestBorrowerAddress(BaseModel):
             "district": obj.get("district"),
             "city": obj.get("city"),
             "state": obj.get("state"),
-            "zipcode": obj.get("zipcode"),
-            "cityCode": obj.get("cityCode"),
-            "ibge": obj.get("ibge")
+            "zipcode": obj.get("zipcode")
         })
         return _obj
 

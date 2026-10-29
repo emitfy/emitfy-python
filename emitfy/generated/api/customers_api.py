@@ -15,7 +15,7 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictStr
+from pydantic import Field, StrictStr, field_validator
 from typing import Any, Dict, Optional
 from typing_extensions import Annotated
 from uuid import UUID
@@ -41,7 +41,7 @@ class CustomersApi:
     @validate_call
     def customers_create(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Dict[str, Any],
         _request_timeout: Union[
             None,
@@ -60,7 +60,7 @@ class CustomersApi:
 
         Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body: (required)
         :type request_body: Dict[str, object]
@@ -113,7 +113,7 @@ class CustomersApi:
     @validate_call
     def customers_create_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Dict[str, Any],
         _request_timeout: Union[
             None,
@@ -132,7 +132,7 @@ class CustomersApi:
 
         Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body: (required)
         :type request_body: Dict[str, object]
@@ -185,7 +185,7 @@ class CustomersApi:
     @validate_call
     def customers_create_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Dict[str, Any],
         _request_timeout: Union[
             None,
@@ -204,7 +204,7 @@ class CustomersApi:
 
         Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body: (required)
         :type request_body: Dict[str, object]
@@ -334,7 +334,7 @@ class CustomersApi:
     @validate_call
     def customers_delete(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -352,7 +352,7 @@ class CustomersApi:
         """Delete customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -404,7 +404,7 @@ class CustomersApi:
     @validate_call
     def customers_delete_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -422,7 +422,7 @@ class CustomersApi:
         """Delete customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -474,7 +474,7 @@ class CustomersApi:
     @validate_call
     def customers_delete_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -492,7 +492,7 @@ class CustomersApi:
         """Delete customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -601,7 +601,7 @@ class CustomersApi:
     @validate_call
     def customers_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -619,7 +619,7 @@ class CustomersApi:
         """Get customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -672,7 +672,7 @@ class CustomersApi:
     @validate_call
     def customers_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -690,7 +690,7 @@ class CustomersApi:
         """Get customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -743,7 +743,7 @@ class CustomersApi:
     @validate_call
     def customers_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -761,7 +761,7 @@ class CustomersApi:
         """Get customer
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -871,10 +871,13 @@ class CustomersApi:
     @validate_call
     def customers_list(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=50, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         search: Optional[StrictStr] = None,
+        filter: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -891,14 +894,20 @@ class CustomersApi:
         """List customers
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
         :param search:
         :type search: str
+        :param filter:
+        :type filter: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -923,9 +932,12 @@ class CustomersApi:
 
         _param = self._customers_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
             search=search,
+            filter=filter,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -949,10 +961,13 @@ class CustomersApi:
     @validate_call
     def customers_list_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=50, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         search: Optional[StrictStr] = None,
+        filter: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -969,14 +984,20 @@ class CustomersApi:
         """List customers
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
         :param search:
         :type search: str
+        :param filter:
+        :type filter: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1001,9 +1022,12 @@ class CustomersApi:
 
         _param = self._customers_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
             search=search,
+            filter=filter,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1027,10 +1051,13 @@ class CustomersApi:
     @validate_call
     def customers_list_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=50, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
         search: Optional[StrictStr] = None,
+        filter: Optional[StrictStr] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1047,14 +1074,20 @@ class CustomersApi:
         """List customers
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
         :param search:
         :type search: str
+        :param filter:
+        :type filter: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1079,9 +1112,12 @@ class CustomersApi:
 
         _param = self._customers_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
             search=search,
+            filter=filter,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1101,9 +1137,12 @@ class CustomersApi:
     def _customers_list_serialize(
         self,
         company_id,
+        limit,
+        action,
+        cursor,
         page,
-        page_size,
         search,
+        filter,
         _request_auth,
         _content_type,
         _headers,
@@ -1128,17 +1167,29 @@ class CustomersApi:
         if company_id is not None:
             _path_params['companyId'] = company_id
         # process the query parameters
+        if limit is not None:
+            
+            _query_params.append(('limit', limit))
+            
+        if action is not None:
+            
+            _query_params.append(('action', action))
+            
+        if cursor is not None:
+            
+            _query_params.append(('cursor', cursor))
+            
         if page is not None:
             
             _query_params.append(('page', page))
             
-        if page_size is not None:
-            
-            _query_params.append(('pageSize', page_size))
-            
         if search is not None:
             
             _query_params.append(('search', search))
+            
+        if filter is not None:
+            
+            _query_params.append(('filter', filter))
             
         # process the header parameters
         # process the form parameters
@@ -1174,7 +1225,7 @@ class CustomersApi:
     @validate_call
     def customers_update(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
@@ -1193,7 +1244,7 @@ class CustomersApi:
         """Update customer (overwrite)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1248,7 +1299,7 @@ class CustomersApi:
     @validate_call
     def customers_update_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
@@ -1267,7 +1318,7 @@ class CustomersApi:
         """Update customer (overwrite)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1322,7 +1373,7 @@ class CustomersApi:
     @validate_call
     def customers_update_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
@@ -1341,7 +1392,7 @@ class CustomersApi:
         """Update customer (overwrite)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str

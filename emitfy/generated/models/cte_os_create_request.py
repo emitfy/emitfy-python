@@ -17,8 +17,12 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing_extensions import Annotated
+from emitfy.generated.models.cte_icms import CteIcms
+from emitfy.generated.models.cte_party import CteParty
+from emitfy.generated.models.dfe_component import DfeComponent
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -27,14 +31,33 @@ class CteOsCreateRequest(BaseModel):
     """
     CteOsCreateRequest
     """ # noqa: E501
-    cfop: StrictStr
-    nature: StrictStr
-    service_description: StrictStr = Field(alias="serviceDescription")
-    service_amount: Union[StrictFloat, StrictInt] = Field(alias="serviceAmount")
-    icms: Dict[str, Any]
-    components: Optional[List[Dict[str, Any]]] = None
+    external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência. Obrigatório se não enviar o header `Idempotency-Key` (400 `CTE_EXTERNAL_ID_REQUIRED`).", alias="externalId")
+    cfop: Annotated[str, Field(min_length=4, strict=True, max_length=4)]
+    nature: Annotated[str, Field(min_length=1, strict=True, max_length=60)]
+    service_type: Optional[StrictStr] = Field(default='6', description="`6` transporte de pessoas, `7` de valores, `8` excesso de bagagem", alias="serviceType")
+    taker_party: Optional[CteParty] = Field(default=None, description="Tomador do serviço (obrigatório exceto `serviceType` `8`)", alias="takerParty")
+    municipality_start_ibge: Optional[Annotated[str, Field(min_length=7, strict=True, max_length=7)]] = Field(default=None, alias="municipalityStartIbge")
+    municipality_end_ibge: Optional[Annotated[str, Field(min_length=7, strict=True, max_length=7)]] = Field(default=None, alias="municipalityEndIbge")
+    route_ufs: Optional[List[Annotated[str, Field(min_length=2, strict=True, max_length=2)]]] = Field(default=None, alias="routeUfs")
+    service_description: Annotated[str, Field(min_length=1, strict=True, max_length=30)] = Field(alias="serviceDescription")
+    service_quantity: Optional[Union[Annotated[float, Field(strict=True, gt=0)], Annotated[int, Field(strict=True, gt=0)]]] = Field(default=None, alias="serviceQuantity")
+    service_amount: Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]] = Field(alias="serviceAmount")
+    icms: CteIcms
+    taf: Optional[StrictStr] = Field(default=None, description="Termo de Autorização de Fretamento (12 dígitos)")
+    state_agency_registration: Optional[StrictStr] = Field(default=None, description="Registro estadual (25 dígitos) — alternativa ao `taf`", alias="stateAgencyRegistration")
+    components: Optional[List[DfeComponent]] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["cfop", "nature", "serviceDescription", "serviceAmount", "icms", "components"]
+    __properties: ClassVar[List[str]] = ["externalId", "cfop", "nature", "serviceType", "takerParty", "municipalityStartIbge", "municipalityEndIbge", "routeUfs", "serviceDescription", "serviceQuantity", "serviceAmount", "icms", "taf", "stateAgencyRegistration", "components"]
+
+    @field_validator('service_type')
+    def service_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['6', '7', '8']):
+            raise ValueError("must be one of enum values ('6', '7', '8')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -77,6 +100,19 @@ class CteOsCreateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of taker_party
+        if self.taker_party:
+            _dict['takerParty'] = self.taker_party.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of icms
+        if self.icms:
+            _dict['icms'] = self.icms.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in components (list)
+        _items = []
+        if self.components:
+            for _item_components in self.components:
+                if _item_components:
+                    _items.append(_item_components.to_dict())
+            _dict['components'] = _items
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -94,12 +130,21 @@ class CteOsCreateRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "externalId": obj.get("externalId"),
             "cfop": obj.get("cfop"),
             "nature": obj.get("nature"),
+            "serviceType": obj.get("serviceType") if obj.get("serviceType") is not None else '6',
+            "takerParty": CteParty.from_dict(obj["takerParty"]) if obj.get("takerParty") is not None else None,
+            "municipalityStartIbge": obj.get("municipalityStartIbge"),
+            "municipalityEndIbge": obj.get("municipalityEndIbge"),
+            "routeUfs": obj.get("routeUfs"),
             "serviceDescription": obj.get("serviceDescription"),
+            "serviceQuantity": obj.get("serviceQuantity"),
             "serviceAmount": obj.get("serviceAmount"),
-            "icms": obj.get("icms"),
-            "components": obj.get("components")
+            "icms": CteIcms.from_dict(obj["icms"]) if obj.get("icms") is not None else None,
+            "taf": obj.get("taf"),
+            "stateAgencyRegistration": obj.get("stateAgencyRegistration"),
+            "components": [DfeComponent.from_dict(_item) for _item in obj["components"]] if obj.get("components") is not None else None
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

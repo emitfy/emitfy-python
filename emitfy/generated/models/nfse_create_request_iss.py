@@ -26,7 +26,7 @@ from pydantic_core import to_jsonable_python
 
 class NfseCreateRequestIss(BaseModel):
     """
-    NfseCreateRequestIss
+    ISS canônico. `rate` obrigatório (0 permitido), salvo se enviado em `taxes.iss`.
     """ # noqa: E501
     rate: Union[Annotated[float, Field(le=100, strict=True, ge=0)], Annotated[int, Field(le=100, strict=True, ge=0)]]
     is_withheld: Optional[StrictBool] = Field(default=None, alias="isWithheld")

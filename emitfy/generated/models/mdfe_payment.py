@@ -20,6 +20,7 @@ import json
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
+from emitfy.generated.models.mdfe_payment_components_inner import MdfePaymentComponentsInner
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -30,9 +31,11 @@ class MdfePayment(BaseModel):
     """ # noqa: E501
     responsible_tax_id: Optional[StrictStr] = Field(default=None, alias="responsibleTaxId")
     responsible_name: Optional[StrictStr] = Field(default=None, alias="responsibleName")
+    components: Optional[List[MdfePaymentComponentsInner]] = None
     amount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
     method: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["responsibleTaxId", "responsibleName", "amount", "method"]
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["responsibleTaxId", "responsibleName", "components", "amount", "method"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -64,8 +67,10 @@ class MdfePayment(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -73,6 +78,18 @@ class MdfePayment(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in components (list)
+        _items = []
+        if self.components:
+            for _item_components in self.components:
+                if _item_components:
+                    _items.append(_item_components.to_dict())
+            _dict['components'] = _items
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
@@ -87,9 +104,15 @@ class MdfePayment(BaseModel):
         _obj = cls.model_validate({
             "responsibleTaxId": obj.get("responsibleTaxId"),
             "responsibleName": obj.get("responsibleName"),
+            "components": [MdfePaymentComponentsInner.from_dict(_item) for _item in obj["components"]] if obj.get("components") is not None else None,
             "amount": obj.get("amount"),
             "method": obj.get("method")
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

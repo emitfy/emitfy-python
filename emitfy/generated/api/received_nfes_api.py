@@ -42,7 +42,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -60,7 +60,7 @@ class ReceivedNfesApi:
         """Get received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -112,7 +112,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -130,7 +130,7 @@ class ReceivedNfesApi:
         """Get received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -182,7 +182,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -200,7 +200,7 @@ class ReceivedNfesApi:
         """Get received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -309,7 +309,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_list(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
@@ -330,7 +330,7 @@ class ReceivedNfesApi:
         """List received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -391,7 +391,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_list_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
@@ -412,7 +412,7 @@ class ReceivedNfesApi:
         """List received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -473,7 +473,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_list_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
@@ -494,7 +494,7 @@ class ReceivedNfesApi:
         """List received NF-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
@@ -629,7 +629,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_manifest(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         received_nfes_manifest_request: ReceivedNfesManifestRequest,
         _request_timeout: Union[
@@ -648,7 +648,7 @@ class ReceivedNfesApi:
         """Manifest recipient event
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -703,7 +703,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_manifest_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         received_nfes_manifest_request: ReceivedNfesManifestRequest,
         _request_timeout: Union[
@@ -722,7 +722,7 @@ class ReceivedNfesApi:
         """Manifest recipient event
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -777,7 +777,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_manifest_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         received_nfes_manifest_request: ReceivedNfesManifestRequest,
         _request_timeout: Union[
@@ -796,7 +796,7 @@ class ReceivedNfesApi:
         """Manifest recipient event
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -924,7 +924,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_sync(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -941,7 +941,7 @@ class ReceivedNfesApi:
         """Enqueue DistDFe sync
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -992,7 +992,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_sync_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1009,7 +1009,7 @@ class ReceivedNfesApi:
         """Enqueue DistDFe sync
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1060,7 +1060,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_sync_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1077,7 +1077,7 @@ class ReceivedNfesApi:
         """Enqueue DistDFe sync
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1182,7 +1182,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_xml(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1200,7 +1200,7 @@ class ReceivedNfesApi:
         """Get received NF-e XML
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1252,7 +1252,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_xml_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1270,7 +1270,7 @@ class ReceivedNfesApi:
         """Get received NF-e XML
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1322,7 +1322,7 @@ class ReceivedNfesApi:
     @validate_call
     def received_nfes_xml_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1340,7 +1340,7 @@ class ReceivedNfesApi:
         """Get received NF-e XML
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str

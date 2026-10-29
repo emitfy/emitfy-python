@@ -17,17 +17,18 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
 from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class NfseCreateRequestTaxesIss(BaseModel):
+class NfseTaxEntry(BaseModel):
     """
-    NfseCreateRequestTaxesIss
+    NfseTaxEntry
     """ # noqa: E501
-    rate: Optional[Union[StrictFloat, StrictInt]] = None
+    rate: Optional[Union[Annotated[float, Field(le=100, strict=True, ge=0)], Annotated[int, Field(le=100, strict=True, ge=0)]]] = None
     is_withheld: Optional[StrictBool] = Field(default=None, alias="isWithheld")
     __properties: ClassVar[List[str]] = ["rate", "isWithheld"]
 
@@ -49,7 +50,7 @@ class NfseCreateRequestTaxesIss(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestTaxesIss from a JSON string"""
+        """Create an instance of NfseTaxEntry from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,7 +75,7 @@ class NfseCreateRequestTaxesIss(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NfseCreateRequestTaxesIss from a dict"""
+        """Create an instance of NfseTaxEntry from a dict"""
         if obj is None:
             return None
 

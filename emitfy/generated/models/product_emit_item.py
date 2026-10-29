@@ -31,27 +31,43 @@ class ProductEmitItem(BaseModel):
     sku: Optional[StrictStr] = None
     name: Optional[Annotated[str, Field(min_length=3, strict=True, max_length=64)]] = None
     category: Optional[StrictStr] = None
-    description: Annotated[str, Field(strict=True, max_length=120)]
-    fiscal_description: Optional[StrictStr] = Field(default=None, alias="fiscalDescription")
+    description: Annotated[str, Field(min_length=1, strict=True, max_length=120)]
+    fiscal_description: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=2000)]] = Field(default=None, description="Descrição na nota (xProd). Default = description", alias="fiscalDescription")
     guarantee: Optional[Annotated[int, Field(le=365, strict=True, ge=1)]] = None
     ncm: Optional[StrictStr] = None
     cfop: Optional[StrictStr] = None
     cfop_internal: Optional[StrictStr] = Field(default=None, alias="cfopInternal")
     cfop_external: Optional[StrictStr] = Field(default=None, alias="cfopExternal")
+    cfop_external_non_taxpayer: Optional[StrictStr] = Field(default=None, alias="cfopExternalNonTaxpayer")
     cfop_international: Optional[StrictStr] = Field(default=None, alias="cfopInternational")
-    quantity: Union[StrictFloat, StrictInt]
-    unit_value: Union[StrictFloat, StrictInt] = Field(alias="unitValue")
-    unit: Optional[StrictStr] = None
-    commercial_unit: Optional[StrictStr] = Field(default=None, alias="commercialUnit")
-    taxable_unit: Optional[StrictStr] = Field(default=None, alias="taxableUnit")
+    quantity: Union[Annotated[float, Field(strict=True, gt=0)], Annotated[int, Field(strict=True, gt=0)]]
+    unit_value: Union[Annotated[float, Field(strict=True, gt=0)], Annotated[int, Field(strict=True, gt=0)]] = Field(alias="unitValue")
+    unit: Optional[Annotated[str, Field(strict=True, max_length=6)]] = Field(default=None, description="Alias legado de commercialUnit")
+    commercial_unit: Optional[Annotated[str, Field(strict=True, max_length=6)]] = Field(default=None, alias="commercialUnit")
+    taxable_unit: Optional[Annotated[str, Field(strict=True, max_length=6)]] = Field(default=None, alias="taxableUnit")
     gtin: Optional[StrictStr] = None
     icms_origin: Optional[StrictStr] = Field(default=None, alias="icmsOrigin")
     icms_cst: Optional[StrictStr] = Field(default=None, alias="icmsCst")
     icms_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="icmsTaxRate")
+    icms_mod_bc: Optional[StrictStr] = Field(default=None, alias="icmsModBc")
+    icms_tax_benefit_code: Optional[StrictStr] = Field(default=None, alias="icmsTaxBenefitCode")
     pis_cst: Optional[StrictStr] = Field(default=None, alias="pisCst")
     pis_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="pisTaxRate")
     cofins_cst: Optional[StrictStr] = Field(default=None, alias="cofinsCst")
     cofins_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="cofinsTaxRate")
+    ipi_cst: Optional[StrictStr] = Field(default=None, alias="ipiCst")
+    ipi_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="ipiTaxRate")
+    ipi_legal_code: Optional[StrictStr] = Field(default=None, alias="ipiLegalCode")
+    cest: Optional[StrictStr] = None
+    fci: Optional[StrictStr] = None
+    nve: Optional[List[StrictStr]] = None
+    extipi: Optional[StrictStr] = None
+    order_number: Optional[StrictStr] = Field(default=None, alias="orderNumber")
+    order_item: Optional[Annotated[int, Field(strict=True, ge=1)]] = Field(default=None, alias="orderItem")
+    freight: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
+    insurance: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
+    discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
+    other: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
     tax_classification: Optional[StrictStr] = Field(default=None, alias="taxClassification")
     ibs_cst: Optional[StrictStr] = Field(default=None, alias="ibsCst")
     cbs_cst: Optional[StrictStr] = Field(default=None, alias="cbsCst")
@@ -63,8 +79,8 @@ class ProductEmitItem(BaseModel):
     weapons: Optional[List[Dict[str, Any]]] = None
     fuel: Optional[Dict[str, Any]] = None
     tax_return: Optional[Dict[str, Any]] = Field(default=None, alias="taxReturn")
-    additional_info: Optional[StrictStr] = Field(default=None, alias="additionalInfo")
-    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+    additional_info: Optional[Annotated[str, Field(strict=True, max_length=500)]] = Field(default=None, alias="additionalInfo")
+    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -127,6 +143,7 @@ class ProductEmitItem(BaseModel):
             "cfop": obj.get("cfop"),
             "cfopInternal": obj.get("cfopInternal"),
             "cfopExternal": obj.get("cfopExternal"),
+            "cfopExternalNonTaxpayer": obj.get("cfopExternalNonTaxpayer"),
             "cfopInternational": obj.get("cfopInternational"),
             "quantity": obj.get("quantity"),
             "unitValue": obj.get("unitValue"),
@@ -137,10 +154,25 @@ class ProductEmitItem(BaseModel):
             "icmsOrigin": obj.get("icmsOrigin"),
             "icmsCst": obj.get("icmsCst"),
             "icmsTaxRate": obj.get("icmsTaxRate"),
+            "icmsModBc": obj.get("icmsModBc"),
+            "icmsTaxBenefitCode": obj.get("icmsTaxBenefitCode"),
             "pisCst": obj.get("pisCst"),
             "pisTaxRate": obj.get("pisTaxRate"),
             "cofinsCst": obj.get("cofinsCst"),
             "cofinsTaxRate": obj.get("cofinsTaxRate"),
+            "ipiCst": obj.get("ipiCst"),
+            "ipiTaxRate": obj.get("ipiTaxRate"),
+            "ipiLegalCode": obj.get("ipiLegalCode"),
+            "cest": obj.get("cest"),
+            "fci": obj.get("fci"),
+            "nve": obj.get("nve"),
+            "extipi": obj.get("extipi"),
+            "orderNumber": obj.get("orderNumber"),
+            "orderItem": obj.get("orderItem"),
+            "freight": obj.get("freight"),
+            "insurance": obj.get("insurance"),
+            "discount": obj.get("discount"),
+            "other": obj.get("other"),
             "taxClassification": obj.get("taxClassification"),
             "ibsCst": obj.get("ibsCst"),
             "cbsCst": obj.get("cbsCst"),

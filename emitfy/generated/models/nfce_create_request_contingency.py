@@ -19,7 +19,7 @@ import json
 
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List
 from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
@@ -29,8 +29,8 @@ class NfceCreateRequestContingency(BaseModel):
     """
     NfceCreateRequestContingency
     """ # noqa: E501
-    started_at: Optional[datetime] = Field(default=None, alias="startedAt")
-    reason: Optional[Annotated[str, Field(min_length=15, strict=True)]] = None
+    started_at: datetime = Field(alias="startedAt")
+    reason: Annotated[str, Field(min_length=15, strict=True, max_length=256)]
     __properties: ClassVar[List[str]] = ["startedAt", "reason"]
 
     model_config = ConfigDict(

@@ -306,7 +306,7 @@ class CompaniesApi:
     @validate_call
     def companies_delete(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -323,7 +323,7 @@ class CompaniesApi:
         """Delete or detach company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -372,7 +372,7 @@ class CompaniesApi:
     @validate_call
     def companies_delete_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -389,7 +389,7 @@ class CompaniesApi:
         """Delete or detach company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -438,7 +438,7 @@ class CompaniesApi:
     @validate_call
     def companies_delete_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -455,7 +455,7 @@ class CompaniesApi:
         """Delete or detach company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -558,7 +558,7 @@ class CompaniesApi:
     @validate_call
     def companies_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -575,7 +575,7 @@ class CompaniesApi:
         """Get company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -625,7 +625,7 @@ class CompaniesApi:
     @validate_call
     def companies_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -642,7 +642,7 @@ class CompaniesApi:
         """Get company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -692,7 +692,7 @@ class CompaniesApi:
     @validate_call
     def companies_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -709,7 +709,7 @@ class CompaniesApi:
         """Get company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1050,7 +1050,7 @@ class CompaniesApi:
     @validate_call
     def companies_update(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
@@ -1068,7 +1068,7 @@ class CompaniesApi:
         """Update company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body:
         :type request_body: Dict[str, Optional[object]]
@@ -1120,7 +1120,7 @@ class CompaniesApi:
     @validate_call
     def companies_update_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
@@ -1138,7 +1138,7 @@ class CompaniesApi:
         """Update company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body:
         :type request_body: Dict[str, Optional[object]]
@@ -1190,7 +1190,7 @@ class CompaniesApi:
     @validate_call
     def companies_update_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
@@ -1208,7 +1208,7 @@ class CompaniesApi:
         """Update company
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param request_body:
         :type request_body: Dict[str, Optional[object]]
@@ -1330,7 +1330,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_delete(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1347,7 +1347,7 @@ class CompaniesApi:
         """Remove certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1396,7 +1396,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_delete_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1413,7 +1413,7 @@ class CompaniesApi:
         """Remove certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1462,7 +1462,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_delete_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1479,7 +1479,7 @@ class CompaniesApi:
         """Remove certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1582,7 +1582,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1599,7 +1599,7 @@ class CompaniesApi:
         """Get certificate status
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1648,7 +1648,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1665,7 +1665,7 @@ class CompaniesApi:
         """Get certificate status
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1714,7 +1714,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1731,7 +1731,7 @@ class CompaniesApi:
         """Get certificate status
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1834,7 +1834,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_upload(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1851,7 +1851,7 @@ class CompaniesApi:
         """Upload A1 certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1900,7 +1900,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_upload_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1917,7 +1917,7 @@ class CompaniesApi:
         """Upload A1 certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1966,7 +1966,7 @@ class CompaniesApi:
     @validate_call
     def company_certificate_upload_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1983,7 +1983,7 @@ class CompaniesApi:
         """Upload A1 certificate
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -2099,7 +2099,7 @@ class CompaniesApi:
     @validate_call
     def company_status(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2117,7 +2117,7 @@ class CompaniesApi:
 
         Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -2166,7 +2166,7 @@ class CompaniesApi:
     @validate_call
     def company_status_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2184,7 +2184,7 @@ class CompaniesApi:
 
         Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -2233,7 +2233,7 @@ class CompaniesApi:
     @validate_call
     def company_status_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2251,7 +2251,7 @@ class CompaniesApi:
 
         Prontidão para emissão (`ready`, `issues[]`). Em `nfse.auth`, o Emitfy deriva do IBGE do endereço se o município exige certificado A1, login/senha ou token (catálogo municipal ACBr). Municípios só-login não listam A1 faltando como único bloqueio de NFS-e. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request

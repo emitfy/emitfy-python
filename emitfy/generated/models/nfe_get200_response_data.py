@@ -17,8 +17,11 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
-from typing import Any, ClassVar, Dict, List, Optional
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr, field_validator
+from typing import Any, ClassVar, Dict, List, Optional, Union
+from uuid import UUID
+from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner
 from emitfy.generated.models.transport_detail import TransportDetail
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,9 +31,39 @@ class NfeGet200ResponseData(BaseModel):
     """
     NfeGet200ResponseData
     """ # noqa: E501
+    id: Optional[UUID] = None
+    status: Optional[StrictStr] = None
+    type: Optional[StrictStr] = None
+    amount: Optional[Union[StrictFloat, StrictInt]] = None
     transport: Optional[TransportDetail] = None
+    emission_date: Optional[datetime] = Field(default=None, alias="emissionDate")
+    cancellation_date: Optional[datetime] = Field(default=None, alias="cancellationDate")
+    fiscal: Optional[Dict[str, Any]] = Field(default=None, description="Dados fiscais (número, série, chave de acesso, protocolo…)")
+    corrections: Optional[List[NfeGet200ResponseDataCorrectionsInner]] = Field(default=None, description="Cartas de correção registradas")
+    created_at: Optional[datetime] = Field(default=None, alias="createdAt")
+    updated_at: Optional[datetime] = Field(default=None, alias="updatedAt")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["transport"]
+    __properties: ClassVar[List[str]] = ["id", "status", "type", "amount", "transport", "emissionDate", "cancellationDate", "fiscal", "corrections", "createdAt", "updatedAt"]
+
+    @field_validator('status')
+    def status_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['pending', 'queued', 'processing', 'authorized', 'rejected', 'cancelled']):
+            raise ValueError("must be one of enum values ('pending', 'queued', 'processing', 'authorized', 'rejected', 'cancelled')")
+        return value
+
+    @field_validator('type')
+    def type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['nfe']):
+            raise ValueError("must be one of enum values ('nfe')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -76,6 +109,13 @@ class NfeGet200ResponseData(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of transport
         if self.transport:
             _dict['transport'] = self.transport.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in corrections (list)
+        _items = []
+        if self.corrections:
+            for _item_corrections in self.corrections:
+                if _item_corrections:
+                    _items.append(_item_corrections.to_dict())
+            _dict['corrections'] = _items
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -93,7 +133,17 @@ class NfeGet200ResponseData(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "transport": TransportDetail.from_dict(obj["transport"]) if obj.get("transport") is not None else None
+            "id": obj.get("id"),
+            "status": obj.get("status"),
+            "type": obj.get("type"),
+            "amount": obj.get("amount"),
+            "transport": TransportDetail.from_dict(obj["transport"]) if obj.get("transport") is not None else None,
+            "emissionDate": obj.get("emissionDate"),
+            "cancellationDate": obj.get("cancellationDate"),
+            "fiscal": obj.get("fiscal"),
+            "corrections": [NfeGet200ResponseDataCorrectionsInner.from_dict(_item) for _item in obj["corrections"]] if obj.get("corrections") is not None else None,
+            "createdAt": obj.get("createdAt"),
+            "updatedAt": obj.get("updatedAt")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

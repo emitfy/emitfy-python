@@ -27,11 +27,12 @@ from pydantic_core import to_jsonable_python
 
 class NfeCreateRequestTransport(BaseModel):
     """
-    Dados de transporte inline (opcional). `freightModality` é obrigatório quando `carrier` é enviado; `noShipping` com `carrier` retorna 400. 
+    Dados de transporte inline (opcional). `freightModality` é obrigatório quando `carrier` é enviado; `noShipping` com `carrier` retorna 422 (`VALIDATION_ERROR`). 
     """ # noqa: E501
     freight_modality: Optional[StrictStr] = Field(default=None, description="Também aceita os códigos SEFAZ 0/1/2/3/4/9 como alias", alias="freightModality")
     value: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Valor do frete; compõe o total quando por conta do emitente")
     carrier: Optional[TransportCarrier] = None
+    additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["freightModality", "value", "carrier"]
 
     @field_validator('freight_modality')
@@ -74,8 +75,10 @@ class NfeCreateRequestTransport(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -86,6 +89,11 @@ class NfeCreateRequestTransport(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of carrier
         if self.carrier:
             _dict['carrier'] = self.carrier.to_dict()
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
@@ -102,6 +110,11 @@ class NfeCreateRequestTransport(BaseModel):
             "value": obj.get("value"),
             "carrier": TransportCarrier.from_dict(obj["carrier"]) if obj.get("carrier") is not None else None
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

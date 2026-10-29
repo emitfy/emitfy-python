@@ -29,7 +29,7 @@ class MdfeCloseRequest(BaseModel):
     """
     MdfeCloseRequest
     """ # noqa: E501
-    city_code: Annotated[str, Field(min_length=7, strict=True, max_length=7)] = Field(alias="cityCode")
+    city_code: Annotated[str, Field(min_length=7, strict=True, max_length=7)] = Field(description="IBGE do município de encerramento", alias="cityCode")
     state: Annotated[str, Field(min_length=2, strict=True, max_length=2)]
     closed_at: Optional[datetime] = Field(default=None, alias="closedAt")
     __properties: ClassVar[List[str]] = ["cityCode", "state", "closedAt"]

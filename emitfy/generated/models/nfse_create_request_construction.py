@@ -17,8 +17,10 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
+from emitfy.generated.models.dfe_address_layout import DfeAddressLayout
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -27,9 +29,12 @@ class NfseCreateRequestConstruction(BaseModel):
     """
     NfseCreateRequestConstruction
     """ # noqa: E501
-    art: Optional[StrictStr] = None
-    work_code: Optional[StrictStr] = Field(default=None, alias="workCode")
-    __properties: ClassVar[List[str]] = ["art", "workCode"]
+    art: Optional[Annotated[str, Field(strict=True, max_length=40)]] = None
+    work_code: Optional[Annotated[str, Field(strict=True, max_length=30)]] = Field(default=None, alias="workCode")
+    cib: Optional[Annotated[str, Field(strict=True, max_length=8)]] = None
+    municipal_registration: Optional[Annotated[str, Field(strict=True, max_length=30)]] = Field(default=None, alias="municipalRegistration")
+    address: Optional[DfeAddressLayout] = None
+    __properties: ClassVar[List[str]] = ["art", "workCode", "cib", "municipalRegistration", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -70,6 +75,9 @@ class NfseCreateRequestConstruction(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of address
+        if self.address:
+            _dict['address'] = self.address.to_dict()
         return _dict
 
     @classmethod
@@ -83,7 +91,10 @@ class NfseCreateRequestConstruction(BaseModel):
 
         _obj = cls.model_validate({
             "art": obj.get("art"),
-            "workCode": obj.get("workCode")
+            "workCode": obj.get("workCode"),
+            "cib": obj.get("cib"),
+            "municipalRegistration": obj.get("municipalRegistration"),
+            "address": DfeAddressLayout.from_dict(obj["address"]) if obj.get("address") is not None else None
         })
         return _obj
 

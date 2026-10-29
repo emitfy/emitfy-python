@@ -21,8 +21,14 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
+from emitfy.generated.models.dfe_aut_xml import DfeAutXml
+from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
 from emitfy.generated.models.mdfe_driver import MdfeDriver
+from emitfy.generated.models.mdfe_emit_request_additional import MdfeEmitRequestAdditional
+from emitfy.generated.models.mdfe_emit_request_insurance_inner import MdfeEmitRequestInsuranceInner
+from emitfy.generated.models.mdfe_emit_request_predominant_product import MdfeEmitRequestPredominantProduct
 from emitfy.generated.models.mdfe_modal import MdfeModal
+from emitfy.generated.models.mdfe_payment import MdfePayment
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity
 from typing import Optional, Set
 from typing_extensions import Self
@@ -43,12 +49,16 @@ class MdfeEmitRequest(BaseModel):
     documents: Annotated[List[MdfeUnloadCity], Field(min_length=1)]
     modal: Optional[MdfeModal] = None
     drivers: Optional[List[MdfeDriver]] = None
-    insurance: Optional[List[Dict[str, Any]]] = None
-    additional: Optional[Dict[str, Any]] = None
-    tech_responsible: Optional[Dict[str, Any]] = Field(default=None, alias="techResponsible")
-    payments: Optional[List[Dict[str, Any]]] = None
+    insurance: Optional[List[MdfeEmitRequestInsuranceInner]] = None
+    predominant_product: Optional[MdfeEmitRequestPredominantProduct] = Field(default=None, alias="predominantProduct")
+    seals: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = None
+    aut_xml: Optional[List[DfeAutXml]] = Field(default=None, alias="autXml")
+    additional: Optional[MdfeEmitRequestAdditional] = None
+    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
+    payments: Optional[List[MdfePayment]] = None
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
-    __properties: ClassVar[List[str]] = ["externalId", "ufStart", "ufEnd", "municipalityStartIbge", "municipalityEndIbge", "cargoTotalAmount", "cargoQuantity", "cargoUnit", "documents", "modal", "drivers", "insurance", "additional", "techResponsible", "payments", "issueDate"]
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["externalId", "ufStart", "ufEnd", "municipalityStartIbge", "municipalityEndIbge", "cargoTotalAmount", "cargoQuantity", "cargoUnit", "documents", "modal", "drivers", "insurance", "predominantProduct", "seals", "autXml", "additional", "techResponsible", "payments", "issueDate"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -80,8 +90,10 @@ class MdfeEmitRequest(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -106,6 +118,41 @@ class MdfeEmitRequest(BaseModel):
                 if _item_drivers:
                     _items.append(_item_drivers.to_dict())
             _dict['drivers'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in insurance (list)
+        _items = []
+        if self.insurance:
+            for _item_insurance in self.insurance:
+                if _item_insurance:
+                    _items.append(_item_insurance.to_dict())
+            _dict['insurance'] = _items
+        # override the default output from pydantic by calling `to_dict()` of predominant_product
+        if self.predominant_product:
+            _dict['predominantProduct'] = self.predominant_product.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in aut_xml (list)
+        _items = []
+        if self.aut_xml:
+            for _item_aut_xml in self.aut_xml:
+                if _item_aut_xml:
+                    _items.append(_item_aut_xml.to_dict())
+            _dict['autXml'] = _items
+        # override the default output from pydantic by calling `to_dict()` of additional
+        if self.additional:
+            _dict['additional'] = self.additional.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of tech_responsible
+        if self.tech_responsible:
+            _dict['techResponsible'] = self.tech_responsible.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in payments (list)
+        _items = []
+        if self.payments:
+            for _item_payments in self.payments:
+                if _item_payments:
+                    _items.append(_item_payments.to_dict())
+            _dict['payments'] = _items
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
@@ -129,12 +176,20 @@ class MdfeEmitRequest(BaseModel):
             "documents": [MdfeUnloadCity.from_dict(_item) for _item in obj["documents"]] if obj.get("documents") is not None else None,
             "modal": MdfeModal.from_dict(obj["modal"]) if obj.get("modal") is not None else None,
             "drivers": [MdfeDriver.from_dict(_item) for _item in obj["drivers"]] if obj.get("drivers") is not None else None,
-            "insurance": obj.get("insurance"),
-            "additional": obj.get("additional"),
-            "techResponsible": obj.get("techResponsible"),
-            "payments": obj.get("payments"),
+            "insurance": [MdfeEmitRequestInsuranceInner.from_dict(_item) for _item in obj["insurance"]] if obj.get("insurance") is not None else None,
+            "predominantProduct": MdfeEmitRequestPredominantProduct.from_dict(obj["predominantProduct"]) if obj.get("predominantProduct") is not None else None,
+            "seals": obj.get("seals"),
+            "autXml": [DfeAutXml.from_dict(_item) for _item in obj["autXml"]] if obj.get("autXml") is not None else None,
+            "additional": MdfeEmitRequestAdditional.from_dict(obj["additional"]) if obj.get("additional") is not None else None,
+            "techResponsible": DfeTechResponsible.from_dict(obj["techResponsible"]) if obj.get("techResponsible") is not None else None,
+            "payments": [MdfePayment.from_dict(_item) for _item in obj["payments"]] if obj.get("payments") is not None else None,
             "issueDate": obj.get("issueDate")
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

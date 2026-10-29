@@ -17,9 +17,11 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
+from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency
 from emitfy.generated.models.nfce_create_request_recipient import NfceCreateRequestRecipient
 from emitfy.generated.models.product_emit_item import ProductEmitItem
@@ -29,20 +31,27 @@ from pydantic_core import to_jsonable_python
 
 class NfceCreateRequest(BaseModel):
     """
-    NfceCreateRequest
+    Com `issueMode: offlineContingency` a validação exige `contingency`, `accessKey` (44 dígitos, modelo 65, tpEmis 9), `number`, `series` e `issuedAt` (ou `issueDate`). Falha → 422 `VALIDATION_ERROR`. 
     """ # noqa: E501
     payment_method: StrictStr = Field(alias="paymentMethod")
     items: Annotated[List[ProductEmitItem], Field(min_length=1)]
     recipient: Optional[NfceCreateRequestRecipient] = None
+    nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = None
+    cfop: Optional[StrictStr] = None
+    issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
     additional: Optional[Dict[str, Any]] = None
-    tech_responsible: Optional[Dict[str, Any]] = Field(default=None, alias="techResponsible")
-    external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
+    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
+    external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
     issue_mode: Optional[StrictStr] = Field(default='normal', alias="issueMode")
     contingency: Optional[NfceCreateRequestContingency] = None
-    access_key: Optional[StrictStr] = Field(default=None, alias="accessKey")
-    transmit: Optional[StrictStr] = 'now'
+    access_key: Optional[StrictStr] = Field(default=None, description="Chave de 44 dígitos gerada pelo PDV (contingência offline)", alias="accessKey")
+    number: Optional[Annotated[int, Field(strict=True, ge=1)]] = Field(default=None, description="Número da NFC-e atribuído pelo PDV (contingência offline)")
+    series: Optional[Annotated[int, Field(strict=True, ge=1)]] = Field(default=None, description="Série da NFC-e atribuída pelo PDV (contingência offline)")
+    issued_at: Optional[datetime] = Field(default=None, description="Data/hora de emissão (dhEmi) do cupom impresso em contingência", alias="issuedAt")
+    signed_xml: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(default=None, description="XML já assinado pelo PDV (contingência offline), quando houver", alias="signedXml")
+    transmit: Optional[StrictStr] = Field(default='now', description="`later` = cria sem transmitir; envie depois com `POST .../nfce/{id}/transmit`")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["paymentMethod", "items", "recipient", "additional", "techResponsible", "externalId", "issueMode", "contingency", "accessKey", "transmit"]
+    __properties: ClassVar[List[str]] = ["paymentMethod", "items", "recipient", "nature", "cfop", "issueDate", "additional", "techResponsible", "externalId", "issueMode", "contingency", "accessKey", "number", "series", "issuedAt", "signedXml", "transmit"]
 
     @field_validator('payment_method')
     def payment_method_validate_enum(cls, value):
@@ -122,6 +131,9 @@ class NfceCreateRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of recipient
         if self.recipient:
             _dict['recipient'] = self.recipient.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of tech_responsible
+        if self.tech_responsible:
+            _dict['techResponsible'] = self.tech_responsible.to_dict()
         # override the default output from pydantic by calling `to_dict()` of contingency
         if self.contingency:
             _dict['contingency'] = self.contingency.to_dict()
@@ -145,12 +157,19 @@ class NfceCreateRequest(BaseModel):
             "paymentMethod": obj.get("paymentMethod"),
             "items": [ProductEmitItem.from_dict(_item) for _item in obj["items"]] if obj.get("items") is not None else None,
             "recipient": NfceCreateRequestRecipient.from_dict(obj["recipient"]) if obj.get("recipient") is not None else None,
+            "nature": obj.get("nature"),
+            "cfop": obj.get("cfop"),
+            "issueDate": obj.get("issueDate"),
             "additional": obj.get("additional"),
-            "techResponsible": obj.get("techResponsible"),
+            "techResponsible": DfeTechResponsible.from_dict(obj["techResponsible"]) if obj.get("techResponsible") is not None else None,
             "externalId": obj.get("externalId"),
             "issueMode": obj.get("issueMode") if obj.get("issueMode") is not None else 'normal',
             "contingency": NfceCreateRequestContingency.from_dict(obj["contingency"]) if obj.get("contingency") is not None else None,
             "accessKey": obj.get("accessKey"),
+            "number": obj.get("number"),
+            "series": obj.get("series"),
+            "issuedAt": obj.get("issuedAt"),
+            "signedXml": obj.get("signedXml"),
             "transmit": obj.get("transmit") if obj.get("transmit") is not None else 'now'
         })
         # store additional fields in additional_properties

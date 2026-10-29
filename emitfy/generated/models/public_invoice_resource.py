@@ -61,6 +61,13 @@ class PublicInvoiceResource(BaseModel):
             raise ValueError("must be one of enum values ('nfse', 'nfe', 'nfce')")
         return value
 
+    @field_validator('status')
+    def status_validate_enum(cls, value):
+        """Validates the enum"""
+        if value not in set(['pending', 'queued', 'processing', 'authorized', 'rejected', 'cancelled']):
+            raise ValueError("must be one of enum values ('pending', 'queued', 'processing', 'authorized', 'rejected', 'cancelled')")
+        return value
+
     @field_validator('currency')
     def currency_validate_enum(cls, value):
         """Validates the enum"""

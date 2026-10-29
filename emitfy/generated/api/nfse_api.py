@@ -15,10 +15,14 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictStr, field_validator
-from typing import Optional
+from pydantic import Field, StrictBytes, StrictStr, field_validator
+from typing import Optional, Tuple, Union
 from typing_extensions import Annotated
 from uuid import UUID
+from emitfy.generated.models.invoice_cancel_accepted import InvoiceCancelAccepted
+from emitfy.generated.models.invoice_create_accepted import InvoiceCreateAccepted
+from emitfy.generated.models.invoice_typed_detail import InvoiceTypedDetail
+from emitfy.generated.models.invoice_typed_list import InvoiceTypedList
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest
 
 from emitfy.generated.api_client import ApiClient, RequestSerialized
@@ -42,7 +46,7 @@ class NfseApi:
     @validate_call
     def nfse_cancel(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -56,11 +60,12 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoiceCancelAccepted:
         """Cancel NFS-e
 
+        Sem corpo. Enfileira o cancelamento da NFS-e autorizada.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -96,8 +101,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '422': None,
+            '202': "InvoiceCancelAccepted",
+            '404': None,
+            '422': "ErrorBody",
+            '502': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -113,7 +120,7 @@ class NfseApi:
     @validate_call
     def nfse_cancel_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -127,11 +134,12 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoiceCancelAccepted]:
         """Cancel NFS-e
 
+        Sem corpo. Enfileira o cancelamento da NFS-e autorizada.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -167,8 +175,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '422': None,
+            '202': "InvoiceCancelAccepted",
+            '404': None,
+            '422': "ErrorBody",
+            '502': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -184,7 +194,7 @@ class NfseApi:
     @validate_call
     def nfse_cancel_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -201,8 +211,9 @@ class NfseApi:
     ) -> RESTResponseType:
         """Cancel NFS-e
 
+        Sem corpo. Enfileira o cancelamento da NFS-e autorizada.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -238,8 +249,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '422': None,
+            '202': "InvoiceCancelAccepted",
+            '404': None,
+            '422': "ErrorBody",
+            '502': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -283,6 +296,13 @@ class NfseApi:
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -312,7 +332,7 @@ class NfseApi:
     @validate_call
     def nfse_create(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         nfse_create_request: NfseCreateRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -327,11 +347,11 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoiceCreateAccepted:
         """Emit NFS-e (shortcut)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param nfse_create_request: (required)
         :type nfse_create_request: NfseCreateRequest
@@ -370,7 +390,9 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceCreateAccepted",
+            '402': "ErrorBody",
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -386,7 +408,7 @@ class NfseApi:
     @validate_call
     def nfse_create_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         nfse_create_request: NfseCreateRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -401,11 +423,11 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoiceCreateAccepted]:
         """Emit NFS-e (shortcut)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param nfse_create_request: (required)
         :type nfse_create_request: NfseCreateRequest
@@ -444,7 +466,9 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceCreateAccepted",
+            '402': "ErrorBody",
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -460,7 +484,7 @@ class NfseApi:
     @validate_call
     def nfse_create_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         nfse_create_request: NfseCreateRequest,
         idempotency_key: Optional[StrictStr] = None,
         _request_timeout: Union[
@@ -479,7 +503,7 @@ class NfseApi:
         """Emit NFS-e (shortcut)
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param nfse_create_request: (required)
         :type nfse_create_request: NfseCreateRequest
@@ -518,7 +542,9 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceCreateAccepted",
+            '402': "ErrorBody",
+            '422': "ErrorBody",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -565,6 +591,13 @@ class NfseApi:
             _body_params = nfse_create_request
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
         # set the HTTP header `Content-Type`
         if _content_type:
@@ -607,7 +640,7 @@ class NfseApi:
     @validate_call
     def nfse_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -621,11 +654,11 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoiceTypedDetail:
         """Get NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -661,7 +694,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedDetail",
             '404': None,
         }
         response_data = self.api_client.call_api(
@@ -678,7 +711,7 @@ class NfseApi:
     @validate_call
     def nfse_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -692,11 +725,11 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoiceTypedDetail]:
         """Get NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -732,7 +765,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedDetail",
             '404': None,
         }
         response_data = self.api_client.call_api(
@@ -749,7 +782,7 @@ class NfseApi:
     @validate_call
     def nfse_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -767,7 +800,7 @@ class NfseApi:
         """Get NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -803,7 +836,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedDetail",
             '404': None,
         }
         response_data = self.api_client.call_api(
@@ -848,6 +881,13 @@ class NfseApi:
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -877,10 +917,10 @@ class NfseApi:
     @validate_call
     def nfse_list(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
-        status: Optional[StrictStr] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -893,17 +933,17 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoiceTypedList:
         """List NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
         :param page_size:
         :type page_size: int
-        :param status:
+        :param status: Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. 
         :type status: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -939,7 +979,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedList",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -955,10 +995,10 @@ class NfseApi:
     @validate_call
     def nfse_list_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
-        status: Optional[StrictStr] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -971,17 +1011,17 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoiceTypedList]:
         """List NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
         :param page_size:
         :type page_size: int
-        :param status:
+        :param status: Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. 
         :type status: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1017,7 +1057,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedList",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1033,10 +1073,10 @@ class NfseApi:
     @validate_call
     def nfse_list_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
         page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
-        status: Optional[StrictStr] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1053,13 +1093,13 @@ class NfseApi:
         """List NFS-e
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param page:
         :type page: int
         :param page_size:
         :type page_size: int
-        :param status:
+        :param status: Filtro de status. Aliases: `canceled` → `cancelled`; `error`/`failed` → `rejected`. 
         :type status: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -1095,7 +1135,7 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoiceTypedList",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1151,6 +1191,13 @@ class NfseApi:
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1180,8 +1227,10 @@ class NfseApi:
     @validate_call
     def nfse_pdf(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
+        regenerate: Annotated[Optional[StrictStr], Field(description="`1`/`true` = regenera o PDF antes de entregar.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1194,14 +1243,19 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> bytes:
         """Get NFS-e PDF
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado). Quando o município só oferece o PDF oficial no portal da prefeitura, responde 302 para o link da prefeitura. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
+        :param regenerate: `1`/`true` = regenera o PDF antes de entregar.
+        :type regenerate: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1227,6 +1281,8 @@ class NfseApi:
         _param = self._nfse_pdf_serialize(
             company_id=company_id,
             id=id,
+            download=download,
+            regenerate=regenerate,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1234,7 +1290,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1250,8 +1309,10 @@ class NfseApi:
     @validate_call
     def nfse_pdf_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
+        regenerate: Annotated[Optional[StrictStr], Field(description="`1`/`true` = regenera o PDF antes de entregar.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1264,14 +1325,19 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[bytes]:
         """Get NFS-e PDF
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado). Quando o município só oferece o PDF oficial no portal da prefeitura, responde 302 para o link da prefeitura. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
+        :param regenerate: `1`/`true` = regenera o PDF antes de entregar.
+        :type regenerate: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1297,6 +1363,8 @@ class NfseApi:
         _param = self._nfse_pdf_serialize(
             company_id=company_id,
             id=id,
+            download=download,
+            regenerate=regenerate,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1304,7 +1372,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1320,8 +1391,10 @@ class NfseApi:
     @validate_call
     def nfse_pdf_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
+        regenerate: Annotated[Optional[StrictStr], Field(description="`1`/`true` = regenera o PDF antes de entregar.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1337,11 +1410,16 @@ class NfseApi:
     ) -> RESTResponseType:
         """Get NFS-e PDF
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado). Quando o município só oferece o PDF oficial no portal da prefeitura, responde 302 para o link da prefeitura. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
+        :param regenerate: `1`/`true` = regenera o PDF antes de entregar.
+        :type regenerate: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1367,6 +1445,8 @@ class NfseApi:
         _param = self._nfse_pdf_serialize(
             company_id=company_id,
             id=id,
+            download=download,
+            regenerate=regenerate,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1374,7 +1454,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1387,6 +1470,8 @@ class NfseApi:
         self,
         company_id,
         id,
+        download,
+        regenerate,
         _request_auth,
         _content_type,
         _headers,
@@ -1413,11 +1498,27 @@ class NfseApi:
         if id is not None:
             _path_params['id'] = id
         # process the query parameters
+        if download is not None:
+            
+            _query_params.append(('download', download))
+            
+        if regenerate is not None:
+            
+            _query_params.append(('regenerate', regenerate))
+            
         # process the header parameters
         # process the form parameters
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/pdf', 
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1447,8 +1548,9 @@ class NfseApi:
     @validate_call
     def nfse_xml(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1461,14 +1563,17 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> bytes:
         """Get NFS-e XML
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1494,6 +1599,7 @@ class NfseApi:
         _param = self._nfse_xml_serialize(
             company_id=company_id,
             id=id,
+            download=download,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1501,7 +1607,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1517,8 +1626,9 @@ class NfseApi:
     @validate_call
     def nfse_xml_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1531,14 +1641,17 @@ class NfseApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[bytes]:
         """Get NFS-e XML
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1564,6 +1677,7 @@ class NfseApi:
         _param = self._nfse_xml_serialize(
             company_id=company_id,
             id=id,
+            download=download,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1571,7 +1685,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1587,8 +1704,9 @@ class NfseApi:
     @validate_call
     def nfse_xml_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
+        download: Annotated[Optional[StrictStr], Field(description="`1` = força download com nome `nota-<número>.<ext>` e sem cache.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1604,11 +1722,14 @@ class NfseApi:
     ) -> RESTResponseType:
         """Get NFS-e XML
 
+        Entrega o arquivo em stream (200) quando já está pronto; senão gera e entrega, ou responde 302 para o CDN. Disponível só após autorização (ou cancelamento confirmado).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
+        :param download: `1` = força download com nome `nota-<número>.<ext>` e sem cache.
+        :type download: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1634,6 +1755,7 @@ class NfseApi:
         _param = self._nfse_xml_serialize(
             company_id=company_id,
             id=id,
+            download=download,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1641,7 +1763,10 @@ class NfseApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "bytes",
+            '302': None,
+            '400': "ErrorBody",
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1654,6 +1779,7 @@ class NfseApi:
         self,
         company_id,
         id,
+        download,
         _request_auth,
         _content_type,
         _headers,
@@ -1680,11 +1806,23 @@ class NfseApi:
         if id is not None:
             _path_params['id'] = id
         # process the query parameters
+        if download is not None:
+            
+            _query_params.append(('download', download))
+            
         # process the header parameters
         # process the form parameters
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/xml', 
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting

@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower
@@ -34,26 +34,31 @@ from pydantic_core import to_jsonable_python
 
 class NfseCreateRequest(BaseModel):
     """
-    NfseCreateRequest
+    Além dos campos `required`, a validação exige: `cityServiceCode` (ou o alias `serviceCode`), `federalServiceCode` (ou `serviceItemCode`) e `iss.rate` (ou `taxes.iss.rate`; 0 é válido). Com `serviceLocation` `3`, `cityIbge` (IBGE de 7 dígitos) é obrigatório. Falha → 422 `VALIDATION_ERROR`. Campo desconhecido também → 422. 
     """ # noqa: E501
     service_description: Annotated[str, Field(min_length=3, strict=True, max_length=2000)] = Field(description="Discriminação completa na nota", alias="serviceDescription")
     name: Optional[Annotated[str, Field(min_length=3, strict=True, max_length=64)]] = Field(default=None, description="Nome no catálogo (default = slice da discriminação)")
-    sku: Optional[StrictStr] = Field(default=None, description="Default direct-api-nfse")
+    sku: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=64)]] = Field(default=None, description="Default direct-api-nfse")
     category: Optional[StrictStr] = Field(default=None, description="Default other_service")
     guarantee: Optional[Annotated[int, Field(le=365, strict=True, ge=1)]] = None
-    city_service_code: StrictStr = Field(description="Código municipal do serviço", alias="cityServiceCode")
-    federal_service_code: StrictStr = Field(description="Item LC 116 (cTribNac)", alias="federalServiceCode")
+    city_service_code: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=50)]] = Field(default=None, description="Código municipal do serviço (obrigatório, ou o alias `serviceCode`)", alias="cityServiceCode")
+    federal_service_code: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=50)]] = Field(default=None, description="Item LC 116 (cTribNac) — obrigatório, ou o alias `serviceItemCode`", alias="federalServiceCode")
     nbs: Optional[StrictStr] = Field(default=None, description="Código NBS (reforma)")
     cnae_code: Optional[StrictStr] = Field(default=None, alias="cnaeCode")
-    iss: NfseCreateRequestIss
+    iss: Optional[NfseCreateRequestIss] = None
     ibs_cbs: Optional[NfseCreateRequestIbsCbs] = Field(default=None, alias="ibsCbs")
-    nature_of_operation: Optional[StrictStr] = Field(default=None, alias="natureOfOperation")
-    service_location: Optional[StrictStr] = Field(default=None, alias="serviceLocation")
-    municipality_of_incidence: Optional[StrictStr] = Field(default=None, alias="municipalityOfIncidence")
+    nature_of_operation: Optional[StrictStr] = Field(default=None, description="Natureza da operação. Default 1.", alias="natureOfOperation")
+    service_location: Optional[StrictStr] = Field(default=None, description="Local de prestação. `1` município da empresa (default), `2` município do tomador, `3` outro município (exige `cityIbge`). ", alias="serviceLocation")
+    municipality_of_incidence: Optional[StrictStr] = Field(default=None, description="Município de incidência do ISS. Default 0.", alias="municipalityOfIncidence")
+    city_ibge: Optional[StrictStr] = Field(default=None, description="IBGE (7 dígitos) do local de prestação. Obrigatório com `serviceLocation` `3`.", alias="cityIbge")
+    competence_date: Optional[datetime] = Field(default=None, description="Data de competência (ISO 8601 com offset).", alias="competenceDate")
+    deductions: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Deduções da base de cálculo. Default 0.")
+    exigibility: Optional[StrictStr] = None
+    additional_info: Optional[StrictStr] = Field(default=None, alias="additionalInfo")
     taxes: Optional[NfseCreateRequestTaxes] = None
-    amount: Union[StrictFloat, StrictInt]
+    amount: Union[Annotated[float, Field(strict=True, gt=0)], Annotated[int, Field(strict=True, gt=0)]]
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
-    external_id: Optional[StrictStr] = Field(default=None, alias="externalId")
+    external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
     borrower: NfseCreateRequestBorrower
     intermediary: Optional[NfseCreateRequestIntermediary] = None
     construction: Optional[NfseCreateRequestConstruction] = None
@@ -65,7 +70,47 @@ class NfseCreateRequest(BaseModel):
     ibs_cst: Optional[StrictStr] = Field(default=None, description="Alias legado de ibsCbs.cst", alias="ibsCst")
     ibs_operation_indicator: Optional[StrictStr] = Field(default=None, description="Alias legado de ibsCbs.operationIndicator", alias="ibsOperationIndicator")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["serviceDescription", "name", "sku", "category", "guarantee", "cityServiceCode", "federalServiceCode", "nbs", "cnaeCode", "iss", "ibsCbs", "natureOfOperation", "serviceLocation", "municipalityOfIncidence", "taxes", "amount", "issueDate", "externalId", "borrower", "intermediary", "construction", "substitution", "serviceCode", "serviceItemCode", "nbsCode", "taxClassification", "ibsCst", "ibsOperationIndicator"]
+    __properties: ClassVar[List[str]] = ["serviceDescription", "name", "sku", "category", "guarantee", "cityServiceCode", "federalServiceCode", "nbs", "cnaeCode", "iss", "ibsCbs", "natureOfOperation", "serviceLocation", "municipalityOfIncidence", "cityIbge", "competenceDate", "deductions", "exigibility", "additionalInfo", "taxes", "amount", "issueDate", "externalId", "borrower", "intermediary", "construction", "substitution", "serviceCode", "serviceItemCode", "nbsCode", "taxClassification", "ibsCst", "ibsOperationIndicator"]
+
+    @field_validator('category')
+    def category_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['online_course', 'consulting', 'subscription', 'saas', 'online_event', 'professional_service', 'other_service', 'affiliate_infoproducts', 'affiliate_betting', 'marketing_agency', 'copywriter', 'systems_development', 'graphic_designer', 'dropshipping_supplier', 'dropshipping_consumer', 'traffic_manager', 'digital_influencer', 'infoproducer', 'physical_product', 'digital_book', 'digital_content', 'membership', 'software', 'other_product']):
+            raise ValueError("must be one of enum values ('online_course', 'consulting', 'subscription', 'saas', 'online_event', 'professional_service', 'other_service', 'affiliate_infoproducts', 'affiliate_betting', 'marketing_agency', 'copywriter', 'systems_development', 'graphic_designer', 'dropshipping_supplier', 'dropshipping_consumer', 'traffic_manager', 'digital_influencer', 'infoproducer', 'physical_product', 'digital_book', 'digital_content', 'membership', 'software', 'other_product')")
+        return value
+
+    @field_validator('nature_of_operation')
+    def nature_of_operation_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['1', '2', '3', '4', '5', '6']):
+            raise ValueError("must be one of enum values ('1', '2', '3', '4', '5', '6')")
+        return value
+
+    @field_validator('service_location')
+    def service_location_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['1', '2', '3']):
+            raise ValueError("must be one of enum values ('1', '2', '3')")
+        return value
+
+    @field_validator('municipality_of_incidence')
+    def municipality_of_incidence_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['0', '1', '2']):
+            raise ValueError("must be one of enum values ('0', '1', '2')")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -160,6 +205,11 @@ class NfseCreateRequest(BaseModel):
             "natureOfOperation": obj.get("natureOfOperation"),
             "serviceLocation": obj.get("serviceLocation"),
             "municipalityOfIncidence": obj.get("municipalityOfIncidence"),
+            "cityIbge": obj.get("cityIbge"),
+            "competenceDate": obj.get("competenceDate"),
+            "deductions": obj.get("deductions"),
+            "exigibility": obj.get("exigibility"),
+            "additionalInfo": obj.get("additionalInfo"),
             "taxes": NfseCreateRequestTaxes.from_dict(obj["taxes"]) if obj.get("taxes") is not None else None,
             "amount": obj.get("amount"),
             "issueDate": obj.get("issueDate"),

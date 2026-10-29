@@ -19,6 +19,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
+from emitfy.generated.models.dfe_address_layout import DfeAddressLayout
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -27,10 +29,11 @@ class NfseCreateRequestIntermediary(BaseModel):
     """
     NfseCreateRequestIntermediary
     """ # noqa: E501
-    tax_id: StrictStr = Field(alias="taxId")
-    name: StrictStr
+    tax_id: Annotated[str, Field(min_length=11, strict=True)] = Field(alias="taxId")
+    name: Annotated[str, Field(min_length=2, strict=True)]
     municipal_registration: Optional[StrictStr] = Field(default=None, alias="municipalRegistration")
-    __properties: ClassVar[List[str]] = ["taxId", "name", "municipalRegistration"]
+    address: Optional[DfeAddressLayout] = None
+    __properties: ClassVar[List[str]] = ["taxId", "name", "municipalRegistration", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -71,6 +74,9 @@ class NfseCreateRequestIntermediary(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of address
+        if self.address:
+            _dict['address'] = self.address.to_dict()
         return _dict
 
     @classmethod
@@ -85,7 +91,8 @@ class NfseCreateRequestIntermediary(BaseModel):
         _obj = cls.model_validate({
             "taxId": obj.get("taxId"),
             "name": obj.get("name"),
-            "municipalRegistration": obj.get("municipalRegistration")
+            "municipalRegistration": obj.get("municipalRegistration"),
+            "address": DfeAddressLayout.from_dict(obj["address"]) if obj.get("address") is not None else None
         })
         return _obj
 

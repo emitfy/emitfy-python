@@ -19,6 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from emitfy.generated.models.nfse_create_request_borrower_address import NfseCreateRequestBorrowerAddress
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,8 +29,8 @@ class NfseCreateRequestBorrower(BaseModel):
     """
     NfseCreateRequestBorrower
     """ # noqa: E501
-    tax_id: Optional[StrictStr] = Field(default=None, alias="taxId")
-    name: StrictStr
+    tax_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(default=None, description="CPF ou CNPJ do tomador", alias="taxId")
+    name: Annotated[str, Field(min_length=1, strict=True)]
     email: StrictStr
     phone: Optional[StrictStr] = None
     address: Optional[NfseCreateRequestBorrowerAddress] = None

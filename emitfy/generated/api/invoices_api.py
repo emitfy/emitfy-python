@@ -15,12 +15,15 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictStr
-from typing import Any, Dict, Optional
+from pydantic import Field, StrictInt, StrictStr, field_validator
+from typing import Optional
 from typing_extensions import Annotated
 from uuid import UUID
 from emitfy.generated.models.invoice_update_request import InvoiceUpdateRequest
+from emitfy.generated.models.invoices_cancel200_response import InvoicesCancel200Response
 from emitfy.generated.models.invoices_get200_response import InvoicesGet200Response
+from emitfy.generated.models.invoices_list200_response import InvoicesList200Response
+from emitfy.generated.models.invoices_send_email200_response import InvoicesSendEmail200Response
 
 from emitfy.generated.api_client import ApiClient, RequestSerialized
 from emitfy.generated.api_response import ApiResponse
@@ -43,9 +46,8 @@ class InvoicesApi:
     @validate_call
     def invoices_cancel(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -58,17 +60,15 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoicesCancel200Response:
         """Cancel authorized invoice
 
-        Cancela nota autorizada. Equivale aos DELETE tipados (`/nfse/{id}`, `/nfe/{id}`, `/nfce/{id}`).
+        Sem corpo. Enfileira o cancelamento de nota autorizada (NFS-e, NF-e ou NFC-e). Mesmo efeito fiscal dos DELETE tipados, mas com contrato diferente: responde **200** (não 202) com `outcome: fiscal_cancel_enqueued`, e status inválido vira **409** (não 422). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -94,7 +94,6 @@ class InvoicesApi:
         _param = self._invoices_cancel_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -102,8 +101,10 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '409': None,
+            '200': "InvoicesCancel200Response",
+            '404': None,
+            '409': "ErrorBody",
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -119,9 +120,8 @@ class InvoicesApi:
     @validate_call
     def invoices_cancel_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -134,17 +134,15 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoicesCancel200Response]:
         """Cancel authorized invoice
 
-        Cancela nota autorizada. Equivale aos DELETE tipados (`/nfse/{id}`, `/nfe/{id}`, `/nfce/{id}`).
+        Sem corpo. Enfileira o cancelamento de nota autorizada (NFS-e, NF-e ou NFC-e). Mesmo efeito fiscal dos DELETE tipados, mas com contrato diferente: responde **200** (não 202) com `outcome: fiscal_cancel_enqueued`, e status inválido vira **409** (não 422). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -170,7 +168,6 @@ class InvoicesApi:
         _param = self._invoices_cancel_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -178,8 +175,10 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '409': None,
+            '200': "InvoicesCancel200Response",
+            '404': None,
+            '409': "ErrorBody",
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -195,9 +194,8 @@ class InvoicesApi:
     @validate_call
     def invoices_cancel_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -213,14 +211,12 @@ class InvoicesApi:
     ) -> RESTResponseType:
         """Cancel authorized invoice
 
-        Cancela nota autorizada. Equivale aos DELETE tipados (`/nfse/{id}`, `/nfe/{id}`, `/nfce/{id}`).
+        Sem corpo. Enfileira o cancelamento de nota autorizada (NFS-e, NF-e ou NFC-e). Mesmo efeito fiscal dos DELETE tipados, mas com contrato diferente: responde **200** (não 202) com `outcome: fiscal_cancel_enqueued`, e status inválido vira **409** (não 422). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -246,7 +242,6 @@ class InvoicesApi:
         _param = self._invoices_cancel_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -254,8 +249,10 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
-            '409': None,
+            '200': "InvoicesCancel200Response",
+            '404': None,
+            '409': "ErrorBody",
+            '503': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -268,7 +265,6 @@ class InvoicesApi:
         self,
         company_id,
         id,
-        request_body,
         _request_auth,
         _content_type,
         _headers,
@@ -298,24 +294,16 @@ class InvoicesApi:
         # process the header parameters
         # process the form parameters
         # process the body parameter
-        if request_body is not None:
-            _body_params = request_body
 
 
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params['Content-Type'] = _content_type
-        else:
-            _default_content_type = (
-                self.api_client.select_header_content_type(
-                    [
-                        'application/json'
-                    ]
-                )
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
             )
-            if _default_content_type is not None:
-                _header_params['Content-Type'] = _default_content_type
+
 
         # authentication setting
         _auth_settings: List[str] = [
@@ -344,7 +332,7 @@ class InvoicesApi:
     @validate_call
     def invoices_consult(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -361,8 +349,9 @@ class InvoicesApi:
     ) -> None:
         """Consult invoice at SEFAZ or city hall
 
+        Reconsulta NFS-e ou NF-e. NFC-e não tem reconsulta remota (sempre 400 `NFCE_CONSULT_UNSUPPORTED`).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -399,6 +388,8 @@ class InvoicesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -414,7 +405,7 @@ class InvoicesApi:
     @validate_call
     def invoices_consult_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -431,8 +422,9 @@ class InvoicesApi:
     ) -> ApiResponse[None]:
         """Consult invoice at SEFAZ or city hall
 
+        Reconsulta NFS-e ou NF-e. NFC-e não tem reconsulta remota (sempre 400 `NFCE_CONSULT_UNSUPPORTED`).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -469,6 +461,8 @@ class InvoicesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -484,7 +478,7 @@ class InvoicesApi:
     @validate_call
     def invoices_consult_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -501,8 +495,9 @@ class InvoicesApi:
     ) -> RESTResponseType:
         """Consult invoice at SEFAZ or city hall
 
+        Reconsulta NFS-e ou NF-e. NFC-e não tem reconsulta remota (sempre 400 `NFCE_CONSULT_UNSUPPORTED`).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -539,6 +534,8 @@ class InvoicesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -611,7 +608,7 @@ class InvoicesApi:
     @validate_call
     def invoices_emit(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -630,7 +627,7 @@ class InvoicesApi:
 
         Enfileira emissão imediata (forceManual) de nota pending ou rejected. Não altera nota autorizada/cancelada. Não é carta de correção (`POST .../nfe/{id}/correction`). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -684,7 +681,7 @@ class InvoicesApi:
     @validate_call
     def invoices_emit_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -703,7 +700,7 @@ class InvoicesApi:
 
         Enfileira emissão imediata (forceManual) de nota pending ou rejected. Não altera nota autorizada/cancelada. Não é carta de correção (`POST .../nfe/{id}/correction`). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -757,7 +754,7 @@ class InvoicesApi:
     @validate_call
     def invoices_emit_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -776,7 +773,7 @@ class InvoicesApi:
 
         Enfileira emissão imediata (forceManual) de nota pending ou rejected. Não altera nota autorizada/cancelada. Não é carta de correção (`POST .../nfe/{id}/correction`). 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -887,7 +884,7 @@ class InvoicesApi:
     @validate_call
     def invoices_events(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -905,7 +902,7 @@ class InvoicesApi:
         """List invoice events
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -957,7 +954,7 @@ class InvoicesApi:
     @validate_call
     def invoices_events_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -975,7 +972,7 @@ class InvoicesApi:
         """List invoice events
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1027,7 +1024,7 @@ class InvoicesApi:
     @validate_call
     def invoices_events_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1045,7 +1042,7 @@ class InvoicesApi:
         """List invoice events
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1154,7 +1151,7 @@ class InvoicesApi:
     @validate_call
     def invoices_get(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1172,7 +1169,7 @@ class InvoicesApi:
         """Get invoice
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1224,7 +1221,7 @@ class InvoicesApi:
     @validate_call
     def invoices_get_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1242,7 +1239,7 @@ class InvoicesApi:
         """Get invoice
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1294,7 +1291,7 @@ class InvoicesApi:
     @validate_call
     def invoices_get_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         _request_timeout: Union[
             None,
@@ -1312,7 +1309,7 @@ class InvoicesApi:
         """Get invoice
 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -1428,9 +1425,17 @@ class InvoicesApi:
     @validate_call
     def invoices_list(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.")] = None,
+        type: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        integration_id: Optional[UUID] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1443,17 +1448,33 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoicesList200Response:
         """List invoices
 
         Consulta unificada das notas da empresa (todos os tipos). Criação inicial nos atalhos por tipo (`/nfse`, `/nfe`, `/nfce`, `/cte`, `/cte-os`). PATCH/emit/cancel nesta família `/invoices`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
+        :param status: Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.
+        :type status: str
+        :param type:
+        :type type: str
+        :param search:
+        :type search: str
+        :param integration_id:
+        :type integration_id: UUID
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1478,8 +1499,16 @@ class InvoicesApi:
 
         _param = self._invoices_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
+            status=status,
+            type=type,
+            search=search,
+            integration_id=integration_id,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1487,7 +1516,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1503,9 +1532,17 @@ class InvoicesApi:
     @validate_call
     def invoices_list_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.")] = None,
+        type: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        integration_id: Optional[UUID] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1518,17 +1555,33 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoicesList200Response]:
         """List invoices
 
         Consulta unificada das notas da empresa (todos os tipos). Criação inicial nos atalhos por tipo (`/nfse`, `/nfe`, `/nfce`, `/cte`, `/cte-os`). PATCH/emit/cancel nesta família `/invoices`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
+        :param status: Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.
+        :type status: str
+        :param type:
+        :type type: str
+        :param search:
+        :type search: str
+        :param integration_id:
+        :type integration_id: UUID
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1553,8 +1606,16 @@ class InvoicesApi:
 
         _param = self._invoices_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
+            status=status,
+            type=type,
+            search=search,
+            integration_id=integration_id,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1562,7 +1623,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1578,9 +1639,17 @@ class InvoicesApi:
     @validate_call
     def invoices_list_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        limit: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        action: Annotated[Optional[StrictStr], Field(description="Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. ")] = None,
+        cursor: Annotated[Optional[StrictStr], Field(description="`id` do item de referência (usado com `action=next|prev`).")] = None,
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        page_size: Optional[Annotated[int, Field(le=100, strict=True, ge=1)]] = None,
+        status: Annotated[Optional[StrictStr], Field(description="Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.")] = None,
+        type: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        integration_id: Optional[UUID] = None,
+        start_date: Annotated[Optional[StrictInt], Field(description="Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.")] = None,
+        end_date: Annotated[Optional[StrictInt], Field(description="Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1598,12 +1667,28 @@ class InvoicesApi:
 
         Consulta unificada das notas da empresa (todos os tipos). Criação inicial nos atalhos por tipo (`/nfse`, `/nfe`, `/nfce`, `/cte`, `/cte-os`). PATCH/emit/cancel nesta família `/invoices`.
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
+        :param limit:
+        :type limit: int
+        :param action: Navegação por cursor. `first` (padrão) volta para a primeira página e ignora `cursor`; `next` usa como `cursor` o `id` do último item da página atual; `prev` usa o `id` do primeiro item; `last` vai para a última página. `page` só é ecoado/ajustado em `pageInfo`. 
+        :type action: str
+        :param cursor: `id` do item de referência (usado com `action=next|prev`).
+        :type cursor: str
         :param page:
         :type page: int
-        :param page_size:
-        :type page_size: int
+        :param status: Status canônico; aliases: `canceled` → `cancelled`, `error`/`failed` → `rejected`, `queued` → `processing`.
+        :type status: str
+        :param type:
+        :type type: str
+        :param search:
+        :type search: str
+        :param integration_id:
+        :type integration_id: UUID
+        :param start_date: Início do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `endDate`.
+        :type start_date: int
+        :param end_date: Fim do período (epoch em ms; dia inclusivo em America/Sao_Paulo). Só filtra com `startDate`.
+        :type end_date: int
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1628,8 +1713,16 @@ class InvoicesApi:
 
         _param = self._invoices_list_serialize(
             company_id=company_id,
+            limit=limit,
+            action=action,
+            cursor=cursor,
             page=page,
-            page_size=page_size,
+            status=status,
+            type=type,
+            search=search,
+            integration_id=integration_id,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1637,7 +1730,7 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesList200Response",
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1649,8 +1742,16 @@ class InvoicesApi:
     def _invoices_list_serialize(
         self,
         company_id,
+        limit,
+        action,
+        cursor,
         page,
-        page_size,
+        status,
+        type,
+        search,
+        integration_id,
+        start_date,
+        end_date,
         _request_auth,
         _content_type,
         _headers,
@@ -1675,19 +1776,58 @@ class InvoicesApi:
         if company_id is not None:
             _path_params['companyId'] = company_id
         # process the query parameters
+        if limit is not None:
+            
+            _query_params.append(('limit', limit))
+            
+        if action is not None:
+            
+            _query_params.append(('action', action))
+            
+        if cursor is not None:
+            
+            _query_params.append(('cursor', cursor))
+            
         if page is not None:
             
             _query_params.append(('page', page))
             
-        if page_size is not None:
+        if status is not None:
             
-            _query_params.append(('pageSize', page_size))
+            _query_params.append(('status', status))
+            
+        if type is not None:
+            
+            _query_params.append(('type', type))
+            
+        if search is not None:
+            
+            _query_params.append(('search', search))
+            
+        if integration_id is not None:
+            
+            _query_params.append(('integrationId', integration_id))
+            
+        if start_date is not None:
+            
+            _query_params.append(('startDate', start_date))
+            
+        if end_date is not None:
+            
+            _query_params.append(('endDate', end_date))
             
         # process the header parameters
         # process the form parameters
         # process the body parameter
 
 
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
 
 
         # authentication setting
@@ -1717,9 +1857,8 @@ class InvoicesApi:
     @validate_call
     def invoices_send_email(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1732,17 +1871,15 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> None:
+    ) -> InvoicesSendEmail200Response:
         """Resend invoice email
 
-        Reenvia e-mail da NFS-e autorizada ao tomador.
+        Sem corpo. Reenvia o e-mail da nota autorizada ao tomador/destinatário (só NFS-e e NF-e).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1768,7 +1905,6 @@ class InvoicesApi:
         _param = self._invoices_send_email_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1776,7 +1912,9 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesSendEmail200Response",
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1792,9 +1930,8 @@ class InvoicesApi:
     @validate_call
     def invoices_send_email_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1807,17 +1944,15 @@ class InvoicesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[InvoicesSendEmail200Response]:
         """Resend invoice email
 
-        Reenvia e-mail da NFS-e autorizada ao tomador.
+        Sem corpo. Reenvia o e-mail da nota autorizada ao tomador/destinatário (só NFS-e e NF-e).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1843,7 +1978,6 @@ class InvoicesApi:
         _param = self._invoices_send_email_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1851,7 +1985,9 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesSendEmail200Response",
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1867,9 +2003,8 @@ class InvoicesApi:
     @validate_call
     def invoices_send_email_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
-        request_body: Optional[Dict[str, Any]] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -1885,14 +2020,12 @@ class InvoicesApi:
     ) -> RESTResponseType:
         """Resend invoice email
 
-        Reenvia e-mail da NFS-e autorizada ao tomador.
+        Sem corpo. Reenvia o e-mail da nota autorizada ao tomador/destinatário (só NFS-e e NF-e).
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
-        :param request_body:
-        :type request_body: Dict[str, object]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -1918,7 +2051,6 @@ class InvoicesApi:
         _param = self._invoices_send_email_serialize(
             company_id=company_id,
             id=id,
-            request_body=request_body,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1926,7 +2058,9 @@ class InvoicesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': None,
+            '200': "InvoicesSendEmail200Response",
+            '400': None,
+            '404': None,
         }
         response_data = self.api_client.call_api(
             *_param,
@@ -1939,7 +2073,6 @@ class InvoicesApi:
         self,
         company_id,
         id,
-        request_body,
         _request_auth,
         _content_type,
         _headers,
@@ -1969,24 +2102,16 @@ class InvoicesApi:
         # process the header parameters
         # process the form parameters
         # process the body parameter
-        if request_body is not None:
-            _body_params = request_body
 
 
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params['Content-Type'] = _content_type
-        else:
-            _default_content_type = (
-                self.api_client.select_header_content_type(
-                    [
-                        'application/json'
-                    ]
-                )
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
             )
-            if _default_content_type is not None:
-                _header_params['Content-Type'] = _default_content_type
+
 
         # authentication setting
         _auth_settings: List[str] = [
@@ -2015,7 +2140,7 @@ class InvoicesApi:
     @validate_call
     def invoices_update(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         invoice_update_request: InvoiceUpdateRequest,
         _request_timeout: Union[
@@ -2035,7 +2160,7 @@ class InvoicesApi:
 
         Edita nota pending (draft/scheduled) ou rejected. `version` obrigatório. Tomador: `borrower` (NFS-e) ou `recipient` (NF-e/NFC-e), no mesmo formato do create. Campo desconhecido retorna 422 (não é ignorado). 409 INVOICE_NOT_EDITABLE se autorizada/cancelada; 409 INVOICE_VERSION_CONFLICT se version divergir. Não é carta de correção. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -2092,7 +2217,7 @@ class InvoicesApi:
     @validate_call
     def invoices_update_with_http_info(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         invoice_update_request: InvoiceUpdateRequest,
         _request_timeout: Union[
@@ -2112,7 +2237,7 @@ class InvoicesApi:
 
         Edita nota pending (draft/scheduled) ou rejected. `version` obrigatório. Tomador: `borrower` (NFS-e) ou `recipient` (NF-e/NFC-e), no mesmo formato do create. Campo desconhecido retorna 422 (não é ignorado). 409 INVOICE_NOT_EDITABLE se autorizada/cancelada; 409 INVOICE_VERSION_CONFLICT se version divergir. Não é carta de correção. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str
@@ -2169,7 +2294,7 @@ class InvoicesApi:
     @validate_call
     def invoices_update_without_preload_content(
         self,
-        company_id: Annotated[UUID, Field(description="ID da empresa (CNPJ operacional) no path")],
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         id: StrictStr,
         invoice_update_request: InvoiceUpdateRequest,
         _request_timeout: Union[
@@ -2189,7 +2314,7 @@ class InvoicesApi:
 
         Edita nota pending (draft/scheduled) ou rejected. `version` obrigatório. Tomador: `borrower` (NFS-e) ou `recipient` (NF-e/NFC-e), no mesmo formato do create. Campo desconhecido retorna 422 (não é ignorado). 409 INVOICE_NOT_EDITABLE se autorizada/cancelada; 409 INVOICE_VERSION_CONFLICT se version divergir. Não é carta de correção. 
 
-        :param company_id: ID da empresa (CNPJ operacional) no path (required)
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
         :param id: (required)
         :type id: str

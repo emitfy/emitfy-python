@@ -29,10 +29,10 @@ class NumberInutilizationRequest(BaseModel):
     NumberInutilizationRequest
     """ # noqa: E501
     series: Annotated[int, Field(le=999, strict=True, ge=0)]
-    range_start: Annotated[int, Field(strict=True, ge=1)] = Field(alias="rangeStart")
-    range_end: Annotated[int, Field(strict=True, ge=1)] = Field(alias="rangeEnd")
+    range_start: Annotated[int, Field(le=999999999, strict=True, ge=1)] = Field(alias="rangeStart")
+    range_end: Annotated[int, Field(le=999999999, strict=True, ge=1)] = Field(description="Deve ser maior ou igual a `rangeStart`.", alias="rangeEnd")
     justification: Annotated[str, Field(min_length=15, strict=True, max_length=255)]
-    year: Optional[Annotated[int, Field(le=2100, strict=True, ge=2000)]] = None
+    year: Optional[Annotated[int, Field(le=2100, strict=True, ge=2000)]] = Field(default=None, description="Ano da inutilização. Padrão = ano corrente.")
     __properties: ClassVar[List[str]] = ["series", "rangeStart", "rangeEnd", "justification", "year"]
 
     model_config = ConfigDict(

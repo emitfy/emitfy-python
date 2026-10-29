@@ -19,7 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from emitfy.generated.models.nfse_create_request_taxes_iss import NfseCreateRequestTaxesIss
+from emitfy.generated.models.nfse_tax_entry import NfseTaxEntry
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -28,12 +28,12 @@ class NfseCreateRequestTaxes(BaseModel):
     """
     Retenções federais opcionais (pis/cofins/csll/ir/inss). ISS canônico é iss no topo.
     """ # noqa: E501
-    iss: Optional[NfseCreateRequestTaxesIss] = None
-    pis: Optional[Dict[str, Any]] = None
-    cofins: Optional[Dict[str, Any]] = None
-    csll: Optional[Dict[str, Any]] = None
-    ir: Optional[Dict[str, Any]] = None
-    inss: Optional[Dict[str, Any]] = None
+    iss: Optional[NfseTaxEntry] = None
+    pis: Optional[NfseTaxEntry] = None
+    cofins: Optional[NfseTaxEntry] = None
+    csll: Optional[NfseTaxEntry] = None
+    ir: Optional[NfseTaxEntry] = None
+    inss: Optional[NfseTaxEntry] = None
     __properties: ClassVar[List[str]] = ["iss", "pis", "cofins", "csll", "ir", "inss"]
 
     model_config = ConfigDict(
@@ -78,6 +78,21 @@ class NfseCreateRequestTaxes(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of iss
         if self.iss:
             _dict['iss'] = self.iss.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of pis
+        if self.pis:
+            _dict['pis'] = self.pis.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of cofins
+        if self.cofins:
+            _dict['cofins'] = self.cofins.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of csll
+        if self.csll:
+            _dict['csll'] = self.csll.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of ir
+        if self.ir:
+            _dict['ir'] = self.ir.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of inss
+        if self.inss:
+            _dict['inss'] = self.inss.to_dict()
         return _dict
 
     @classmethod
@@ -90,12 +105,12 @@ class NfseCreateRequestTaxes(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "iss": NfseCreateRequestTaxesIss.from_dict(obj["iss"]) if obj.get("iss") is not None else None,
-            "pis": obj.get("pis"),
-            "cofins": obj.get("cofins"),
-            "csll": obj.get("csll"),
-            "ir": obj.get("ir"),
-            "inss": obj.get("inss")
+            "iss": NfseTaxEntry.from_dict(obj["iss"]) if obj.get("iss") is not None else None,
+            "pis": NfseTaxEntry.from_dict(obj["pis"]) if obj.get("pis") is not None else None,
+            "cofins": NfseTaxEntry.from_dict(obj["cofins"]) if obj.get("cofins") is not None else None,
+            "csll": NfseTaxEntry.from_dict(obj["csll"]) if obj.get("csll") is not None else None,
+            "ir": NfseTaxEntry.from_dict(obj["ir"]) if obj.get("ir") is not None else None,
+            "inss": NfseTaxEntry.from_dict(obj["inss"]) if obj.get("inss") is not None else None
         })
         return _obj
 
