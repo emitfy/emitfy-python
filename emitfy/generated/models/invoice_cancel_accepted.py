@@ -26,7 +26,7 @@ from pydantic_core import to_jsonable_python
 
 class InvoiceCancelAccepted(BaseModel):
     """
-    Resposta 202 dos DELETE tipados (`/nfse/{id}`, `/nfe/{id}`, `/nfce/{id}`). O cancelamento é assíncrono: logo após o 202 a nota ainda costuma estar `authorized`; o resultado final chega no webhook `*.cancelled` (NFS-e/NF-e) ou no GET (`status: cancelled`). 
+    Resposta 202 dos DELETE tipados (`/nfse/{id}`, `/nfe/{id}`, `/nfce/{id}`). O cancelamento é assíncrono: logo após o 202 a nota vem `processing` (apiStatus `transmitting`); o resultado final chega no webhook `*.cancelled` (NFS-e/NF-e) ou no GET (`status: cancelled`). 
     """ # noqa: E501
     success: Optional[StrictBool] = None
     data: Optional[InvoiceCancelAcceptedData] = None
