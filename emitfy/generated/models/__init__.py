@@ -115,6 +115,7 @@ from emitfy.generated.models.public_invoice_resource_assets import PublicInvoice
 from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument
 from emitfy.generated.models.public_invoice_resource_document_rps import PublicInvoiceResourceDocumentRps
 from emitfy.generated.models.public_invoice_resource_emission import PublicInvoiceResourceEmission
+from emitfy.generated.models.received_nfes_fetch_by_key_request import ReceivedNfesFetchByKeyRequest
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest
 from emitfy.generated.models.success_envelope import SuccessEnvelope
 from emitfy.generated.models.transport_carrier import TransportCarrier

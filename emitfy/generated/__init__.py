@@ -142,6 +142,7 @@ __all__ = [
     "PublicInvoiceResourceDocument",
     "PublicInvoiceResourceDocumentRps",
     "PublicInvoiceResourceEmission",
+    "ReceivedNfesFetchByKeyRequest",
     "ReceivedNfesManifestRequest",
     "SuccessEnvelope",
     "TransportCarrier",
@@ -286,6 +287,7 @@ from emitfy.generated.models.public_invoice_resource_assets import PublicInvoice
 from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument as PublicInvoiceResourceDocument
 from emitfy.generated.models.public_invoice_resource_document_rps import PublicInvoiceResourceDocumentRps as PublicInvoiceResourceDocumentRps
 from emitfy.generated.models.public_invoice_resource_emission import PublicInvoiceResourceEmission as PublicInvoiceResourceEmission
+from emitfy.generated.models.received_nfes_fetch_by_key_request import ReceivedNfesFetchByKeyRequest as ReceivedNfesFetchByKeyRequest
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest as ReceivedNfesManifestRequest
 from emitfy.generated.models.success_envelope import SuccessEnvelope as SuccessEnvelope
 from emitfy.generated.models.transport_carrier import TransportCarrier as TransportCarrier

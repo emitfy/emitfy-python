@@ -19,6 +19,7 @@ from pydantic import Field, StrictInt, StrictStr, field_validator
 from typing import Optional
 from typing_extensions import Annotated
 from uuid import UUID
+from emitfy.generated.models.received_nfes_fetch_by_key_request import ReceivedNfesFetchByKeyRequest
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest
 
 from emitfy.generated.api_client import ApiClient, RequestSerialized
@@ -37,6 +38,304 @@ class ReceivedNfesApi:
         if api_client is None:
             api_client = ApiClient.get_default()
         self.api_client = api_client
+
+
+    @validate_call
+    def received_nfes_fetch_by_key(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """Fetch received NF-e by access key (DistDFe consChNFe)
+
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param received_nfes_fetch_by_key_request: (required)
+        :type received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_fetch_by_key_serialize(
+            company_id=company_id,
+            received_nfes_fetch_by_key_request=received_nfes_fetch_by_key_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '403': None,
+            '404': None,
+            '409': None,
+            '422': None,
+            '429': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def received_nfes_fetch_by_key_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """Fetch received NF-e by access key (DistDFe consChNFe)
+
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param received_nfes_fetch_by_key_request: (required)
+        :type received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_fetch_by_key_serialize(
+            company_id=company_id,
+            received_nfes_fetch_by_key_request=received_nfes_fetch_by_key_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '403': None,
+            '404': None,
+            '409': None,
+            '422': None,
+            '429': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def received_nfes_fetch_by_key_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Fetch received NF-e by access key (DistDFe consChNFe)
+
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param received_nfes_fetch_by_key_request: (required)
+        :type received_nfes_fetch_by_key_request: ReceivedNfesFetchByKeyRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_fetch_by_key_serialize(
+            company_id=company_id,
+            received_nfes_fetch_by_key_request=received_nfes_fetch_by_key_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '403': None,
+            '404': None,
+            '409': None,
+            '422': None,
+            '429': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _received_nfes_fetch_by_key_serialize(
+        self,
+        company_id,
+        received_nfes_fetch_by_key_request,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if received_nfes_fetch_by_key_request is not None:
+            _body_params = received_nfes_fetch_by_key_request
+
+
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/companies/{companyId}/received-nfes/fetch-by-key',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
 
 
     @validate_call
@@ -314,6 +613,8 @@ class ReceivedNfesApi:
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
+        end_date: Annotated[Optional[StrictStr], Field(description="Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -340,6 +641,10 @@ class ReceivedNfesApi:
         :type search: str
         :param status:
         :type status: str
+        :param start_date: Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).
+        :type start_date: str
+        :param end_date: Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).
+        :type end_date: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -368,6 +673,8 @@ class ReceivedNfesApi:
             limit=limit,
             search=search,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -396,6 +703,8 @@ class ReceivedNfesApi:
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
+        end_date: Annotated[Optional[StrictStr], Field(description="Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -422,6 +731,10 @@ class ReceivedNfesApi:
         :type search: str
         :param status:
         :type status: str
+        :param start_date: Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).
+        :type start_date: str
+        :param end_date: Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).
+        :type end_date: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -450,6 +763,8 @@ class ReceivedNfesApi:
             limit=limit,
             search=search,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -478,6 +793,8 @@ class ReceivedNfesApi:
         limit: Optional[StrictInt] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
+        start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
+        end_date: Annotated[Optional[StrictStr], Field(description="Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -504,6 +821,10 @@ class ReceivedNfesApi:
         :type search: str
         :param status:
         :type status: str
+        :param start_date: Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).
+        :type start_date: str
+        :param end_date: Fim do período de emissão, inclusivo (23:59:59.999 BRT do dia informado).
+        :type end_date: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -532,6 +853,8 @@ class ReceivedNfesApi:
             limit=limit,
             search=search,
             status=status,
+            start_date=start_date,
+            end_date=end_date,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -555,6 +878,8 @@ class ReceivedNfesApi:
         limit,
         search,
         status,
+        start_date,
+        end_date,
         _request_auth,
         _content_type,
         _headers,
@@ -594,6 +919,14 @@ class ReceivedNfesApi:
         if status is not None:
             
             _query_params.append(('status', status))
+            
+        if start_date is not None:
+            
+            _query_params.append(('startDate', start_date))
+            
+        if end_date is not None:
+            
+            _query_params.append(('endDate', end_date))
             
         # process the header parameters
         # process the form parameters
