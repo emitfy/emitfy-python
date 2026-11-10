@@ -25,6 +25,9 @@ from emitfy.generated.models.cte_list200_response_data import CteList200Response
 from emitfy.generated.models.cte_list200_response_data_items_inner import CteList200ResponseDataItemsInner
 from emitfy.generated.models.cte_os_create_request import CteOsCreateRequest
 from emitfy.generated.models.cte_party import CteParty
+from emitfy.generated.models.cte_settings import CteSettings
+from emitfy.generated.models.cte_settings_get200_response import CteSettingsGet200Response
+from emitfy.generated.models.cte_settings_patch import CteSettingsPatch
 from emitfy.generated.models.cursor_page_info import CursorPageInfo
 from emitfy.generated.models.dfe_address_layout import DfeAddressLayout
 from emitfy.generated.models.dfe_aut_xml import DfeAutXml
@@ -68,6 +71,9 @@ from emitfy.generated.models.mdfe_list200_response_data_items_inner import MdfeL
 from emitfy.generated.models.mdfe_modal import MdfeModal
 from emitfy.generated.models.mdfe_payment import MdfePayment
 from emitfy.generated.models.mdfe_payment_components_inner import MdfePaymentComponentsInner
+from emitfy.generated.models.mdfe_settings import MdfeSettings
+from emitfy.generated.models.mdfe_settings_get200_response import MdfeSettingsGet200Response
+from emitfy.generated.models.mdfe_settings_patch import MdfeSettingsPatch
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity
 from emitfy.generated.models.mdfe_vehicle import MdfeVehicle
 from emitfy.generated.models.nfce_create200_response import NfceCreate200Response

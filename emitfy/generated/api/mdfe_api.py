@@ -26,6 +26,8 @@ from emitfy.generated.models.mdfe_driver import MdfeDriver
 from emitfy.generated.models.mdfe_emit_request import MdfeEmitRequest
 from emitfy.generated.models.mdfe_list200_response import MdfeList200Response
 from emitfy.generated.models.mdfe_payment import MdfePayment
+from emitfy.generated.models.mdfe_settings_get200_response import MdfeSettingsGet200Response
+from emitfy.generated.models.mdfe_settings_patch import MdfeSettingsPatch
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity
 from emitfy.generated.models.transport_document_accepted import TransportDocumentAccepted
 
@@ -2794,6 +2796,584 @@ class MdfeApi:
         return self.api_client.param_serialize(
             method='GET',
             resource_path='/companies/{companyId}/mdfe',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def mdfe_settings_get(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> MdfeSettingsGet200Response:
+        """Get MDF-e settings
+
+        Configuração de MDF-e da empresa. MDF-e não aparece no painel: ativação e configuração são só por esta rota. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_get_serialize(
+            company_id=company_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def mdfe_settings_get_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[MdfeSettingsGet200Response]:
+        """Get MDF-e settings
+
+        Configuração de MDF-e da empresa. MDF-e não aparece no painel: ativação e configuração são só por esta rota. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_get_serialize(
+            company_id=company_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def mdfe_settings_get_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Get MDF-e settings
+
+        Configuração de MDF-e da empresa. MDF-e não aparece no painel: ativação e configuração são só por esta rota. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_get_serialize(
+            company_id=company_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _mdfe_settings_get_serialize(
+        self,
+        company_id,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/mdfe/settings',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def mdfe_settings_update(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        mdfe_settings_patch: MdfeSettingsPatch,
+        confirm_number: Annotated[Optional[StrictStr], Field(description="`1` aceita voltar o próximo número na mesma série.")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> MdfeSettingsGet200Response:
+        """Enable, disable or configure MDF-e
+
+        Liga/desliga a emissão e ajusta a numeração. Só o titular ou um administrador da empresa. O próximo número só sobe; número menor na mesma série responde 409, salvo `?confirmNumber=1`. Série nova grava o número informado. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param mdfe_settings_patch: (required)
+        :type mdfe_settings_patch: MdfeSettingsPatch
+        :param confirm_number: `1` aceita voltar o próximo número na mesma série.
+        :type confirm_number: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_update_serialize(
+            company_id=company_id,
+            mdfe_settings_patch=mdfe_settings_patch,
+            confirm_number=confirm_number,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+            '403': "ErrorBody",
+            '409': "ErrorBody",
+            '422': "ErrorBody",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def mdfe_settings_update_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        mdfe_settings_patch: MdfeSettingsPatch,
+        confirm_number: Annotated[Optional[StrictStr], Field(description="`1` aceita voltar o próximo número na mesma série.")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[MdfeSettingsGet200Response]:
+        """Enable, disable or configure MDF-e
+
+        Liga/desliga a emissão e ajusta a numeração. Só o titular ou um administrador da empresa. O próximo número só sobe; número menor na mesma série responde 409, salvo `?confirmNumber=1`. Série nova grava o número informado. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param mdfe_settings_patch: (required)
+        :type mdfe_settings_patch: MdfeSettingsPatch
+        :param confirm_number: `1` aceita voltar o próximo número na mesma série.
+        :type confirm_number: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_update_serialize(
+            company_id=company_id,
+            mdfe_settings_patch=mdfe_settings_patch,
+            confirm_number=confirm_number,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+            '403': "ErrorBody",
+            '409': "ErrorBody",
+            '422': "ErrorBody",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def mdfe_settings_update_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        mdfe_settings_patch: MdfeSettingsPatch,
+        confirm_number: Annotated[Optional[StrictStr], Field(description="`1` aceita voltar o próximo número na mesma série.")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Enable, disable or configure MDF-e
+
+        Liga/desliga a emissão e ajusta a numeração. Só o titular ou um administrador da empresa. O próximo número só sobe; número menor na mesma série responde 409, salvo `?confirmNumber=1`. Série nova grava o número informado. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param mdfe_settings_patch: (required)
+        :type mdfe_settings_patch: MdfeSettingsPatch
+        :param confirm_number: `1` aceita voltar o próximo número na mesma série.
+        :type confirm_number: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._mdfe_settings_update_serialize(
+            company_id=company_id,
+            mdfe_settings_patch=mdfe_settings_patch,
+            confirm_number=confirm_number,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MdfeSettingsGet200Response",
+            '403': "ErrorBody",
+            '409': "ErrorBody",
+            '422': "ErrorBody",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _mdfe_settings_update_serialize(
+        self,
+        company_id,
+        mdfe_settings_patch,
+        confirm_number,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        # process the query parameters
+        if confirm_number is not None:
+            
+            _query_params.append(('confirmNumber', confirm_number))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if mdfe_settings_patch is not None:
+            _body_params = mdfe_settings_patch
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='PATCH',
+            resource_path='/companies/{companyId}/mdfe/settings',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

@@ -52,6 +52,9 @@ __all__ = [
     "CteList200ResponseDataItemsInner",
     "CteOsCreateRequest",
     "CteParty",
+    "CteSettings",
+    "CteSettingsGet200Response",
+    "CteSettingsPatch",
     "CursorPageInfo",
     "DfeAddressLayout",
     "DfeAutXml",
@@ -95,6 +98,9 @@ __all__ = [
     "MdfeModal",
     "MdfePayment",
     "MdfePaymentComponentsInner",
+    "MdfeSettings",
+    "MdfeSettingsGet200Response",
+    "MdfeSettingsPatch",
     "MdfeUnloadCity",
     "MdfeVehicle",
     "NfceCreate200Response",
@@ -197,6 +203,9 @@ from emitfy.generated.models.cte_list200_response_data import CteList200Response
 from emitfy.generated.models.cte_list200_response_data_items_inner import CteList200ResponseDataItemsInner as CteList200ResponseDataItemsInner
 from emitfy.generated.models.cte_os_create_request import CteOsCreateRequest as CteOsCreateRequest
 from emitfy.generated.models.cte_party import CteParty as CteParty
+from emitfy.generated.models.cte_settings import CteSettings as CteSettings
+from emitfy.generated.models.cte_settings_get200_response import CteSettingsGet200Response as CteSettingsGet200Response
+from emitfy.generated.models.cte_settings_patch import CteSettingsPatch as CteSettingsPatch
 from emitfy.generated.models.cursor_page_info import CursorPageInfo as CursorPageInfo
 from emitfy.generated.models.dfe_address_layout import DfeAddressLayout as DfeAddressLayout
 from emitfy.generated.models.dfe_aut_xml import DfeAutXml as DfeAutXml
@@ -240,6 +249,9 @@ from emitfy.generated.models.mdfe_list200_response_data_items_inner import MdfeL
 from emitfy.generated.models.mdfe_modal import MdfeModal as MdfeModal
 from emitfy.generated.models.mdfe_payment import MdfePayment as MdfePayment
 from emitfy.generated.models.mdfe_payment_components_inner import MdfePaymentComponentsInner as MdfePaymentComponentsInner
+from emitfy.generated.models.mdfe_settings import MdfeSettings as MdfeSettings
+from emitfy.generated.models.mdfe_settings_get200_response import MdfeSettingsGet200Response as MdfeSettingsGet200Response
+from emitfy.generated.models.mdfe_settings_patch import MdfeSettingsPatch as MdfeSettingsPatch
 from emitfy.generated.models.mdfe_unload_city import MdfeUnloadCity as MdfeUnloadCity
 from emitfy.generated.models.mdfe_vehicle import MdfeVehicle as MdfeVehicle
 from emitfy.generated.models.nfce_create200_response import NfceCreate200Response as NfceCreate200Response
