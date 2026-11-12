@@ -58,7 +58,7 @@ class CustomersApi:
     ) -> None:
         """Create customer
 
-        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
+        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS`) se já existir cliente com o mesmo CPF/CNPJ, ou 409 (`CUSTOMER_EMAIL_EXISTS`) se o e-mail já existir e os documentos não forem distintos. O mesmo e-mail pode ser usado em clientes com CPF/CNPJ diferentes. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -130,7 +130,7 @@ class CustomersApi:
     ) -> ApiResponse[None]:
         """Create customer
 
-        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
+        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS`) se já existir cliente com o mesmo CPF/CNPJ, ou 409 (`CUSTOMER_EMAIL_EXISTS`) se o e-mail já existir e os documentos não forem distintos. O mesmo e-mail pode ser usado em clientes com CPF/CNPJ diferentes. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -202,7 +202,7 @@ class CustomersApi:
     ) -> RESTResponseType:
         """Create customer
 
-        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS` / `CUSTOMER_EMAIL_EXISTS`) se já existir cliente com o mesmo documento ou e-mail. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
+        Cria um novo cliente. Retorna 409 (`CUSTOMER_DOCUMENT_EXISTS`) se já existir cliente com o mesmo CPF/CNPJ, ou 409 (`CUSTOMER_EMAIL_EXISTS`) se o e-mail já existir e os documentos não forem distintos. O mesmo e-mail pode ser usado em clientes com CPF/CNPJ diferentes. Para atualizar, use `PUT /companies/{companyId}/customers/{id}`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
