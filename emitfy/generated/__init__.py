@@ -28,7 +28,9 @@ __all__ = [
     "NfeApi",
     "NfseApi",
     "ProductsApi",
+    "ReceivedDocsApi",
     "ReceivedNfesApi",
+    "ReceivedNfsesApi",
     "UtilsApi",
     "WebhooksApi",
     "ApiResponse",
@@ -148,6 +150,8 @@ __all__ = [
     "PublicInvoiceResourceDocument",
     "PublicInvoiceResourceDocumentRps",
     "PublicInvoiceResourceEmission",
+    "ReceivedDocsSettingsUpdateRequest",
+    "ReceivedDocsSettingsUpdateRequestNfe",
     "ReceivedNfesFetchByKeyRequest",
     "ReceivedNfesManifestRequest",
     "SuccessEnvelope",
@@ -175,7 +179,9 @@ from emitfy.generated.api.nfce_api import NfceApi as NfceApi
 from emitfy.generated.api.nfe_api import NfeApi as NfeApi
 from emitfy.generated.api.nfse_api import NfseApi as NfseApi
 from emitfy.generated.api.products_api import ProductsApi as ProductsApi
+from emitfy.generated.api.received_docs_api import ReceivedDocsApi as ReceivedDocsApi
 from emitfy.generated.api.received_nfes_api import ReceivedNfesApi as ReceivedNfesApi
+from emitfy.generated.api.received_nfses_api import ReceivedNfsesApi as ReceivedNfsesApi
 from emitfy.generated.api.utils_api import UtilsApi as UtilsApi
 from emitfy.generated.api.webhooks_api import WebhooksApi as WebhooksApi
 
@@ -299,6 +305,8 @@ from emitfy.generated.models.public_invoice_resource_assets import PublicInvoice
 from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument as PublicInvoiceResourceDocument
 from emitfy.generated.models.public_invoice_resource_document_rps import PublicInvoiceResourceDocumentRps as PublicInvoiceResourceDocumentRps
 from emitfy.generated.models.public_invoice_resource_emission import PublicInvoiceResourceEmission as PublicInvoiceResourceEmission
+from emitfy.generated.models.received_docs_settings_update_request import ReceivedDocsSettingsUpdateRequest as ReceivedDocsSettingsUpdateRequest
+from emitfy.generated.models.received_docs_settings_update_request_nfe import ReceivedDocsSettingsUpdateRequestNfe as ReceivedDocsSettingsUpdateRequestNfe
 from emitfy.generated.models.received_nfes_fetch_by_key_request import ReceivedNfesFetchByKeyRequest as ReceivedNfesFetchByKeyRequest
 from emitfy.generated.models.received_nfes_manifest_request import ReceivedNfesManifestRequest as ReceivedNfesManifestRequest
 from emitfy.generated.models.success_envelope import SuccessEnvelope as SuccessEnvelope

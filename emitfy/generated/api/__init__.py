@@ -11,7 +11,9 @@ from emitfy.generated.api.nfce_api import NfceApi
 from emitfy.generated.api.nfe_api import NfeApi
 from emitfy.generated.api.nfse_api import NfseApi
 from emitfy.generated.api.products_api import ProductsApi
+from emitfy.generated.api.received_docs_api import ReceivedDocsApi
 from emitfy.generated.api.received_nfes_api import ReceivedNfesApi
+from emitfy.generated.api.received_nfses_api import ReceivedNfsesApi
 from emitfy.generated.api.utils_api import UtilsApi
 from emitfy.generated.api.webhooks_api import WebhooksApi
 

@@ -15,8 +15,8 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from pydantic import Field, StrictInt, StrictStr, field_validator
-from typing import Optional
+from pydantic import Field, StrictBytes, StrictStr, field_validator
+from typing import Optional, Tuple, Union
 from typing_extensions import Annotated
 from uuid import UUID
 from emitfy.generated.models.received_nfes_fetch_by_key_request import ReceivedNfesFetchByKeyRequest
@@ -41,6 +41,376 @@ class ReceivedNfesApi:
 
 
     @validate_call
+    def received_nfes_download(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        format: Optional[StrictStr] = None,
+        ids: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        status: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> bytes:
+        """Download received NF-e as .zip
+
+        Gera um .zip com XML (`NFe_{chave}.xml`), DANFE (`DANFE_{chave}.pdf`) ou ambos. Use `ids` (até 500, separados por vírgula) ou os mesmos filtros da listagem. Cada chave de acesso entra uma vez. Limite: 1000 notas em XML, 300 com PDF. Notas só com resumo vão listadas em `notas-sem-xml.txt`.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param format:
+        :type format: str
+        :param ids:
+        :type ids: str
+        :param search:
+        :type search: str
+        :param status:
+        :type status: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_download_serialize(
+            company_id=company_id,
+            format=format,
+            ids=ids,
+            search=search,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+            '404': None,
+            '422': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def received_nfes_download_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        format: Optional[StrictStr] = None,
+        ids: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        status: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[bytes]:
+        """Download received NF-e as .zip
+
+        Gera um .zip com XML (`NFe_{chave}.xml`), DANFE (`DANFE_{chave}.pdf`) ou ambos. Use `ids` (até 500, separados por vírgula) ou os mesmos filtros da listagem. Cada chave de acesso entra uma vez. Limite: 1000 notas em XML, 300 com PDF. Notas só com resumo vão listadas em `notas-sem-xml.txt`.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param format:
+        :type format: str
+        :param ids:
+        :type ids: str
+        :param search:
+        :type search: str
+        :param status:
+        :type status: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_download_serialize(
+            company_id=company_id,
+            format=format,
+            ids=ids,
+            search=search,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+            '404': None,
+            '422': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def received_nfes_download_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        format: Optional[StrictStr] = None,
+        ids: Optional[StrictStr] = None,
+        search: Optional[StrictStr] = None,
+        status: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Download received NF-e as .zip
+
+        Gera um .zip com XML (`NFe_{chave}.xml`), DANFE (`DANFE_{chave}.pdf`) ou ambos. Use `ids` (até 500, separados por vírgula) ou os mesmos filtros da listagem. Cada chave de acesso entra uma vez. Limite: 1000 notas em XML, 300 com PDF. Notas só com resumo vão listadas em `notas-sem-xml.txt`.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param format:
+        :type format: str
+        :param ids:
+        :type ids: str
+        :param search:
+        :type search: str
+        :param status:
+        :type status: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_download_serialize(
+            company_id=company_id,
+            format=format,
+            ids=ids,
+            search=search,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+            '404': None,
+            '422': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _received_nfes_download_serialize(
+        self,
+        company_id,
+        format,
+        ids,
+        search,
+        status,
+        start_date,
+        end_date,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        # process the query parameters
+        if format is not None:
+            
+            _query_params.append(('format', format))
+            
+        if ids is not None:
+            
+            _query_params.append(('ids', ids))
+            
+        if search is not None:
+            
+            _query_params.append(('search', search))
+            
+        if status is not None:
+            
+            _query_params.append(('status', status))
+            
+        if start_date is not None:
+            
+            _query_params.append(('startDate', start_date))
+            
+        if end_date is not None:
+            
+            _query_params.append(('endDate', end_date))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/zip'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/received-nfes/download',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def received_nfes_fetch_by_key(
         self,
         company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
@@ -60,7 +430,7 @@ class ReceivedNfesApi:
     ) -> None:
         """Fetch received NF-e by access key (DistDFe consChNFe)
 
-        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), o Emitfy registra a ciência da operação (`210210`) na mesma chamada; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -99,10 +469,10 @@ class ReceivedNfesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
-            '403': None,
             '404': None,
             '409': None,
             '422': None,
+            '423': None,
             '429': None,
         }
         response_data = self.api_client.call_api(
@@ -136,7 +506,7 @@ class ReceivedNfesApi:
     ) -> ApiResponse[None]:
         """Fetch received NF-e by access key (DistDFe consChNFe)
 
-        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), o Emitfy registra a ciência da operação (`210210`) na mesma chamada; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -175,10 +545,10 @@ class ReceivedNfesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
-            '403': None,
             '404': None,
             '409': None,
             '422': None,
+            '423': None,
             '429': None,
         }
         response_data = self.api_client.call_api(
@@ -212,7 +582,7 @@ class ReceivedNfesApi:
     ) -> RESTResponseType:
         """Fetch received NF-e by access key (DistDFe consChNFe)
 
-        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), a ciência da operação (`210210`) é enviada automaticamente; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
+        Consulta síncrona de uma NF-e pela chave de acesso (uma chamada SEFAZ). Não altera o cursor NSU do sync. Valida só formato/DV da chave. Se a SEFAZ devolver apenas o resumo (`resNFe`), o Emitfy registra a ciência da operação (`210210`) na mesma chamada; o XML completo fica disponível numa próxima busca/sincronização. Conta no limite de consultas da SEFAZ.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -251,10 +621,10 @@ class ReceivedNfesApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             '200': None,
-            '403': None,
             '404': None,
             '409': None,
             '422': None,
+            '423': None,
             '429': None,
         }
         response_data = self.api_client.call_api(
@@ -610,7 +980,7 @@ class ReceivedNfesApi:
         self,
         company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        limit: Optional[StrictInt] = None,
+        limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Itens por página (1–100). Padrão 20.")] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
         start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
@@ -635,7 +1005,7 @@ class ReceivedNfesApi:
         :type company_id: UUID
         :param page:
         :type page: int
-        :param limit:
+        :param limit: Itens por página (1–100). Padrão 20.
         :type limit: int
         :param search:
         :type search: str
@@ -700,7 +1070,7 @@ class ReceivedNfesApi:
         self,
         company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        limit: Optional[StrictInt] = None,
+        limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Itens por página (1–100). Padrão 20.")] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
         start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
@@ -725,7 +1095,7 @@ class ReceivedNfesApi:
         :type company_id: UUID
         :param page:
         :type page: int
-        :param limit:
+        :param limit: Itens por página (1–100). Padrão 20.
         :type limit: int
         :param search:
         :type search: str
@@ -790,7 +1160,7 @@ class ReceivedNfesApi:
         self,
         company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
         page: Optional[Annotated[int, Field(strict=True, ge=1)]] = None,
-        limit: Optional[StrictInt] = None,
+        limit: Annotated[Optional[Annotated[int, Field(le=100, strict=True, ge=1)]], Field(description="Itens por página (1–100). Padrão 20.")] = None,
         search: Optional[StrictStr] = None,
         status: Optional[StrictStr] = None,
         start_date: Annotated[Optional[StrictStr], Field(description="Início do período de emissão (`issuedOn`). `YYYY-MM-DD` = dia civil de Brasília (00:00 BRT); também aceita ISO 8601 ou epoch ms (recortado ao dia em BRT).")] = None,
@@ -815,7 +1185,7 @@ class ReceivedNfesApi:
         :type company_id: UUID
         :param page:
         :type page: int
-        :param limit:
+        :param limit: Itens por página (1–100). Padrão 20.
         :type limit: int
         :param search:
         :type search: str
@@ -1255,6 +1625,586 @@ class ReceivedNfesApi:
 
 
     @validate_call
+    def received_nfes_pdf(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> bytes:
+        """Get received NF-e DANFE (PDF)
+
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_pdf_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def received_nfes_pdf_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[bytes]:
+        """Get received NF-e DANFE (PDF)
+
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_pdf_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def received_nfes_pdf_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Get received NF-e DANFE (PDF)
+
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_pdf_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "bytes",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _received_nfes_pdf_serialize(
+        self,
+        company_id,
+        id,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/pdf'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/received-nfes/{id}/pdf',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def received_nfes_summary(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        search: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """Received NF-e totals
+
+        Totais das NF-e recebidas no filtro (`search`, `startDate`, `endDate`). Ignora `status`: devolve a contagem por manifestação.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param search:
+        :type search: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_summary_serialize(
+            company_id=company_id,
+            search=search,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def received_nfes_summary_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        search: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """Received NF-e totals
+
+        Totais das NF-e recebidas no filtro (`search`, `startDate`, `endDate`). Ignora `status`: devolve a contagem por manifestação.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param search:
+        :type search: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_summary_serialize(
+            company_id=company_id,
+            search=search,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def received_nfes_summary_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        search: Optional[StrictStr] = None,
+        start_date: Optional[StrictStr] = None,
+        end_date: Optional[StrictStr] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Received NF-e totals
+
+        Totais das NF-e recebidas no filtro (`search`, `startDate`, `endDate`). Ignora `status`: devolve a contagem por manifestação.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param search:
+        :type search: str
+        :param start_date:
+        :type start_date: str
+        :param end_date:
+        :type end_date: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._received_nfes_summary_serialize(
+            company_id=company_id,
+            search=search,
+            start_date=start_date,
+            end_date=end_date,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _received_nfes_summary_serialize(
+        self,
+        company_id,
+        search,
+        start_date,
+        end_date,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        # process the query parameters
+        if search is not None:
+            
+            _query_params.append(('search', search))
+            
+        if start_date is not None:
+            
+            _query_params.append(('startDate', start_date))
+            
+        if end_date is not None:
+            
+            _query_params.append(('endDate', end_date))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/received-nfes/summary',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def received_nfes_sync(
         self,
         company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
@@ -1273,6 +2223,7 @@ class ReceivedNfesApi:
     ) -> None:
         """Enqueue DistDFe sync
 
+        Enfileira a consulta DistDFe na SEFAZ (com ciência da operação para resumos). Intervalo mínimo de 10 minutos entre sincronizações; dentro dele responde 200 com `skipped: true`, `skipReason: min_interval` e `availableAt`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -1307,8 +2258,10 @@ class ReceivedNfesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
             '202': None,
             '422': None,
+            '423': None,
             '503': None,
         }
         response_data = self.api_client.call_api(
@@ -1341,6 +2294,7 @@ class ReceivedNfesApi:
     ) -> ApiResponse[None]:
         """Enqueue DistDFe sync
 
+        Enfileira a consulta DistDFe na SEFAZ (com ciência da operação para resumos). Intervalo mínimo de 10 minutos entre sincronizações; dentro dele responde 200 com `skipped: true`, `skipReason: min_interval` e `availableAt`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -1375,8 +2329,10 @@ class ReceivedNfesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
             '202': None,
             '422': None,
+            '423': None,
             '503': None,
         }
         response_data = self.api_client.call_api(
@@ -1409,6 +2365,7 @@ class ReceivedNfesApi:
     ) -> RESTResponseType:
         """Enqueue DistDFe sync
 
+        Enfileira a consulta DistDFe na SEFAZ (com ciência da operação para resumos). Intervalo mínimo de 10 minutos entre sincronizações; dentro dele responde 200 com `skipped: true`, `skipReason: min_interval` e `availableAt`.
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -1443,8 +2400,10 @@ class ReceivedNfesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
             '202': None,
             '422': None,
+            '423': None,
             '503': None,
         }
         response_data = self.api_client.call_api(
