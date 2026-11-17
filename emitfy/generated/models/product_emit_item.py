@@ -20,6 +20,10 @@ import json
 from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
+from emitfy.generated.models.nfe_import_declaration import NfeImportDeclaration
+from emitfy.generated.models.nfe_item_icms import NfeItemIcms
+from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax
+from emitfy.generated.models.nfe_item_ipi import NfeItemIpi
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -55,9 +59,12 @@ class ProductEmitItem(BaseModel):
     pis_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="pisTaxRate")
     cofins_cst: Optional[StrictStr] = Field(default=None, alias="cofinsCst")
     cofins_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="cofinsTaxRate")
-    ipi_cst: Optional[StrictStr] = Field(default=None, alias="ipiCst")
+    ipi_cst: Optional[StrictStr] = Field(default=None, description="NF-e — CST do IPI nesta nota (atalho de `ipi.cst`; com `ipiTaxRate` → pIPI e `ipiLegalCode` → cEnq). Só destaca IPI quando vem na requisição (o cadastro nunca destaca sozinho). Divergir de `ipi.cst` → 422. ", alias="ipiCst")
     ipi_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="ipiTaxRate")
     ipi_legal_code: Optional[StrictStr] = Field(default=None, alias="ipiLegalCode")
+    icms: Optional[NfeItemIcms] = None
+    ipi: Optional[NfeItemIpi] = None
+    import_tax: Optional[NfeItemImportTax] = Field(default=None, alias="importTax")
     cest: Optional[StrictStr] = Field(default=None, description="CEST (7 dígitos). Sai uma única vez no `prod`; prevalece sobre o do cadastro")
     fci: Optional[StrictStr] = None
     nve: Optional[Annotated[List[Annotated[str, Field(strict=True)]], Field(max_length=8)]] = Field(default=None, description="NF-e — Nomenclatura de Valor Aduaneiro (NVE, ex. AA0001), até 8 por item")
@@ -71,7 +78,7 @@ class ProductEmitItem(BaseModel):
     tax_classification: Optional[StrictStr] = Field(default=None, alias="taxClassification")
     ibs_cst: Optional[StrictStr] = Field(default=None, alias="ibsCst")
     cbs_cst: Optional[StrictStr] = Field(default=None, alias="cbsCst")
-    import_declarations: Optional[List[Dict[str, Any]]] = Field(default=None, alias="importDeclarations")
+    import_declarations: Optional[Annotated[List[NfeImportDeclaration], Field(max_length=100)]] = Field(default=None, description="NF-e — DI/DSI/DA/DUIMP do item (grupo DI, logo após indTot)", alias="importDeclarations")
     traces: Optional[List[Dict[str, Any]]] = None
     exports: Optional[List[Dict[str, Any]]] = None
     vehicle: Optional[Dict[str, Any]] = None
@@ -80,7 +87,7 @@ class ProductEmitItem(BaseModel):
     fuel: Optional[Dict[str, Any]] = None
     tax_return: Optional[Dict[str, Any]] = Field(default=None, alias="taxReturn")
     additional_info: Optional[Annotated[str, Field(strict=True, max_length=500)]] = Field(default=None, alias="additionalInfo")
-    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "icms", "ipi", "importTax", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
 
     @field_validator('extipi', mode="before")
     def extipi_validate_regular_expression(cls, value):
@@ -131,6 +138,22 @@ class ProductEmitItem(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of icms
+        if self.icms:
+            _dict['icms'] = self.icms.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of ipi
+        if self.ipi:
+            _dict['ipi'] = self.ipi.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of import_tax
+        if self.import_tax:
+            _dict['importTax'] = self.import_tax.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in import_declarations (list)
+        _items = []
+        if self.import_declarations:
+            for _item_import_declarations in self.import_declarations:
+                if _item_import_declarations:
+                    _items.append(_item_import_declarations.to_dict())
+            _dict['importDeclarations'] = _items
         return _dict
 
     @classmethod
@@ -173,6 +196,9 @@ class ProductEmitItem(BaseModel):
             "ipiCst": obj.get("ipiCst"),
             "ipiTaxRate": obj.get("ipiTaxRate"),
             "ipiLegalCode": obj.get("ipiLegalCode"),
+            "icms": NfeItemIcms.from_dict(obj["icms"]) if obj.get("icms") is not None else None,
+            "ipi": NfeItemIpi.from_dict(obj["ipi"]) if obj.get("ipi") is not None else None,
+            "importTax": NfeItemImportTax.from_dict(obj["importTax"]) if obj.get("importTax") is not None else None,
             "cest": obj.get("cest"),
             "fci": obj.get("fci"),
             "nve": obj.get("nve"),
@@ -186,7 +212,7 @@ class ProductEmitItem(BaseModel):
             "taxClassification": obj.get("taxClassification"),
             "ibsCst": obj.get("ibsCst"),
             "cbsCst": obj.get("cbsCst"),
-            "importDeclarations": obj.get("importDeclarations"),
+            "importDeclarations": [NfeImportDeclaration.from_dict(_item) for _item in obj["importDeclarations"]] if obj.get("importDeclarations") is not None else None,
             "traces": obj.get("traces"),
             "exports": obj.get("exports"),
             "vehicle": obj.get("vehicle"),

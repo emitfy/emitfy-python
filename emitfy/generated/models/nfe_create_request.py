@@ -55,7 +55,8 @@ class NfeCreateRequest(BaseModel):
     consumer_type: Optional[StrictStr] = Field(default=None, description="indFinal. Omitido: 0 quando o destinatário tem IE (indIEDest 1) e 1 para isento (2) ou não contribuinte (9). Não contribuinte (indIEDest 9) sempre sai com indFinal 1 (rejeição 696), mesmo com `normal`. ", alias="consumerType")
     presence_type: Optional[StrictStr] = Field(default=None, alias="presenceType")
     ibs_consumption_city_code: Optional[StrictStr] = Field(default=None, description="Reservado (cMunFGIBS, reforma tributária). Ainda não suportado → 422", alias="ibsConsumptionCityCode")
-    state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada como emit/IE. Precisa existir no cadastro e ser da UF do emitente; IE de outra UF (IEST) ainda não é suportada → 422. ", alias="stateRegistrationId")
+    state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada como emit/IE. Precisa existir no cadastro e ser da UF do emitente; IE de outra UF → 422 (use `stStateRegistrationId` para o IEST). ", alias="stateRegistrationId")
+    st_state_registration_id: Optional[UUID] = Field(default=None, description="IEST — inscrição de substituto tributário da empresa na UF de destino (cadastrada em inscrições estaduais). Sai em emit/IEST, logo após a IE. Precisa ser da UF do destinatário e diferente da UF do emitente → senão 422. ", alias="stStateRegistrationId")
     cfop: Optional[StrictStr] = None
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
     ide: Optional[NfeCreateRequestIde] = None
@@ -76,7 +77,7 @@ class NfeCreateRequest(BaseModel):
     farming: Optional[Dict[str, Any]] = None
     totals: Optional[NfeCreateRequestTotals] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+    __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "stStateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
 
     @field_validator('payment_method')
     def payment_method_validate_enum(cls, value):
@@ -248,6 +249,7 @@ class NfeCreateRequest(BaseModel):
             "presenceType": obj.get("presenceType"),
             "ibsConsumptionCityCode": obj.get("ibsConsumptionCityCode"),
             "stateRegistrationId": obj.get("stateRegistrationId"),
+            "stStateRegistrationId": obj.get("stStateRegistrationId"),
             "cfop": obj.get("cfop"),
             "issueDate": obj.get("issueDate"),
             "ide": NfeCreateRequestIde.from_dict(obj["ide"]) if obj.get("ide") is not None else None,

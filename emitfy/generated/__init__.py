@@ -138,7 +138,23 @@ __all__ = [
     "NfeGet200Response",
     "NfeGet200ResponseData",
     "NfeGet200ResponseDataCorrectionsInner",
+    "NfeIcmsTriple",
+    "NfeImportDeclaration",
+    "NfeImportDeclarationAdditionsInner",
     "NfeInutilize200Response",
+    "NfeItemIcms",
+    "NfeItemIcmsDeferral",
+    "NfeItemIcmsEffective",
+    "NfeItemIcmsExemption",
+    "NfeItemIcmsMonophasic",
+    "NfeItemIcmsPartition",
+    "NfeItemIcmsRetained",
+    "NfeItemIcmsSimplesCredit",
+    "NfeItemIcmsSt",
+    "NfeItemIcmsStDestination",
+    "NfeItemIcmsStExemption",
+    "NfeItemImportTax",
+    "NfeItemIpi",
     "NfseCreateRequest",
     "NfseCreateRequestBorrower",
     "NfseCreateRequestBorrowerAddress",
@@ -304,7 +320,23 @@ from emitfy.generated.models.nfe_create_request_transport_volumes_inner import N
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response as NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner as NfeGet200ResponseDataCorrectionsInner
+from emitfy.generated.models.nfe_icms_triple import NfeIcmsTriple as NfeIcmsTriple
+from emitfy.generated.models.nfe_import_declaration import NfeImportDeclaration as NfeImportDeclaration
+from emitfy.generated.models.nfe_import_declaration_additions_inner import NfeImportDeclarationAdditionsInner as NfeImportDeclarationAdditionsInner
 from emitfy.generated.models.nfe_inutilize200_response import NfeInutilize200Response as NfeInutilize200Response
+from emitfy.generated.models.nfe_item_icms import NfeItemIcms as NfeItemIcms
+from emitfy.generated.models.nfe_item_icms_deferral import NfeItemIcmsDeferral as NfeItemIcmsDeferral
+from emitfy.generated.models.nfe_item_icms_effective import NfeItemIcmsEffective as NfeItemIcmsEffective
+from emitfy.generated.models.nfe_item_icms_exemption import NfeItemIcmsExemption as NfeItemIcmsExemption
+from emitfy.generated.models.nfe_item_icms_monophasic import NfeItemIcmsMonophasic as NfeItemIcmsMonophasic
+from emitfy.generated.models.nfe_item_icms_partition import NfeItemIcmsPartition as NfeItemIcmsPartition
+from emitfy.generated.models.nfe_item_icms_retained import NfeItemIcmsRetained as NfeItemIcmsRetained
+from emitfy.generated.models.nfe_item_icms_simples_credit import NfeItemIcmsSimplesCredit as NfeItemIcmsSimplesCredit
+from emitfy.generated.models.nfe_item_icms_st import NfeItemIcmsSt as NfeItemIcmsSt
+from emitfy.generated.models.nfe_item_icms_st_destination import NfeItemIcmsStDestination as NfeItemIcmsStDestination
+from emitfy.generated.models.nfe_item_icms_st_exemption import NfeItemIcmsStExemption as NfeItemIcmsStExemption
+from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax as NfeItemImportTax
+from emitfy.generated.models.nfe_item_ipi import NfeItemIpi as NfeItemIpi
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest as NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower as NfseCreateRequestBorrower
 from emitfy.generated.models.nfse_create_request_borrower_address import NfseCreateRequestBorrowerAddress as NfseCreateRequestBorrowerAddress
