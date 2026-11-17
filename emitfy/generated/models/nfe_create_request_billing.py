@@ -21,6 +21,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner
+from emitfy.generated.models.nfe_create_request_billing_installments_inner import NfeCreateRequestBillingInstallmentsInner
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -34,8 +35,9 @@ class NfeCreateRequestBilling(BaseModel):
     discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vDesc da fatura (netAmount = originalAmount − discount)")
     net_amount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vLiq", alias="netAmount")
     duplicates: Optional[List[NfeCreateRequestBillingDuplicatesInner]] = None
+    installments: Optional[Annotated[List[NfeCreateRequestBillingInstallmentsInner], Field(min_length=1, max_length=120)]] = Field(default=None, description="Atalho das parcelas: gera `dup` numeradas 001, 002… e a fatura (nFat/vOrig/vLiq pelo vNF). Não combina com `duplicates`; a soma não pode passar do vNF (422). ")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["invoiceNumber", "originalAmount", "discount", "netAmount", "duplicates"]
+    __properties: ClassVar[List[str]] = ["invoiceNumber", "originalAmount", "discount", "netAmount", "duplicates", "installments"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -85,6 +87,13 @@ class NfeCreateRequestBilling(BaseModel):
                 if _item_duplicates:
                     _items.append(_item_duplicates.to_dict())
             _dict['duplicates'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in installments (list)
+        _items = []
+        if self.installments:
+            for _item_installments in self.installments:
+                if _item_installments:
+                    _items.append(_item_installments.to_dict())
+            _dict['installments'] = _items
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -106,7 +115,8 @@ class NfeCreateRequestBilling(BaseModel):
             "originalAmount": obj.get("originalAmount"),
             "discount": obj.get("discount"),
             "netAmount": obj.get("netAmount"),
-            "duplicates": [NfeCreateRequestBillingDuplicatesInner.from_dict(_item) for _item in obj["duplicates"]] if obj.get("duplicates") is not None else None
+            "duplicates": [NfeCreateRequestBillingDuplicatesInner.from_dict(_item) for _item in obj["duplicates"]] if obj.get("duplicates") is not None else None,
+            "installments": [NfeCreateRequestBillingInstallmentsInner.from_dict(_item) for _item in obj["installments"]] if obj.get("installments") is not None else None
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

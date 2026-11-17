@@ -124,10 +124,13 @@ __all__ = [
     "NfeCreateRequestAdditionalTaxpayerNotesInner",
     "NfeCreateRequestBilling",
     "NfeCreateRequestBillingDuplicatesInner",
+    "NfeCreateRequestBillingInstallmentsInner",
     "NfeCreateRequestEntrega",
     "NfeCreateRequestIde",
+    "NfeCreateRequestIdeReferencesInner",
     "NfeCreateRequestPaymentsInner",
     "NfeCreateRequestRecipient",
+    "NfeCreateRequestRecipientIeIndicator",
     "NfeCreateRequestRetirada",
     "NfeCreateRequestTotals",
     "NfeCreateRequestTransport",
@@ -287,10 +290,13 @@ from emitfy.generated.models.nfe_create_request_additional import NfeCreateReque
 from emitfy.generated.models.nfe_create_request_additional_taxpayer_notes_inner import NfeCreateRequestAdditionalTaxpayerNotesInner as NfeCreateRequestAdditionalTaxpayerNotesInner
 from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestBilling as NfeCreateRequestBilling
 from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner as NfeCreateRequestBillingDuplicatesInner
+from emitfy.generated.models.nfe_create_request_billing_installments_inner import NfeCreateRequestBillingInstallmentsInner as NfeCreateRequestBillingInstallmentsInner
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega as NfeCreateRequestEntrega
 from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde as NfeCreateRequestIde
+from emitfy.generated.models.nfe_create_request_ide_references_inner import NfeCreateRequestIdeReferencesInner as NfeCreateRequestIdeReferencesInner
 from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner as NfeCreateRequestPaymentsInner
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient as NfeCreateRequestRecipient
+from emitfy.generated.models.nfe_create_request_recipient_ie_indicator import NfeCreateRequestRecipientIeIndicator as NfeCreateRequestRecipientIeIndicator
 from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequestRetirada as NfeCreateRequestRetirada
 from emitfy.generated.models.nfe_create_request_totals import NfeCreateRequestTotals as NfeCreateRequestTotals
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport as NfeCreateRequestTransport

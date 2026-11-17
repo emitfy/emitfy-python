@@ -21,21 +21,27 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
 from emitfy.generated.models.nfe_address import NfeAddress
+from emitfy.generated.models.nfe_create_request_recipient_ie_indicator import NfeCreateRequestRecipientIeIndicator
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
 class NfeCreateRequestRecipient(BaseModel):
     """
-    NfeCreateRequestRecipient
+    Destinatário (dest). Informe `taxId` (CPF/CNPJ) ou, no exterior, `foreignId` (idEstrangeiro) com `address.country` fora do Brasil — nunca os dois. Os campos fiscais valem só para esta nota e prevalecem sobre o cadastro do cliente (IE informada, ISENTO ou não contribuinte). 
     """ # noqa: E501
-    tax_id: Annotated[str, Field(min_length=1, strict=True)] = Field(alias="taxId")
+    tax_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(default=None, description="CPF ou CNPJ (obrigatório sem foreignId)", alias="taxId")
+    foreign_id: Optional[Annotated[str, Field(min_length=5, strict=True, max_length=20)]] = Field(default=None, description="idEstrangeiro (passaporte/ID fiscal estrangeiro). Exige address.country ≠ Brasil; sem IE/SUFRAMA/IM (indIEDest 9)", alias="foreignId")
     name: Annotated[str, Field(min_length=1, strict=True, max_length=200)]
     email: Optional[StrictStr] = None
-    phone: Optional[StrictStr] = None
+    phone: Optional[StrictStr] = Field(default=None, description="enderDest/fone (6 a 14 dígitos; máscara é removida)")
+    state_registration: Optional[StrictStr] = Field(default=None, description="IE do destinatário (2 a 14 dígitos; máscara é removida) ou \"ISENTO\" (equivale a ieIndicator 2)", alias="stateRegistration")
+    ie_indicator: Optional[NfeCreateRequestRecipientIeIndicator] = Field(default=None, alias="ieIndicator")
+    suframa: Optional[StrictStr] = Field(default=None, description="dest/ISUF — inscrição SUFRAMA (8 ou 9 dígitos)")
+    municipal_registration: Optional[Annotated[str, Field(strict=True, max_length=15)]] = Field(default=None, description="dest/IM (NF-e conjugada)", alias="municipalRegistration")
     address: Optional[NfeAddress] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["taxId", "name", "email", "phone", "address"]
+    __properties: ClassVar[List[str]] = ["taxId", "foreignId", "name", "email", "phone", "stateRegistration", "ieIndicator", "suframa", "municipalRegistration", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -78,6 +84,9 @@ class NfeCreateRequestRecipient(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of ie_indicator
+        if self.ie_indicator:
+            _dict['ieIndicator'] = self.ie_indicator.to_dict()
         # override the default output from pydantic by calling `to_dict()` of address
         if self.address:
             _dict['address'] = self.address.to_dict()
@@ -99,9 +108,14 @@ class NfeCreateRequestRecipient(BaseModel):
 
         _obj = cls.model_validate({
             "taxId": obj.get("taxId"),
+            "foreignId": obj.get("foreignId"),
             "name": obj.get("name"),
             "email": obj.get("email"),
             "phone": obj.get("phone"),
+            "stateRegistration": obj.get("stateRegistration"),
+            "ieIndicator": NfeCreateRequestRecipientIeIndicator.from_dict(obj["ieIndicator"]) if obj.get("ieIndicator") is not None else None,
+            "suframa": obj.get("suframa"),
+            "municipalRegistration": obj.get("municipalRegistration"),
             "address": NfeAddress.from_dict(obj["address"]) if obj.get("address") is not None else None
         })
         # store additional fields in additional_properties

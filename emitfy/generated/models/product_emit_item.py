@@ -50,7 +50,7 @@ class ProductEmitItem(BaseModel):
     icms_cst: Optional[StrictStr] = Field(default=None, alias="icmsCst")
     icms_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="icmsTaxRate")
     icms_mod_bc: Optional[StrictStr] = Field(default=None, alias="icmsModBc")
-    icms_tax_benefit_code: Optional[StrictStr] = Field(default=None, alias="icmsTaxBenefitCode")
+    icms_tax_benefit_code: Optional[StrictStr] = Field(default=None, description="cBenef (código de benefício fiscal da UF do emitente). Pré-validado por UF antes de emitir (422 `VALIDATION_ERROR` na rota / `NFE_BENEFIT_CODE_INVALID` na emissão, com `items.N.icmsTaxBenefitCode`): código de outra UF (rejeição 946); PR exige nos CST 20, 30, 40, 41, 50, 51, 53 e 70 (aceita \"SEM CBENEF\"); RJ exige nos CST 20, 40, 51, 53 e 70 (não aceita \"SEM CBENEF\"); RS exige em todos os CST exceto 00 e 02 (\"SEM CBENEF\" só fora do 20/70); DF e SC não aceitam \"SEM CBENEF\". Simples Nacional (CSOSN) só passa pela checagem de UF. ", alias="icmsTaxBenefitCode")
     pis_cst: Optional[StrictStr] = Field(default=None, alias="pisCst")
     pis_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="pisTaxRate")
     cofins_cst: Optional[StrictStr] = Field(default=None, alias="cofinsCst")

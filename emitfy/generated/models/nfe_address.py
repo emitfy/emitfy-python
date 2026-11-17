@@ -35,7 +35,8 @@ class NfeAddress(BaseModel):
     state: Optional[StrictStr] = None
     zipcode: Optional[StrictStr] = None
     city_code: Optional[StrictStr] = Field(default=None, alias="cityCode")
-    __properties: ClassVar[List[str]] = ["street", "number", "complement", "district", "city", "state", "zipcode", "cityCode"]
+    country: Optional[StrictStr] = Field(default=None, description="País do endereço (ISO 3166 alfa-2/alfa-3, nome ou código BACEN). Fora do Brasil exige `recipient.foreignId` (NF-e para o exterior: cPais/xPais do país, cMun 9999999, UF EX). ")
+    __properties: ClassVar[List[str]] = ["street", "number", "complement", "district", "city", "state", "zipcode", "cityCode", "country"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -95,7 +96,8 @@ class NfeAddress(BaseModel):
             "city": obj.get("city"),
             "state": obj.get("state"),
             "zipcode": obj.get("zipcode"),
-            "cityCode": obj.get("cityCode")
+            "cityCode": obj.get("cityCode"),
+            "country": obj.get("country")
         })
         return _obj
 

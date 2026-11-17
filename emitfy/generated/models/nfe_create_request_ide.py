@@ -21,6 +21,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
+from emitfy.generated.models.nfe_create_request_ide_references_inner import NfeCreateRequestIdeReferencesInner
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -30,7 +31,8 @@ class NfeCreateRequestIde(BaseModel):
     Grupo ide (campos avançados). Aceita os aliases SEFAZ finNFe, NFref e refNFe
     """ # noqa: E501
     purpose: Optional[StrictStr] = Field(default=None, description="finNFe 1–4")
-    referenced_keys: Optional[List[Annotated[str, Field(min_length=44, strict=True, max_length=44)]]] = Field(default=None, description="Chaves referenciadas (NFref/refNFe); obrigatório quando purpose ≠ normal", alias="referencedKeys")
+    referenced_keys: Optional[List[Annotated[str, Field(min_length=44, strict=True, max_length=44)]]] = Field(default=None, description="Chaves de NF-e referenciadas (NFref/refNFe). Com purpose ≠ normal, informe referencedKeys ou references", alias="referencedKeys")
+    references: Optional[Annotated[List[NfeCreateRequestIdeReferencesInner], Field(max_length=999)]] = Field(default=None, description="Documentos referenciados (NFref) de qualquer tipo, discriminados por `type`: `nfe` (refNFe) e `cte` (refCTe) com `key` de 44 dígitos; `nf` (refNF, modelo 01/02) e `producer` (refNFP, nota de produtor modelo 01/04, com `stateRegistration`) com state (UF ou código IBGE), yearMonth (AAMM, AAAAMM ou AAAA-MM), taxId, model, series (0–999) e number; `ecf` (refECF, cupom fiscal modelo 2B/2C/2D) com ecfNumber (1–3 dígitos) e cooNumber (1–6 dígitos). ")
     departure_at: Optional[datetime] = Field(default=None, description="dhSaiEnt (data/hora de saída ou entrada)", alias="departureAt")
     random_code: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="cNF (8 dígitos", alias="randomCode")
     destination_type: Optional[StrictStr] = Field(default=None, description="idDest é calculado pelas UFs; valor divergente ou `international` → 422", alias="destinationType")
@@ -40,7 +42,7 @@ class NfeCreateRequestIde(BaseModel):
     contingency_started_at: Optional[datetime] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyStartedAt")
     contingency_reason: Optional[StrictStr] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyReason")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["purpose", "referencedKeys", "departureAt", "randomCode", "destinationType", "emissionType", "process", "versionProcess", "contingencyStartedAt", "contingencyReason"]
+    __properties: ClassVar[List[str]] = ["purpose", "referencedKeys", "references", "departureAt", "randomCode", "destinationType", "emissionType", "process", "versionProcess", "contingencyStartedAt", "contingencyReason"]
 
     @field_validator('purpose')
     def purpose_validate_enum(cls, value):
@@ -113,6 +115,13 @@ class NfeCreateRequestIde(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in references (list)
+        _items = []
+        if self.references:
+            for _item_references in self.references:
+                if _item_references:
+                    _items.append(_item_references.to_dict())
+            _dict['references'] = _items
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -132,6 +141,7 @@ class NfeCreateRequestIde(BaseModel):
         _obj = cls.model_validate({
             "purpose": obj.get("purpose"),
             "referencedKeys": obj.get("referencedKeys"),
+            "references": [NfeCreateRequestIdeReferencesInner.from_dict(_item) for _item in obj["references"]] if obj.get("references") is not None else None,
             "departureAt": obj.get("departureAt"),
             "randomCode": obj.get("randomCode"),
             "destinationType": obj.get("destinationType"),

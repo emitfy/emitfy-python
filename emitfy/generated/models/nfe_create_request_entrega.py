@@ -19,6 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from emitfy.generated.models.dfe_address_layout import DfeAddressLayout
 from typing import Optional, Set
 from typing_extensions import Self
@@ -26,13 +27,16 @@ from pydantic_core import to_jsonable_python
 
 class NfeCreateRequestEntrega(BaseModel):
     """
-    NfeCreateRequestEntrega
+    Local de entrega (TLocal). IE é obrigatória pela NT 2026.007 para contribuinte (aceita \"ISENTO\"); address exige street, number, district, city, state e cityCode (IBGE, 7 dígitos). Sem address.country, sai Brasil (1058). 
     """ # noqa: E501
-    tax_id: Optional[StrictStr] = Field(default=None, alias="taxId")
+    tax_id: Optional[StrictStr] = Field(default=None, description="CPF ou CNPJ", alias="taxId")
     name: Optional[StrictStr] = None
-    state_registration: Optional[StrictStr] = Field(default=None, alias="stateRegistration")
+    state_registration: Optional[StrictStr] = Field(default=None, description="IE do local (2 a 14 dígitos) ou ISENTO", alias="stateRegistration")
+    phone: Optional[StrictStr] = Field(default=None, description="fone (6 a 14 dígitos)")
+    email: Optional[Annotated[str, Field(strict=True, max_length=60)]] = None
     address: Optional[DfeAddressLayout] = None
-    __properties: ClassVar[List[str]] = ["taxId", "name", "stateRegistration", "address"]
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["taxId", "name", "stateRegistration", "phone", "email", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -64,8 +68,10 @@ class NfeCreateRequestEntrega(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -76,6 +82,11 @@ class NfeCreateRequestEntrega(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of address
         if self.address:
             _dict['address'] = self.address.to_dict()
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
@@ -91,8 +102,15 @@ class NfeCreateRequestEntrega(BaseModel):
             "taxId": obj.get("taxId"),
             "name": obj.get("name"),
             "stateRegistration": obj.get("stateRegistration"),
+            "phone": obj.get("phone"),
+            "email": obj.get("email"),
             "address": DfeAddressLayout.from_dict(obj["address"]) if obj.get("address") is not None else None
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

@@ -44,6 +44,7 @@ class NfeCreateRequest(BaseModel):
     """ # noqa: E501
     items: Annotated[List[ProductEmitItem], Field(min_length=1)]
     recipient: NfeCreateRequestRecipient
+    discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Desconto da nota (venda), rateado pelos itens em vDesc sobre o valor líquido e somado ao `items[].discount`. Não pode passar do total dos itens menos os descontos dos itens, nem ser usado junto com `totals.discount` (422). ")
     transport: Optional[NfeCreateRequestTransport] = None
     payment_method: Optional[StrictStr] = Field(default=None, description="Atalho de forma de pagamento (um `detPag` com o valor total da nota). pix=17, credit_card=03, debit_card=04, cash=01, bank_slip=15, bank_transfer=18, no_payment=90, other=99. Com `payments[]`, os pagamentos detalhados prevalecem. ", alias="paymentMethod")
     external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
@@ -75,7 +76,7 @@ class NfeCreateRequest(BaseModel):
     farming: Optional[Dict[str, Any]] = None
     totals: Optional[NfeCreateRequestTotals] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["items", "recipient", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+    __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
 
     @field_validator('payment_method')
     def payment_method_validate_enum(cls, value):
@@ -235,6 +236,7 @@ class NfeCreateRequest(BaseModel):
         _obj = cls.model_validate({
             "items": [ProductEmitItem.from_dict(_item) for _item in obj["items"]] if obj.get("items") is not None else None,
             "recipient": NfeCreateRequestRecipient.from_dict(obj["recipient"]) if obj.get("recipient") is not None else None,
+            "discount": obj.get("discount"),
             "transport": NfeCreateRequestTransport.from_dict(obj["transport"]) if obj.get("transport") is not None else None,
             "paymentMethod": obj.get("paymentMethod"),
             "externalId": obj.get("externalId"),
