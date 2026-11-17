@@ -24,9 +24,14 @@ from typing_extensions import Annotated
 from uuid import UUID
 from emitfy.generated.models.dfe_aut_xml import DfeAutXml
 from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
+from emitfy.generated.models.nfe_create_request_additional import NfeCreateRequestAdditional
+from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestBilling
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega
+from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde
+from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient
 from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequestRetirada
+from emitfy.generated.models.nfe_create_request_totals import NfeCreateRequestTotals
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport
 from emitfy.generated.models.product_emit_item import ProductEmitItem
 from typing import Optional, Set
@@ -40,36 +45,47 @@ class NfeCreateRequest(BaseModel):
     items: Annotated[List[ProductEmitItem], Field(min_length=1)]
     recipient: NfeCreateRequestRecipient
     transport: Optional[NfeCreateRequestTransport] = None
+    payment_method: Optional[StrictStr] = Field(default=None, description="Atalho de forma de pagamento (um `detPag` com o valor total da nota). pix=17, credit_card=03, debit_card=04, cash=01, bank_slip=15, bank_transfer=18, no_payment=90, other=99. Com `payments[]`, os pagamentos detalhados prevalecem. ", alias="paymentMethod")
     external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
     operation_nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, alias="operationNature")
     nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, description="Alias legado de operationNature")
     operation_type: Optional[StrictStr] = Field(default=None, alias="operationType")
-    print_type: Optional[StrictStr] = Field(default=None, alias="printType")
-    consumer_type: Optional[StrictStr] = Field(default=None, alias="consumerType")
+    print_type: Optional[StrictStr] = Field(default=None, description="tpImp do XML e orientação do DANFE (1 retrato, 2 paisagem). Omitido: orientação das configurações. `nfeSimplified` (tpImp 3) ainda não é suportado → 422. ", alias="printType")
+    consumer_type: Optional[StrictStr] = Field(default=None, description="indFinal. Omitido: 0 quando o destinatário tem IE (indIEDest 1) e 1 para isento (2) ou não contribuinte (9). Não contribuinte (indIEDest 9) sempre sai com indFinal 1 (rejeição 696), mesmo com `normal`. ", alias="consumerType")
     presence_type: Optional[StrictStr] = Field(default=None, alias="presenceType")
-    ibs_consumption_city_code: Optional[StrictStr] = Field(default=None, alias="ibsConsumptionCityCode")
-    state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada na emissão", alias="stateRegistrationId")
+    ibs_consumption_city_code: Optional[StrictStr] = Field(default=None, description="Reservado (cMunFGIBS, reforma tributária). Ainda não suportado → 422", alias="ibsConsumptionCityCode")
+    state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada como emit/IE. Precisa existir no cadastro e ser da UF do emitente; IE de outra UF (IEST) ainda não é suportada → 422. ", alias="stateRegistrationId")
     cfop: Optional[StrictStr] = None
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
-    ide: Optional[Dict[str, Any]] = Field(default=None, description="Grupo ide (campos avançados)")
+    ide: Optional[NfeCreateRequestIde] = None
     avulsa: Optional[Dict[str, Any]] = None
     retirada: Optional[NfeCreateRequestRetirada] = None
     entrega: Optional[NfeCreateRequestEntrega] = None
     aut_xml: Optional[List[DfeAutXml]] = Field(default=None, alias="autXml")
-    billing: Optional[Dict[str, Any]] = None
-    payments: Optional[List[Dict[str, Any]]] = None
-    change: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Troco")
+    billing: Optional[NfeCreateRequestBilling] = None
+    payments: Optional[Annotated[List[NfeCreateRequestPaymentsInner], Field(max_length=100)]] = Field(default=None, description="Pagamentos detalhados (`pag/detPag`, um por item). A soma (exceto method 90) não pode ser menor que o vNF (422). Excedente vira troco (`vTroco`) automaticamente. Cartão (03/04) e PIX (17) levam o grupo `card` (tpIntegra 2). ")
+    change: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Troco (vTroco). Opcional; quando enviado precisa ser soma(payments) − vNF. Só com `payments`")
     intermediary: Optional[Dict[str, Any]] = None
-    additional: Optional[Dict[str, Any]] = None
+    additional: Optional[NfeCreateRequestAdditional] = None
     export: Optional[Dict[str, Any]] = None
     purchase: Optional[Dict[str, Any]] = None
     sugarcane: Optional[Dict[str, Any]] = None
-    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
+    tech_responsible: Optional[DfeTechResponsible] = Field(default=None, description="Na NF-e, csrtId/csrtHash ainda não são suportados → 422", alias="techResponsible")
     nff_request: Optional[StrictStr] = Field(default=None, alias="nffRequest")
     farming: Optional[Dict[str, Any]] = None
-    totals: Optional[Dict[str, Any]] = Field(default=None, description="Override de totais")
+    totals: Optional[NfeCreateRequestTotals] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["items", "recipient", "transport", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+    __properties: ClassVar[List[str]] = ["items", "recipient", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+
+    @field_validator('payment_method')
+    def payment_method_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['credit_card', 'debit_card', 'pix', 'bank_transfer', 'cash', 'bank_slip', 'other', 'no_payment']):
+            raise ValueError("must be one of enum values ('credit_card', 'debit_card', 'pix', 'bank_transfer', 'cash', 'bank_slip', 'other', 'no_payment')")
+        return value
 
     @field_validator('operation_type')
     def operation_type_validate_enum(cls, value):
@@ -165,6 +181,9 @@ class NfeCreateRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of transport
         if self.transport:
             _dict['transport'] = self.transport.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of ide
+        if self.ide:
+            _dict['ide'] = self.ide.to_dict()
         # override the default output from pydantic by calling `to_dict()` of retirada
         if self.retirada:
             _dict['retirada'] = self.retirada.to_dict()
@@ -178,9 +197,25 @@ class NfeCreateRequest(BaseModel):
                 if _item_aut_xml:
                     _items.append(_item_aut_xml.to_dict())
             _dict['autXml'] = _items
+        # override the default output from pydantic by calling `to_dict()` of billing
+        if self.billing:
+            _dict['billing'] = self.billing.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in payments (list)
+        _items = []
+        if self.payments:
+            for _item_payments in self.payments:
+                if _item_payments:
+                    _items.append(_item_payments.to_dict())
+            _dict['payments'] = _items
+        # override the default output from pydantic by calling `to_dict()` of additional
+        if self.additional:
+            _dict['additional'] = self.additional.to_dict()
         # override the default output from pydantic by calling `to_dict()` of tech_responsible
         if self.tech_responsible:
             _dict['techResponsible'] = self.tech_responsible.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of totals
+        if self.totals:
+            _dict['totals'] = self.totals.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -201,6 +236,7 @@ class NfeCreateRequest(BaseModel):
             "items": [ProductEmitItem.from_dict(_item) for _item in obj["items"]] if obj.get("items") is not None else None,
             "recipient": NfeCreateRequestRecipient.from_dict(obj["recipient"]) if obj.get("recipient") is not None else None,
             "transport": NfeCreateRequestTransport.from_dict(obj["transport"]) if obj.get("transport") is not None else None,
+            "paymentMethod": obj.get("paymentMethod"),
             "externalId": obj.get("externalId"),
             "operationNature": obj.get("operationNature"),
             "nature": obj.get("nature"),
@@ -212,23 +248,23 @@ class NfeCreateRequest(BaseModel):
             "stateRegistrationId": obj.get("stateRegistrationId"),
             "cfop": obj.get("cfop"),
             "issueDate": obj.get("issueDate"),
-            "ide": obj.get("ide"),
+            "ide": NfeCreateRequestIde.from_dict(obj["ide"]) if obj.get("ide") is not None else None,
             "avulsa": obj.get("avulsa"),
             "retirada": NfeCreateRequestRetirada.from_dict(obj["retirada"]) if obj.get("retirada") is not None else None,
             "entrega": NfeCreateRequestEntrega.from_dict(obj["entrega"]) if obj.get("entrega") is not None else None,
             "autXml": [DfeAutXml.from_dict(_item) for _item in obj["autXml"]] if obj.get("autXml") is not None else None,
-            "billing": obj.get("billing"),
-            "payments": obj.get("payments"),
+            "billing": NfeCreateRequestBilling.from_dict(obj["billing"]) if obj.get("billing") is not None else None,
+            "payments": [NfeCreateRequestPaymentsInner.from_dict(_item) for _item in obj["payments"]] if obj.get("payments") is not None else None,
             "change": obj.get("change"),
             "intermediary": obj.get("intermediary"),
-            "additional": obj.get("additional"),
+            "additional": NfeCreateRequestAdditional.from_dict(obj["additional"]) if obj.get("additional") is not None else None,
             "export": obj.get("export"),
             "purchase": obj.get("purchase"),
             "sugarcane": obj.get("sugarcane"),
             "techResponsible": DfeTechResponsible.from_dict(obj["techResponsible"]) if obj.get("techResponsible") is not None else None,
             "nffRequest": obj.get("nffRequest"),
             "farming": obj.get("farming"),
-            "totals": obj.get("totals")
+            "totals": NfeCreateRequestTotals.from_dict(obj["totals"]) if obj.get("totals") is not None else None
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

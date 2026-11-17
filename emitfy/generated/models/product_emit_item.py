@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from typing import Optional, Set
@@ -58,16 +58,16 @@ class ProductEmitItem(BaseModel):
     ipi_cst: Optional[StrictStr] = Field(default=None, alias="ipiCst")
     ipi_tax_rate: Optional[Union[StrictFloat, StrictInt]] = Field(default=None, alias="ipiTaxRate")
     ipi_legal_code: Optional[StrictStr] = Field(default=None, alias="ipiLegalCode")
-    cest: Optional[StrictStr] = None
+    cest: Optional[StrictStr] = Field(default=None, description="CEST (7 dígitos). Sai uma única vez no `prod`; prevalece sobre o do cadastro")
     fci: Optional[StrictStr] = None
-    nve: Optional[List[StrictStr]] = None
-    extipi: Optional[StrictStr] = None
+    nve: Optional[Annotated[List[Annotated[str, Field(strict=True)]], Field(max_length=8)]] = Field(default=None, description="NF-e — Nomenclatura de Valor Aduaneiro (NVE, ex. AA0001), até 8 por item")
+    extipi: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="NF-e — código EX da TIPI (EXTIPI), 2 ou 3 dígitos")
     order_number: Optional[StrictStr] = Field(default=None, alias="orderNumber")
     order_item: Optional[Annotated[int, Field(strict=True, ge=1)]] = Field(default=None, alias="orderItem")
-    freight: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
-    insurance: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
-    discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
-    other: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = None
+    freight: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vFrete do item (prevalece sobre o rateio)")
+    insurance: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="NF-e — vSeg do item; soma em ICMSTot/vSeg e no vNF")
+    discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="NF-e — vDesc do item (não pode passar do valor do item); soma em ICMSTot/vDesc")
+    other: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="NF-e — vOutro (outras despesas acessórias) do item; soma em ICMSTot/vOutro e no vNF")
     tax_classification: Optional[StrictStr] = Field(default=None, alias="taxClassification")
     ibs_cst: Optional[StrictStr] = Field(default=None, alias="ibsCst")
     cbs_cst: Optional[StrictStr] = Field(default=None, alias="cbsCst")
@@ -81,6 +81,16 @@ class ProductEmitItem(BaseModel):
     tax_return: Optional[Dict[str, Any]] = Field(default=None, alias="taxReturn")
     additional_info: Optional[Annotated[str, Field(strict=True, max_length=500)]] = Field(default=None, alias="additionalInfo")
     __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+
+    @field_validator('extipi', mode="before")
+    def extipi_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^[0-9]{2,3}$", value):
+            raise ValueError(r"must validate the regular expression /^[0-9]{2,3}$/")
+        return value
 
     model_config = ConfigDict(
         validate_by_name=True,

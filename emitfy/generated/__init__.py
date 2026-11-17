@@ -120,10 +120,18 @@ __all__ = [
     "NfeCorrection200ResponseData",
     "NfeCorrectionRequest",
     "NfeCreateRequest",
+    "NfeCreateRequestAdditional",
+    "NfeCreateRequestAdditionalTaxpayerNotesInner",
+    "NfeCreateRequestBilling",
+    "NfeCreateRequestBillingDuplicatesInner",
     "NfeCreateRequestEntrega",
+    "NfeCreateRequestIde",
+    "NfeCreateRequestPaymentsInner",
     "NfeCreateRequestRecipient",
     "NfeCreateRequestRetirada",
+    "NfeCreateRequestTotals",
     "NfeCreateRequestTransport",
+    "NfeCreateRequestTransportVolumesInner",
     "NfeGet200Response",
     "NfeGet200ResponseData",
     "NfeGet200ResponseDataCorrectionsInner",
@@ -275,10 +283,18 @@ from emitfy.generated.models.nfe_correction200_response import NfeCorrection200R
 from emitfy.generated.models.nfe_correction200_response_data import NfeCorrection200ResponseData as NfeCorrection200ResponseData
 from emitfy.generated.models.nfe_correction_request import NfeCorrectionRequest as NfeCorrectionRequest
 from emitfy.generated.models.nfe_create_request import NfeCreateRequest as NfeCreateRequest
+from emitfy.generated.models.nfe_create_request_additional import NfeCreateRequestAdditional as NfeCreateRequestAdditional
+from emitfy.generated.models.nfe_create_request_additional_taxpayer_notes_inner import NfeCreateRequestAdditionalTaxpayerNotesInner as NfeCreateRequestAdditionalTaxpayerNotesInner
+from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestBilling as NfeCreateRequestBilling
+from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner as NfeCreateRequestBillingDuplicatesInner
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega as NfeCreateRequestEntrega
+from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde as NfeCreateRequestIde
+from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner as NfeCreateRequestPaymentsInner
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient as NfeCreateRequestRecipient
 from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequestRetirada as NfeCreateRequestRetirada
+from emitfy.generated.models.nfe_create_request_totals import NfeCreateRequestTotals as NfeCreateRequestTotals
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport as NfeCreateRequestTransport
+from emitfy.generated.models.nfe_create_request_transport_volumes_inner import NfeCreateRequestTransportVolumesInner as NfeCreateRequestTransportVolumesInner
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response as NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner as NfeGet200ResponseDataCorrectionsInner
