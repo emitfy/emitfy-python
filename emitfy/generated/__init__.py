@@ -126,6 +126,7 @@ __all__ = [
     "NfeCreateRequestBillingDuplicatesInner",
     "NfeCreateRequestBillingInstallmentsInner",
     "NfeCreateRequestEntrega",
+    "NfeCreateRequestGovernmentPurchase",
     "NfeCreateRequestIde",
     "NfeCreateRequestIdeReferencesInner",
     "NfeCreateRequestPaymentsInner",
@@ -138,10 +139,13 @@ __all__ = [
     "NfeGet200Response",
     "NfeGet200ResponseData",
     "NfeGet200ResponseDataCorrectionsInner",
+    "NfeIbsCbsSphere",
+    "NfeIbsCbsSphereDeferral",
     "NfeIcmsTriple",
     "NfeImportDeclaration",
     "NfeImportDeclarationAdditionsInner",
     "NfeInutilize200Response",
+    "NfeItemIbsCbs",
     "NfeItemIcms",
     "NfeItemIcmsDeferral",
     "NfeItemIcmsEffective",
@@ -155,6 +159,7 @@ __all__ = [
     "NfeItemIcmsStExemption",
     "NfeItemImportTax",
     "NfeItemIpi",
+    "NfeItemSelectiveTax",
     "NfseCreateRequest",
     "NfseCreateRequestBorrower",
     "NfseCreateRequestBorrowerAddress",
@@ -172,6 +177,8 @@ __all__ = [
     "NumberInutilizationRequest",
     "NumberInutilizationResult",
     "ProductEmitItem",
+    "ProductEmitItemIcmsForecast",
+    "ProductEmitItemReferencedDocument",
     "PublicInvoiceResource",
     "PublicInvoiceResourceAssets",
     "PublicInvoiceResourceDocument",
@@ -308,6 +315,7 @@ from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestB
 from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner as NfeCreateRequestBillingDuplicatesInner
 from emitfy.generated.models.nfe_create_request_billing_installments_inner import NfeCreateRequestBillingInstallmentsInner as NfeCreateRequestBillingInstallmentsInner
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega as NfeCreateRequestEntrega
+from emitfy.generated.models.nfe_create_request_government_purchase import NfeCreateRequestGovernmentPurchase as NfeCreateRequestGovernmentPurchase
 from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde as NfeCreateRequestIde
 from emitfy.generated.models.nfe_create_request_ide_references_inner import NfeCreateRequestIdeReferencesInner as NfeCreateRequestIdeReferencesInner
 from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner as NfeCreateRequestPaymentsInner
@@ -320,10 +328,13 @@ from emitfy.generated.models.nfe_create_request_transport_volumes_inner import N
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response as NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner as NfeGet200ResponseDataCorrectionsInner
+from emitfy.generated.models.nfe_ibs_cbs_sphere import NfeIbsCbsSphere as NfeIbsCbsSphere
+from emitfy.generated.models.nfe_ibs_cbs_sphere_deferral import NfeIbsCbsSphereDeferral as NfeIbsCbsSphereDeferral
 from emitfy.generated.models.nfe_icms_triple import NfeIcmsTriple as NfeIcmsTriple
 from emitfy.generated.models.nfe_import_declaration import NfeImportDeclaration as NfeImportDeclaration
 from emitfy.generated.models.nfe_import_declaration_additions_inner import NfeImportDeclarationAdditionsInner as NfeImportDeclarationAdditionsInner
 from emitfy.generated.models.nfe_inutilize200_response import NfeInutilize200Response as NfeInutilize200Response
+from emitfy.generated.models.nfe_item_ibs_cbs import NfeItemIbsCbs as NfeItemIbsCbs
 from emitfy.generated.models.nfe_item_icms import NfeItemIcms as NfeItemIcms
 from emitfy.generated.models.nfe_item_icms_deferral import NfeItemIcmsDeferral as NfeItemIcmsDeferral
 from emitfy.generated.models.nfe_item_icms_effective import NfeItemIcmsEffective as NfeItemIcmsEffective
@@ -337,6 +348,7 @@ from emitfy.generated.models.nfe_item_icms_st_destination import NfeItemIcmsStDe
 from emitfy.generated.models.nfe_item_icms_st_exemption import NfeItemIcmsStExemption as NfeItemIcmsStExemption
 from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax as NfeItemImportTax
 from emitfy.generated.models.nfe_item_ipi import NfeItemIpi as NfeItemIpi
+from emitfy.generated.models.nfe_item_selective_tax import NfeItemSelectiveTax as NfeItemSelectiveTax
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest as NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower as NfseCreateRequestBorrower
 from emitfy.generated.models.nfse_create_request_borrower_address import NfseCreateRequestBorrowerAddress as NfseCreateRequestBorrowerAddress
@@ -354,6 +366,8 @@ from emitfy.generated.models.number_inutilization_record import NumberInutilizat
 from emitfy.generated.models.number_inutilization_request import NumberInutilizationRequest as NumberInutilizationRequest
 from emitfy.generated.models.number_inutilization_result import NumberInutilizationResult as NumberInutilizationResult
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
+from emitfy.generated.models.product_emit_item_icms_forecast import ProductEmitItemIcmsForecast as ProductEmitItemIcmsForecast
+from emitfy.generated.models.product_emit_item_referenced_document import ProductEmitItemReferencedDocument as ProductEmitItemReferencedDocument
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource as PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets as PublicInvoiceResourceAssets
 from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument as PublicInvoiceResourceDocument

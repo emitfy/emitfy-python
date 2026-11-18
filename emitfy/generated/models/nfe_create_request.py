@@ -27,6 +27,7 @@ from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
 from emitfy.generated.models.nfe_create_request_additional import NfeCreateRequestAdditional
 from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestBilling
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega
+from emitfy.generated.models.nfe_create_request_government_purchase import NfeCreateRequestGovernmentPurchase
 from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde
 from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner
 from emitfy.generated.models.nfe_create_request_recipient import NfeCreateRequestRecipient
@@ -53,8 +54,11 @@ class NfeCreateRequest(BaseModel):
     operation_type: Optional[StrictStr] = Field(default=None, alias="operationType")
     print_type: Optional[StrictStr] = Field(default=None, description="tpImp do XML e orientação do DANFE (1 retrato, 2 paisagem). Omitido: orientação das configurações. `nfeSimplified` (tpImp 3) ainda não é suportado → 422. ", alias="printType")
     consumer_type: Optional[StrictStr] = Field(default=None, description="indFinal. Omitido: 0 quando o destinatário tem IE (indIEDest 1) e 1 para isento (2) ou não contribuinte (9). Não contribuinte (indIEDest 9) sempre sai com indFinal 1 (rejeição 696), mesmo com `normal`. ", alias="consumerType")
-    presence_type: Optional[StrictStr] = Field(default=None, alias="presenceType")
-    ibs_consumption_city_code: Optional[StrictStr] = Field(default=None, description="Reservado (cMunFGIBS, reforma tributária). Ainda não suportado → 422", alias="ibsConsumptionCityCode")
+    presence_type: Optional[StrictStr] = Field(default=None, description="indPres (`outsideEstablishment` = 5, operação presencial fora do estabelecimento)", alias="presenceType")
+    ibs_consumption_city_code: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="cMunFGIBS (município de consumo do IBS, código IBGE). Só com presenceType outsideEstablishment (indPres 5)", alias="ibsConsumptionCityCode")
+    government_purchase: Optional[NfeCreateRequestGovernmentPurchase] = Field(default=None, alias="governmentPurchase")
+    advance_payment_keys: Optional[Annotated[List[Annotated[str, Field(strict=True)]], Field(max_length=99)]] = Field(default=None, description="gPagAntecipado — chaves das NF-e de pagamento antecipado (só NF-e)", alias="advancePaymentKeys")
+    ibs_cbs_regime: Optional[StrictStr] = Field(default=None, description="tpRegimeIBSCBS (NT 2026.005 — produção em 14/12/2026). Antes da data → 422", alias="ibsCbsRegime")
     state_registration_id: Optional[UUID] = Field(default=None, description="Inscrição estadual da empresa (multi-IE) usada como emit/IE. Precisa existir no cadastro e ser da UF do emitente; IE de outra UF → 422 (use `stStateRegistrationId` para o IEST). ", alias="stateRegistrationId")
     st_state_registration_id: Optional[UUID] = Field(default=None, description="IEST — inscrição de substituto tributário da empresa na UF de destino (cadastrada em inscrições estaduais). Sai em emit/IEST, logo após a IE. Precisa ser da UF do destinatário e diferente da UF do emitente → senão 422. ", alias="stStateRegistrationId")
     cfop: Optional[StrictStr] = None
@@ -77,7 +81,7 @@ class NfeCreateRequest(BaseModel):
     farming: Optional[Dict[str, Any]] = None
     totals: Optional[NfeCreateRequestTotals] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "stateRegistrationId", "stStateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
+    __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "governmentPurchase", "advancePaymentKeys", "ibsCbsRegime", "stateRegistrationId", "stStateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]
 
     @field_validator('payment_method')
     def payment_method_validate_enum(cls, value):
@@ -125,8 +129,28 @@ class NfeCreateRequest(BaseModel):
         if value is None:
             return value
 
-        if value not in set(['presential', 'internet', 'telephone', 'delivery', 'others']):
-            raise ValueError("must be one of enum values ('presential', 'internet', 'telephone', 'delivery', 'others')")
+        if value not in set(['presential', 'internet', 'telephone', 'delivery', 'outsideEstablishment', 'others']):
+            raise ValueError("must be one of enum values ('presential', 'internet', 'telephone', 'delivery', 'outsideEstablishment', 'others')")
+        return value
+
+    @field_validator('ibs_consumption_city_code', mode="before")
+    def ibs_consumption_city_code_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^[0-9]{7}$", value):
+            raise ValueError(r"must validate the regular expression /^[0-9]{7}$/")
+        return value
+
+    @field_validator('ibs_cbs_regime')
+    def ibs_cbs_regime_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['1', '2', '3', '4']):
+            raise ValueError("must be one of enum values ('1', '2', '3', '4')")
         return value
 
     model_config = ConfigDict(
@@ -183,6 +207,9 @@ class NfeCreateRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of transport
         if self.transport:
             _dict['transport'] = self.transport.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of government_purchase
+        if self.government_purchase:
+            _dict['governmentPurchase'] = self.government_purchase.to_dict()
         # override the default output from pydantic by calling `to_dict()` of ide
         if self.ide:
             _dict['ide'] = self.ide.to_dict()
@@ -248,6 +275,9 @@ class NfeCreateRequest(BaseModel):
             "consumerType": obj.get("consumerType"),
             "presenceType": obj.get("presenceType"),
             "ibsConsumptionCityCode": obj.get("ibsConsumptionCityCode"),
+            "governmentPurchase": NfeCreateRequestGovernmentPurchase.from_dict(obj["governmentPurchase"]) if obj.get("governmentPurchase") is not None else None,
+            "advancePaymentKeys": obj.get("advancePaymentKeys"),
+            "ibsCbsRegime": obj.get("ibsCbsRegime"),
             "stateRegistrationId": obj.get("stateRegistrationId"),
             "stStateRegistrationId": obj.get("stStateRegistrationId"),
             "cfop": obj.get("cfop"),

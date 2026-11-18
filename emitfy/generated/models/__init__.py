@@ -97,6 +97,7 @@ from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestB
 from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner
 from emitfy.generated.models.nfe_create_request_billing_installments_inner import NfeCreateRequestBillingInstallmentsInner
 from emitfy.generated.models.nfe_create_request_entrega import NfeCreateRequestEntrega
+from emitfy.generated.models.nfe_create_request_government_purchase import NfeCreateRequestGovernmentPurchase
 from emitfy.generated.models.nfe_create_request_ide import NfeCreateRequestIde
 from emitfy.generated.models.nfe_create_request_ide_references_inner import NfeCreateRequestIdeReferencesInner
 from emitfy.generated.models.nfe_create_request_payments_inner import NfeCreateRequestPaymentsInner
@@ -109,10 +110,13 @@ from emitfy.generated.models.nfe_create_request_transport_volumes_inner import N
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData
 from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner
+from emitfy.generated.models.nfe_ibs_cbs_sphere import NfeIbsCbsSphere
+from emitfy.generated.models.nfe_ibs_cbs_sphere_deferral import NfeIbsCbsSphereDeferral
 from emitfy.generated.models.nfe_icms_triple import NfeIcmsTriple
 from emitfy.generated.models.nfe_import_declaration import NfeImportDeclaration
 from emitfy.generated.models.nfe_import_declaration_additions_inner import NfeImportDeclarationAdditionsInner
 from emitfy.generated.models.nfe_inutilize200_response import NfeInutilize200Response
+from emitfy.generated.models.nfe_item_ibs_cbs import NfeItemIbsCbs
 from emitfy.generated.models.nfe_item_icms import NfeItemIcms
 from emitfy.generated.models.nfe_item_icms_deferral import NfeItemIcmsDeferral
 from emitfy.generated.models.nfe_item_icms_effective import NfeItemIcmsEffective
@@ -126,6 +130,7 @@ from emitfy.generated.models.nfe_item_icms_st_destination import NfeItemIcmsStDe
 from emitfy.generated.models.nfe_item_icms_st_exemption import NfeItemIcmsStExemption
 from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax
 from emitfy.generated.models.nfe_item_ipi import NfeItemIpi
+from emitfy.generated.models.nfe_item_selective_tax import NfeItemSelectiveTax
 from emitfy.generated.models.nfse_create_request import NfseCreateRequest
 from emitfy.generated.models.nfse_create_request_borrower import NfseCreateRequestBorrower
 from emitfy.generated.models.nfse_create_request_borrower_address import NfseCreateRequestBorrowerAddress
@@ -143,6 +148,8 @@ from emitfy.generated.models.number_inutilization_record import NumberInutilizat
 from emitfy.generated.models.number_inutilization_request import NumberInutilizationRequest
 from emitfy.generated.models.number_inutilization_result import NumberInutilizationResult
 from emitfy.generated.models.product_emit_item import ProductEmitItem
+from emitfy.generated.models.product_emit_item_icms_forecast import ProductEmitItemIcmsForecast
+from emitfy.generated.models.product_emit_item_referenced_document import ProductEmitItemReferencedDocument
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets
 from emitfy.generated.models.public_invoice_resource_document import PublicInvoiceResourceDocument

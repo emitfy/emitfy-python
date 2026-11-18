@@ -34,7 +34,7 @@ class NfceCreateRequest(BaseModel):
     Com `issueMode: offlineContingency` a validação exige `contingency`, `accessKey` (44 dígitos, modelo 65, tpEmis 9), `number`, `series` e `issuedAt` (ou `issueDate`). Falha → 422 `VALIDATION_ERROR`. 
     """ # noqa: E501
     payment_method: StrictStr = Field(alias="paymentMethod")
-    items: Annotated[List[ProductEmitItem], Field(min_length=1)] = Field(description="Mesmo item da NF-e: `cest` (uma vez, antes do CFOP), `nve`, `extipi`, `discount`, `insurance`, `other`, `orderNumber`/`orderItem` e `additionalInfo` saem no prod/det e entram nos totais (vSeg/vDesc/vOutro). Grupos exclusivos da NF-e (`importDeclarations`, `exports`, `vehicle`, `weapons`, `taxReturn`, `icmsUfDest`, `icms`, `ipi`, `importTax`) retornam 422 — emita uma NF-e (modelo 55). ")
+    items: Annotated[List[ProductEmitItem], Field(min_length=1)] = Field(description="Mesmo item da NF-e: `cest` (uma vez, antes do CFOP), `nve`, `extipi`, `discount`, `insurance`, `other`, `orderNumber`/`orderItem` e `additionalInfo` saem no prod/det e entram nos totais (vSeg/vDesc/vOutro). Grupos exclusivos da NF-e (`importDeclarations`, `exports`, `vehicle`, `weapons`, `taxReturn`, `icmsUfDest`, `ipi`, `importTax`, `referencedDocument`, `icmsForecast`) retornam 422 — emita uma NF-e (modelo 55). `icms` é aceito para ICMS próprio e ST retido (CST 60 / CSOSN 500); ST de substituto (CST 10/30/70, CSOSN 201/202/203), partilha e repasse → 422. `ibsCbs` e `selectiveTax` seguem a tabela oficial (cClassTrib de NFC-e). ")
     recipient: Optional[NfceCreateRequestRecipient] = None
     nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = None
     cfop: Optional[StrictStr] = None

@@ -17,13 +17,17 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictFloat, StrictInt, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfe_import_declaration import NfeImportDeclaration
+from emitfy.generated.models.nfe_item_ibs_cbs import NfeItemIbsCbs
 from emitfy.generated.models.nfe_item_icms import NfeItemIcms
 from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax
 from emitfy.generated.models.nfe_item_ipi import NfeItemIpi
+from emitfy.generated.models.nfe_item_selective_tax import NfeItemSelectiveTax
+from emitfy.generated.models.product_emit_item_icms_forecast import ProductEmitItemIcmsForecast
+from emitfy.generated.models.product_emit_item_referenced_document import ProductEmitItemReferencedDocument
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -65,6 +69,16 @@ class ProductEmitItem(BaseModel):
     icms: Optional[NfeItemIcms] = None
     ipi: Optional[NfeItemIpi] = None
     import_tax: Optional[NfeItemImportTax] = Field(default=None, alias="importTax")
+    ibs_cbs: Optional[NfeItemIbsCbs] = Field(default=None, alias="ibsCbs")
+    selective_tax: Optional[NfeItemSelectiveTax] = Field(default=None, alias="selectiveTax")
+    net_unit_value: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vUnComLiq (NT 2026.008 — produção em 14/12/2026). Sai com vProdLiq = netUnitValue × quantity (ou `netAmount`) e soma em vProdLiqTot. Se um item informar, todos informam. Antes da data de produção → 422. ", alias="netUnitValue")
+    net_amount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vProdLiq informado (default netUnitValue × quantity)", alias="netAmount")
+    simples_activity: Optional[StrictStr] = Field(default=None, description="cAtivSN (NT 2026.005 — produção em 14/12/2026), só CRT 1/2/4", alias="simplesActivity")
+    used_movable_good: Optional[StrictBool] = Field(default=None, description="indBemMovelUsado (bem móvel usado)", alias="usedMovableGood")
+    zfm_presumed_credit_type: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="tpCredPresIBSZFM", alias="zfmPresumedCreditType")
+    referenced_document: Optional[ProductEmitItemReferencedDocument] = Field(default=None, alias="referencedDocument")
+    item_total: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="vItem (valor total do item com IBS/CBS/IS). Se um item informar, todos informam; vNFTot = soma.", alias="itemTotal")
+    icms_forecast: Optional[ProductEmitItemIcmsForecast] = Field(default=None, alias="icmsForecast")
     cest: Optional[StrictStr] = Field(default=None, description="CEST (7 dígitos). Sai uma única vez no `prod`; prevalece sobre o do cadastro")
     fci: Optional[StrictStr] = None
     nve: Optional[Annotated[List[Annotated[str, Field(strict=True)]], Field(max_length=8)]] = Field(default=None, description="NF-e — Nomenclatura de Valor Aduaneiro (NVE, ex. AA0001), até 8 por item")
@@ -87,7 +101,28 @@ class ProductEmitItem(BaseModel):
     fuel: Optional[Dict[str, Any]] = None
     tax_return: Optional[Dict[str, Any]] = Field(default=None, alias="taxReturn")
     additional_info: Optional[Annotated[str, Field(strict=True, max_length=500)]] = Field(default=None, alias="additionalInfo")
-    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "icms", "ipi", "importTax", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+    additional_properties: Dict[str, Any] = {}
+    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "icms", "ipi", "importTax", "ibsCbs", "selectiveTax", "netUnitValue", "netAmount", "simplesActivity", "usedMovableGood", "zfmPresumedCreditType", "referencedDocument", "itemTotal", "icmsForecast", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+
+    @field_validator('simples_activity')
+    def simples_activity_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['01', '02', '03', '04', '90']):
+            raise ValueError("must be one of enum values ('01', '02', '03', '04', '90')")
+        return value
+
+    @field_validator('zfm_presumed_credit_type', mode="before")
+    def zfm_presumed_credit_type_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^[0-4]$", value):
+            raise ValueError(r"must validate the regular expression /^[0-4]$/")
+        return value
 
     @field_validator('extipi', mode="before")
     def extipi_validate_regular_expression(cls, value):
@@ -129,8 +164,10 @@ class ProductEmitItem(BaseModel):
         * `None` is only added to the output dict for nullable fields that
           were set at model initialization. Other fields with value `None`
           are ignored.
+        * Fields in `self.additional_properties` are added to the output dict.
         """
         excluded_fields: Set[str] = set([
+            "additional_properties",
         ])
 
         _dict = self.model_dump(
@@ -147,6 +184,18 @@ class ProductEmitItem(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of import_tax
         if self.import_tax:
             _dict['importTax'] = self.import_tax.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of ibs_cbs
+        if self.ibs_cbs:
+            _dict['ibsCbs'] = self.ibs_cbs.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of selective_tax
+        if self.selective_tax:
+            _dict['selectiveTax'] = self.selective_tax.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of referenced_document
+        if self.referenced_document:
+            _dict['referencedDocument'] = self.referenced_document.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of icms_forecast
+        if self.icms_forecast:
+            _dict['icmsForecast'] = self.icms_forecast.to_dict()
         # override the default output from pydantic by calling `to_dict()` of each item in import_declarations (list)
         _items = []
         if self.import_declarations:
@@ -154,6 +203,11 @@ class ProductEmitItem(BaseModel):
                 if _item_import_declarations:
                     _items.append(_item_import_declarations.to_dict())
             _dict['importDeclarations'] = _items
+        # puts key-value pairs in additional_properties in the top level
+        if self.additional_properties is not None:
+            for _key, _value in self.additional_properties.items():
+                _dict[_key] = _value
+
         return _dict
 
     @classmethod
@@ -199,6 +253,16 @@ class ProductEmitItem(BaseModel):
             "icms": NfeItemIcms.from_dict(obj["icms"]) if obj.get("icms") is not None else None,
             "ipi": NfeItemIpi.from_dict(obj["ipi"]) if obj.get("ipi") is not None else None,
             "importTax": NfeItemImportTax.from_dict(obj["importTax"]) if obj.get("importTax") is not None else None,
+            "ibsCbs": NfeItemIbsCbs.from_dict(obj["ibsCbs"]) if obj.get("ibsCbs") is not None else None,
+            "selectiveTax": NfeItemSelectiveTax.from_dict(obj["selectiveTax"]) if obj.get("selectiveTax") is not None else None,
+            "netUnitValue": obj.get("netUnitValue"),
+            "netAmount": obj.get("netAmount"),
+            "simplesActivity": obj.get("simplesActivity"),
+            "usedMovableGood": obj.get("usedMovableGood"),
+            "zfmPresumedCreditType": obj.get("zfmPresumedCreditType"),
+            "referencedDocument": ProductEmitItemReferencedDocument.from_dict(obj["referencedDocument"]) if obj.get("referencedDocument") is not None else None,
+            "itemTotal": obj.get("itemTotal"),
+            "icmsForecast": ProductEmitItemIcmsForecast.from_dict(obj["icmsForecast"]) if obj.get("icmsForecast") is not None else None,
             "cest": obj.get("cest"),
             "fci": obj.get("fci"),
             "nve": obj.get("nve"),
@@ -222,6 +286,11 @@ class ProductEmitItem(BaseModel):
             "taxReturn": obj.get("taxReturn"),
             "additionalInfo": obj.get("additionalInfo")
         })
+        # store additional fields in additional_properties
+        for _key in obj.keys():
+            if _key not in cls.__properties:
+                _obj.additional_properties[_key] = obj.get(_key)
+
         return _obj
 
 

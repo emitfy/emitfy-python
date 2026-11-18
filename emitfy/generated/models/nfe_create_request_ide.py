@@ -30,7 +30,9 @@ class NfeCreateRequestIde(BaseModel):
     """
     Grupo ide (campos avançados). Aceita os aliases SEFAZ finNFe, NFref e refNFe
     """ # noqa: E501
-    purpose: Optional[StrictStr] = Field(default=None, description="finNFe 1–4")
+    purpose: Optional[StrictStr] = Field(default=None, description="finNFe 1–6. `credit` (5, nota de crédito): operationType incoming, `creditType` 01–06 e, nos tipos 01/03/04, exatamente uma referência. `debit` (6, nota de débito): saída, `debitType` 01–08. Nessas notas o Emitfy omite ICMS/IPI/II/PIS/COFINS (B25-80; exceções crédito 03/04/06 e débito 07; débito 06 mantém IPI e, até 2026, PIS/COFINS), exige `items[].ibsCbs` e recusa os grupos detalhados `icms`, `ipi`, `importTax` e `icmsUfDest`. ")
+    credit_type: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="tpNFCredito (alias SEFAZ tpNFCredito)", alias="creditType")
+    debit_type: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="tpNFDebito (alias SEFAZ tpNFDebito)", alias="debitType")
     referenced_keys: Optional[List[Annotated[str, Field(min_length=44, strict=True, max_length=44)]]] = Field(default=None, description="Chaves de NF-e referenciadas (NFref/refNFe). Com purpose ≠ normal, informe referencedKeys ou references", alias="referencedKeys")
     references: Optional[Annotated[List[NfeCreateRequestIdeReferencesInner], Field(max_length=999)]] = Field(default=None, description="Documentos referenciados (NFref) de qualquer tipo, discriminados por `type`: `nfe` (refNFe) e `cte` (refCTe) com `key` de 44 dígitos; `nf` (refNF, modelo 01/02) e `producer` (refNFP, nota de produtor modelo 01/04, com `stateRegistration`) com state (UF ou código IBGE), yearMonth (AAMM, AAAAMM ou AAAA-MM), taxId, model, series (0–999) e number; `ecf` (refECF, cupom fiscal modelo 2B/2C/2D) com ecfNumber (1–3 dígitos) e cooNumber (1–6 dígitos). ")
     departure_at: Optional[datetime] = Field(default=None, description="dhSaiEnt (data/hora de saída ou entrada)", alias="departureAt")
@@ -42,7 +44,7 @@ class NfeCreateRequestIde(BaseModel):
     contingency_started_at: Optional[datetime] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyStartedAt")
     contingency_reason: Optional[StrictStr] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyReason")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["purpose", "referencedKeys", "references", "departureAt", "randomCode", "destinationType", "emissionType", "process", "versionProcess", "contingencyStartedAt", "contingencyReason"]
+    __properties: ClassVar[List[str]] = ["purpose", "creditType", "debitType", "referencedKeys", "references", "departureAt", "randomCode", "destinationType", "emissionType", "process", "versionProcess", "contingencyStartedAt", "contingencyReason"]
 
     @field_validator('purpose')
     def purpose_validate_enum(cls, value):
@@ -50,8 +52,28 @@ class NfeCreateRequestIde(BaseModel):
         if value is None:
             return value
 
-        if value not in set(['normal', 'complementary', 'adjustment', 'return']):
-            raise ValueError("must be one of enum values ('normal', 'complementary', 'adjustment', 'return')")
+        if value not in set(['normal', 'complementary', 'adjustment', 'return', 'credit', 'debit']):
+            raise ValueError("must be one of enum values ('normal', 'complementary', 'adjustment', 'return', 'credit', 'debit')")
+        return value
+
+    @field_validator('credit_type', mode="before")
+    def credit_type_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^0[1-6]$", value):
+            raise ValueError(r"must validate the regular expression /^0[1-6]$/")
+        return value
+
+    @field_validator('debit_type', mode="before")
+    def debit_type_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^0[1-8]$", value):
+            raise ValueError(r"must validate the regular expression /^0[1-8]$/")
         return value
 
     @field_validator('random_code', mode="before")
@@ -140,6 +162,8 @@ class NfeCreateRequestIde(BaseModel):
 
         _obj = cls.model_validate({
             "purpose": obj.get("purpose"),
+            "creditType": obj.get("creditType"),
+            "debitType": obj.get("debitType"),
             "referencedKeys": obj.get("referencedKeys"),
             "references": [NfeCreateRequestIdeReferencesInner.from_dict(_item) for _item in obj["references"]] if obj.get("references") is not None else None,
             "departureAt": obj.get("departureAt"),
