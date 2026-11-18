@@ -34,7 +34,8 @@ class NfeCreateRequestTransportVolumesInner(BaseModel):
     numbering: Optional[Annotated[str, Field(strict=True, max_length=60)]] = Field(default=None, description="nVol")
     net_weight: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="pesoL (kg)", alias="netWeight")
     gross_weight: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="pesoB (kg)", alias="grossWeight")
-    __properties: ClassVar[List[str]] = ["quantity", "species", "brand", "numbering", "netWeight", "grossWeight"]
+    seals: Optional[Annotated[List[Annotated[str, Field(strict=True, max_length=60)]], Field(max_length=5000)]] = Field(default=None, description="lacres/nLacre. Alias `lacres` (lista de textos ou de `{ nLacre }`)")
+    __properties: ClassVar[List[str]] = ["quantity", "species", "brand", "numbering", "netWeight", "grossWeight", "seals"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -92,7 +93,8 @@ class NfeCreateRequestTransportVolumesInner(BaseModel):
             "brand": obj.get("brand"),
             "numbering": obj.get("numbering"),
             "netWeight": obj.get("netWeight"),
-            "grossWeight": obj.get("grossWeight")
+            "grossWeight": obj.get("grossWeight"),
+            "seals": obj.get("seals")
         })
         return _obj
 

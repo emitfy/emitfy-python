@@ -38,11 +38,11 @@ class NfeCreateRequestIde(BaseModel):
     departure_at: Optional[datetime] = Field(default=None, description="dhSaiEnt (data/hora de saída ou entrada)", alias="departureAt")
     random_code: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="cNF (8 dígitos", alias="randomCode")
     destination_type: Optional[StrictStr] = Field(default=None, description="idDest é calculado pelas UFs; valor divergente ou `international` → 422", alias="destinationType")
-    emission_type: Optional[StrictStr] = Field(default=None, description="Só `1`/`normal`. Contingência ainda não suportada → 422", alias="emissionType")
+    emission_type: Optional[StrictStr] = Field(default=None, description="`1`/`normal`. `6`/`svcAn` (SVC-AN) e `7`/`svcRs` (SVC-RS) só com a flag `NFE_SVC_CONTINGENCY_ENABLED` (senão 422); a UF do emitente precisa usar aquele SVC. O XML sai com tpEmis/dhCont/xJust, mas a transmissão ao autorizador de contingência ainda não existe — a nota fica com erro de validação. ", alias="emissionType")
     process: Optional[StrictStr] = Field(default=None, description="Não configurável → 422")
     version_process: Optional[StrictStr] = Field(default=None, description="Não configurável → 422", alias="versionProcess")
-    contingency_started_at: Optional[datetime] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyStartedAt")
-    contingency_reason: Optional[StrictStr] = Field(default=None, description="Contingência ainda não suportada → 422", alias="contingencyReason")
+    contingency_started_at: Optional[datetime] = Field(default=None, description="dhCont — obrigatório com emissionType 6/7; não pode estar no futuro", alias="contingencyStartedAt")
+    contingency_reason: Optional[Annotated[str, Field(min_length=15, strict=True, max_length=256)]] = Field(default=None, description="xJust — obrigatório com emissionType 6/7", alias="contingencyReason")
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["purpose", "creditType", "debitType", "referencedKeys", "references", "departureAt", "randomCode", "destinationType", "emissionType", "process", "versionProcess", "contingencyStartedAt", "contingencyReason"]
 

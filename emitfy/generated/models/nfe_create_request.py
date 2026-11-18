@@ -78,7 +78,7 @@ class NfeCreateRequest(BaseModel):
     sugarcane: Optional[Dict[str, Any]] = None
     tech_responsible: Optional[DfeTechResponsible] = Field(default=None, description="Na NF-e, csrtId/csrtHash ainda não são suportados → 422", alias="techResponsible")
     nff_request: Optional[StrictStr] = Field(default=None, alias="nffRequest")
-    farming: Optional[Dict[str, Any]] = None
+    farming: Optional[Dict[str, Any]] = Field(default=None, description="agropecuario (PL_010h) — `defensives` (até 20: number = nReceituario, taxId = CPF do responsável técnico) OU `transitGuide` (type 1–7, state, series?, number até 9 dígitos), nunca os dois. `amount` (qApl) não existe no leiaute → 422 ")
     totals: Optional[NfeCreateRequestTotals] = None
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["items", "recipient", "discount", "transport", "paymentMethod", "externalId", "operationNature", "nature", "operationType", "printType", "consumerType", "presenceType", "ibsConsumptionCityCode", "governmentPurchase", "advancePaymentKeys", "ibsCbsRegime", "stateRegistrationId", "stStateRegistrationId", "cfop", "issueDate", "ide", "avulsa", "retirada", "entrega", "autXml", "billing", "payments", "change", "intermediary", "additional", "export", "purchase", "sugarcane", "techResponsible", "nffRequest", "farming", "totals"]

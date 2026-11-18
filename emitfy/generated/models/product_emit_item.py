@@ -27,6 +27,8 @@ from emitfy.generated.models.nfe_item_import_tax import NfeItemImportTax
 from emitfy.generated.models.nfe_item_ipi import NfeItemIpi
 from emitfy.generated.models.nfe_item_selective_tax import NfeItemSelectiveTax
 from emitfy.generated.models.product_emit_item_icms_forecast import ProductEmitItemIcmsForecast
+from emitfy.generated.models.product_emit_item_item_notes import ProductEmitItemItemNotes
+from emitfy.generated.models.product_emit_item_packaging import ProductEmitItemPackaging
 from emitfy.generated.models.product_emit_item_referenced_document import ProductEmitItemReferencedDocument
 from typing import Optional, Set
 from typing_extensions import Self
@@ -95,14 +97,17 @@ class ProductEmitItem(BaseModel):
     import_declarations: Optional[Annotated[List[NfeImportDeclaration], Field(max_length=100)]] = Field(default=None, description="NF-e — DI/DSI/DA/DUIMP do item (grupo DI, logo após indTot)", alias="importDeclarations")
     traces: Optional[List[Dict[str, Any]]] = None
     exports: Optional[List[Dict[str, Any]]] = None
-    vehicle: Optional[Dict[str, Any]] = None
-    medicine: Optional[Dict[str, Any]] = None
-    weapons: Optional[List[Dict[str, Any]]] = None
-    fuel: Optional[Dict[str, Any]] = None
+    vehicle: Optional[Dict[str, Any]] = Field(default=None, description="NF-e — veicProd. Os 24 campos são obrigatórios (chassi 17 caracteres). Exclusivo com medicine/weapons/fuel/recopi")
+    medicine: Optional[Dict[str, Any]] = Field(default=None, description="med — anvisaCode (11 ou 13 dígitos ou `ISENTO` + reasonExemption) e maxConsumerPrice (vPMC) obrigatórios")
+    weapons: Optional[Annotated[List[Dict[str, Any]], Field(max_length=500)]] = Field(default=None, description="arma — kind (0 uso permitido, 1 uso restrito), serial, barrelSerial e description obrigatórios")
+    fuel: Optional[Dict[str, Any]] = Field(default=None, description="comb — anpCode (9 dígitos), description e consumptionState obrigatórios; codif (até 21 dígitos), quantityTemp, CIDE (cideBase/cideRate/cideAmount juntos), `pump` (encerrante: nozzle, pump?, tank, startReading, endReading), `biodieselPercent` (pBio, >0 a 100) e `origins` (origComb, até 30: imported, stateCode IBGE, percent). NFC-e aceita. ")
+    recopi: Optional[Annotated[str, Field(strict=True)]] = Field(default=None, description="NF-e — nRECOPI (papel imune). Exclusivo com vehicle/medicine/weapons/fuel. NFC-e → 422")
+    packaging: Optional[ProductEmitItemPackaging] = None
+    item_notes: Optional[ProductEmitItemItemNotes] = Field(default=None, alias="itemNotes")
     tax_return: Optional[Dict[str, Any]] = Field(default=None, alias="taxReturn")
     additional_info: Optional[Annotated[str, Field(strict=True, max_length=500)]] = Field(default=None, alias="additionalInfo")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "icms", "ipi", "importTax", "ibsCbs", "selectiveTax", "netUnitValue", "netAmount", "simplesActivity", "usedMovableGood", "zfmPresumedCreditType", "referencedDocument", "itemTotal", "icmsForecast", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "taxReturn", "additionalInfo"]
+    __properties: ClassVar[List[str]] = ["sku", "name", "category", "description", "fiscalDescription", "guarantee", "ncm", "cfop", "cfopInternal", "cfopExternal", "cfopExternalNonTaxpayer", "cfopInternational", "quantity", "unitValue", "unit", "commercialUnit", "taxableUnit", "gtin", "icmsOrigin", "icmsCst", "icmsTaxRate", "icmsModBc", "icmsTaxBenefitCode", "pisCst", "pisTaxRate", "cofinsCst", "cofinsTaxRate", "ipiCst", "ipiTaxRate", "ipiLegalCode", "icms", "ipi", "importTax", "ibsCbs", "selectiveTax", "netUnitValue", "netAmount", "simplesActivity", "usedMovableGood", "zfmPresumedCreditType", "referencedDocument", "itemTotal", "icmsForecast", "cest", "fci", "nve", "extipi", "orderNumber", "orderItem", "freight", "insurance", "discount", "other", "taxClassification", "ibsCst", "cbsCst", "importDeclarations", "traces", "exports", "vehicle", "medicine", "weapons", "fuel", "recopi", "packaging", "itemNotes", "taxReturn", "additionalInfo"]
 
     @field_validator('simples_activity')
     def simples_activity_validate_enum(cls, value):
@@ -132,6 +137,16 @@ class ProductEmitItem(BaseModel):
 
         if isinstance(value, str) and not re.match(r"^[0-9]{2,3}$", value):
             raise ValueError(r"must validate the regular expression /^[0-9]{2,3}$/")
+        return value
+
+    @field_validator('recopi', mode="before")
+    def recopi_validate_regular_expression(cls, value):
+        """Validates the regular expression"""
+        if value is None:
+            return value
+
+        if isinstance(value, str) and not re.match(r"^[0-9]{20}$", value):
+            raise ValueError(r"must validate the regular expression /^[0-9]{20}$/")
         return value
 
     model_config = ConfigDict(
@@ -203,6 +218,12 @@ class ProductEmitItem(BaseModel):
                 if _item_import_declarations:
                     _items.append(_item_import_declarations.to_dict())
             _dict['importDeclarations'] = _items
+        # override the default output from pydantic by calling `to_dict()` of packaging
+        if self.packaging:
+            _dict['packaging'] = self.packaging.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of item_notes
+        if self.item_notes:
+            _dict['itemNotes'] = self.item_notes.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -283,6 +304,9 @@ class ProductEmitItem(BaseModel):
             "medicine": obj.get("medicine"),
             "weapons": obj.get("weapons"),
             "fuel": obj.get("fuel"),
+            "recopi": obj.get("recopi"),
+            "packaging": ProductEmitItemPackaging.from_dict(obj["packaging"]) if obj.get("packaging") is not None else None,
+            "itemNotes": ProductEmitItemItemNotes.from_dict(obj["itemNotes"]) if obj.get("itemNotes") is not None else None,
             "taxReturn": obj.get("taxReturn"),
             "additionalInfo": obj.get("additionalInfo")
         })

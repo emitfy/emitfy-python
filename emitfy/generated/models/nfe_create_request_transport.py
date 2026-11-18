@@ -21,6 +21,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
 from emitfy.generated.models.nfe_create_request_transport_volumes_inner import NfeCreateRequestTransportVolumesInner
+from emitfy.generated.models.nfe_create_request_transport_withholding import NfeCreateRequestTransportWithholding
 from emitfy.generated.models.transport_carrier import TransportCarrier
 from typing import Optional, Set
 from typing_extensions import Self
@@ -34,8 +35,12 @@ class NfeCreateRequestTransport(BaseModel):
     value: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Valor do frete; compõe o total quando por conta do emitente. Sem `freightModality`, um valor maior que zero assume frete por conta do remetente (CIF, modFrete 0). ")
     carrier: Optional[TransportCarrier] = None
     volumes: Optional[Annotated[List[NfeCreateRequestTransportVolumesInner], Field(min_length=1, max_length=5000)]] = Field(default=None, description="Volumes (`transp/vol`); exige `freightModality`. Aceita também os nomes do leiaute (qVol, esp, marca, nVol, pesoL, pesoB)")
+    withholding: Optional[NfeCreateRequestTransportWithholding] = None
+    trailers: Optional[Annotated[List[Dict[str, Any]], Field(min_length=1, max_length=5)]] = Field(default=None, description="reboque — { plate, state?, rntc? }. Exclusivo com wagon/ferry")
+    wagon: Optional[Annotated[str, Field(strict=True, max_length=20)]] = Field(default=None, description="vagao (ferroviário). Exclusivo com veículo/reboque/balsa")
+    ferry: Optional[Annotated[str, Field(strict=True, max_length=20)]] = Field(default=None, description="balsa (aquaviário). Exclusivo com veículo/reboque/vagão")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["freightModality", "value", "carrier", "volumes"]
+    __properties: ClassVar[List[str]] = ["freightModality", "value", "carrier", "volumes", "withholding", "trailers", "wagon", "ferry"]
 
     @field_validator('freight_modality')
     def freight_modality_validate_enum(cls, value):
@@ -98,6 +103,9 @@ class NfeCreateRequestTransport(BaseModel):
                 if _item_volumes:
                     _items.append(_item_volumes.to_dict())
             _dict['volumes'] = _items
+        # override the default output from pydantic by calling `to_dict()` of withholding
+        if self.withholding:
+            _dict['withholding'] = self.withholding.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -118,7 +126,11 @@ class NfeCreateRequestTransport(BaseModel):
             "freightModality": obj.get("freightModality"),
             "value": obj.get("value"),
             "carrier": TransportCarrier.from_dict(obj["carrier"]) if obj.get("carrier") is not None else None,
-            "volumes": [NfeCreateRequestTransportVolumesInner.from_dict(_item) for _item in obj["volumes"]] if obj.get("volumes") is not None else None
+            "volumes": [NfeCreateRequestTransportVolumesInner.from_dict(_item) for _item in obj["volumes"]] if obj.get("volumes") is not None else None,
+            "withholding": NfeCreateRequestTransportWithholding.from_dict(obj["withholding"]) if obj.get("withholding") is not None else None,
+            "trailers": obj.get("trailers"),
+            "wagon": obj.get("wagon"),
+            "ferry": obj.get("ferry")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

@@ -20,6 +20,7 @@ import json
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List, Optional
 from typing_extensions import Annotated
+from emitfy.generated.models.nfe_create_request_additional_process_references_inner import NfeCreateRequestAdditionalProcessReferencesInner
 from emitfy.generated.models.nfe_create_request_additional_taxpayer_notes_inner import NfeCreateRequestAdditionalTaxpayerNotesInner
 from typing import Optional, Set
 from typing_extensions import Self
@@ -33,8 +34,9 @@ class NfeCreateRequestAdditional(BaseModel):
     fisco: Optional[Annotated[str, Field(strict=True, max_length=2000)]] = Field(default=None, description="infAdFisco")
     taxpayer_notes: Optional[Annotated[List[NfeCreateRequestAdditionalTaxpayerNotesInner], Field(max_length=10)]] = Field(default=None, description="obsCont", alias="taxpayerNotes")
     fisco_notes: Optional[Annotated[List[NfeCreateRequestAdditionalTaxpayerNotesInner], Field(max_length=10)]] = Field(default=None, description="obsFisco", alias="fiscoNotes")
+    process_references: Optional[Annotated[List[NfeCreateRequestAdditionalProcessReferencesInner], Field(max_length=100)]] = Field(default=None, description="procRef — processo referenciado (só NF-e; NFC-e → 422)", alias="processReferences")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["complement", "fisco", "taxpayerNotes", "fiscoNotes"]
+    __properties: ClassVar[List[str]] = ["complement", "fisco", "taxpayerNotes", "fiscoNotes", "processReferences"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -91,6 +93,13 @@ class NfeCreateRequestAdditional(BaseModel):
                 if _item_fisco_notes:
                     _items.append(_item_fisco_notes.to_dict())
             _dict['fiscoNotes'] = _items
+        # override the default output from pydantic by calling `to_dict()` of each item in process_references (list)
+        _items = []
+        if self.process_references:
+            for _item_process_references in self.process_references:
+                if _item_process_references:
+                    _items.append(_item_process_references.to_dict())
+            _dict['processReferences'] = _items
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -111,7 +120,8 @@ class NfeCreateRequestAdditional(BaseModel):
             "complement": obj.get("complement"),
             "fisco": obj.get("fisco"),
             "taxpayerNotes": [NfeCreateRequestAdditionalTaxpayerNotesInner.from_dict(_item) for _item in obj["taxpayerNotes"]] if obj.get("taxpayerNotes") is not None else None,
-            "fiscoNotes": [NfeCreateRequestAdditionalTaxpayerNotesInner.from_dict(_item) for _item in obj["fiscoNotes"]] if obj.get("fiscoNotes") is not None else None
+            "fiscoNotes": [NfeCreateRequestAdditionalTaxpayerNotesInner.from_dict(_item) for _item in obj["fiscoNotes"]] if obj.get("fiscoNotes") is not None else None,
+            "processReferences": [NfeCreateRequestAdditionalProcessReferencesInner.from_dict(_item) for _item in obj["processReferences"]] if obj.get("processReferences") is not None else None
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

@@ -121,6 +121,7 @@ __all__ = [
     "NfeCorrectionRequest",
     "NfeCreateRequest",
     "NfeCreateRequestAdditional",
+    "NfeCreateRequestAdditionalProcessReferencesInner",
     "NfeCreateRequestAdditionalTaxpayerNotesInner",
     "NfeCreateRequestBilling",
     "NfeCreateRequestBillingDuplicatesInner",
@@ -136,6 +137,7 @@ __all__ = [
     "NfeCreateRequestTotals",
     "NfeCreateRequestTransport",
     "NfeCreateRequestTransportVolumesInner",
+    "NfeCreateRequestTransportWithholding",
     "NfeGet200Response",
     "NfeGet200ResponseData",
     "NfeGet200ResponseDataCorrectionsInner",
@@ -178,6 +180,9 @@ __all__ = [
     "NumberInutilizationResult",
     "ProductEmitItem",
     "ProductEmitItemIcmsForecast",
+    "ProductEmitItemItemNotes",
+    "ProductEmitItemItemNotesTaxpayer",
+    "ProductEmitItemPackaging",
     "ProductEmitItemReferencedDocument",
     "PublicInvoiceResource",
     "PublicInvoiceResourceAssets",
@@ -310,6 +315,7 @@ from emitfy.generated.models.nfe_correction200_response_data import NfeCorrectio
 from emitfy.generated.models.nfe_correction_request import NfeCorrectionRequest as NfeCorrectionRequest
 from emitfy.generated.models.nfe_create_request import NfeCreateRequest as NfeCreateRequest
 from emitfy.generated.models.nfe_create_request_additional import NfeCreateRequestAdditional as NfeCreateRequestAdditional
+from emitfy.generated.models.nfe_create_request_additional_process_references_inner import NfeCreateRequestAdditionalProcessReferencesInner as NfeCreateRequestAdditionalProcessReferencesInner
 from emitfy.generated.models.nfe_create_request_additional_taxpayer_notes_inner import NfeCreateRequestAdditionalTaxpayerNotesInner as NfeCreateRequestAdditionalTaxpayerNotesInner
 from emitfy.generated.models.nfe_create_request_billing import NfeCreateRequestBilling as NfeCreateRequestBilling
 from emitfy.generated.models.nfe_create_request_billing_duplicates_inner import NfeCreateRequestBillingDuplicatesInner as NfeCreateRequestBillingDuplicatesInner
@@ -325,6 +331,7 @@ from emitfy.generated.models.nfe_create_request_retirada import NfeCreateRequest
 from emitfy.generated.models.nfe_create_request_totals import NfeCreateRequestTotals as NfeCreateRequestTotals
 from emitfy.generated.models.nfe_create_request_transport import NfeCreateRequestTransport as NfeCreateRequestTransport
 from emitfy.generated.models.nfe_create_request_transport_volumes_inner import NfeCreateRequestTransportVolumesInner as NfeCreateRequestTransportVolumesInner
+from emitfy.generated.models.nfe_create_request_transport_withholding import NfeCreateRequestTransportWithholding as NfeCreateRequestTransportWithholding
 from emitfy.generated.models.nfe_get200_response import NfeGet200Response as NfeGet200Response
 from emitfy.generated.models.nfe_get200_response_data import NfeGet200ResponseData as NfeGet200ResponseData
 from emitfy.generated.models.nfe_get200_response_data_corrections_inner import NfeGet200ResponseDataCorrectionsInner as NfeGet200ResponseDataCorrectionsInner
@@ -367,6 +374,9 @@ from emitfy.generated.models.number_inutilization_request import NumberInutiliza
 from emitfy.generated.models.number_inutilization_result import NumberInutilizationResult as NumberInutilizationResult
 from emitfy.generated.models.product_emit_item import ProductEmitItem as ProductEmitItem
 from emitfy.generated.models.product_emit_item_icms_forecast import ProductEmitItemIcmsForecast as ProductEmitItemIcmsForecast
+from emitfy.generated.models.product_emit_item_item_notes import ProductEmitItemItemNotes as ProductEmitItemItemNotes
+from emitfy.generated.models.product_emit_item_item_notes_taxpayer import ProductEmitItemItemNotesTaxpayer as ProductEmitItemItemNotesTaxpayer
+from emitfy.generated.models.product_emit_item_packaging import ProductEmitItemPackaging as ProductEmitItemPackaging
 from emitfy.generated.models.product_emit_item_referenced_document import ProductEmitItemReferencedDocument as ProductEmitItemReferencedDocument
 from emitfy.generated.models.public_invoice_resource import PublicInvoiceResource as PublicInvoiceResource
 from emitfy.generated.models.public_invoice_resource_assets import PublicInvoiceResourceAssets as PublicInvoiceResourceAssets
