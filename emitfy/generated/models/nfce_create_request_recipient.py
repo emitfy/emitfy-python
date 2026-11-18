@@ -27,15 +27,16 @@ from pydantic_core import to_jsonable_python
 
 class NfceCreateRequestRecipient(BaseModel):
     """
-    Opcional (padrão consumidor final); todos os campos opcionais.
+    Opcional (padrão consumidor final). CPF/CNPJ (`taxId`) ou estrangeiro (`foreignId`, idEstrangeiro; a operação continua interna). `address` é obrigatório na entrega a domicílio e precisa ser da UF do emitente. `stateRegistration`/`ieIndicator`/`suframa` → 422 (rejeições 729/730). 
     """ # noqa: E501
     tax_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(default=None, alias="taxId")
+    foreign_id: Optional[Annotated[str, Field(min_length=5, strict=True, max_length=20)]] = Field(default=None, alias="foreignId")
     name: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=200)]] = None
     email: Optional[StrictStr] = None
     phone: Optional[StrictStr] = None
     address: Optional[NfeAddress] = None
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["taxId", "name", "email", "phone", "address"]
+    __properties: ClassVar[List[str]] = ["taxId", "foreignId", "name", "email", "phone", "address"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -99,6 +100,7 @@ class NfceCreateRequestRecipient(BaseModel):
 
         _obj = cls.model_validate({
             "taxId": obj.get("taxId"),
+            "foreignId": obj.get("foreignId"),
             "name": obj.get("name"),
             "email": obj.get("email"),
             "phone": obj.get("phone"),

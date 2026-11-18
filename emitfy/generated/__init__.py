@@ -110,7 +110,11 @@ __all__ = [
     "NfceCreate202ResponseData",
     "NfceCreateRequest",
     "NfceCreateRequestContingency",
+    "NfceCreateRequestIntermediary",
+    "NfceCreateRequestPaymentsInner",
     "NfceCreateRequestRecipient",
+    "NfceCreateRequestTotals",
+    "NfceCreateRequestTransport",
     "NfceDocument",
     "NfceDocumentContingency",
     "NfceList200Response",
@@ -304,7 +308,11 @@ from emitfy.generated.models.nfce_create202_response import NfceCreate202Respons
 from emitfy.generated.models.nfce_create202_response_data import NfceCreate202ResponseData as NfceCreate202ResponseData
 from emitfy.generated.models.nfce_create_request import NfceCreateRequest as NfceCreateRequest
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency as NfceCreateRequestContingency
+from emitfy.generated.models.nfce_create_request_intermediary import NfceCreateRequestIntermediary as NfceCreateRequestIntermediary
+from emitfy.generated.models.nfce_create_request_payments_inner import NfceCreateRequestPaymentsInner as NfceCreateRequestPaymentsInner
 from emitfy.generated.models.nfce_create_request_recipient import NfceCreateRequestRecipient as NfceCreateRequestRecipient
+from emitfy.generated.models.nfce_create_request_totals import NfceCreateRequestTotals as NfceCreateRequestTotals
+from emitfy.generated.models.nfce_create_request_transport import NfceCreateRequestTransport as NfceCreateRequestTransport
 from emitfy.generated.models.nfce_document import NfceDocument as NfceDocument
 from emitfy.generated.models.nfce_document_contingency import NfceDocumentContingency as NfceDocumentContingency
 from emitfy.generated.models.nfce_list200_response import NfceList200Response as NfceList200Response

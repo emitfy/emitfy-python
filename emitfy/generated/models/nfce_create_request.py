@@ -19,11 +19,16 @@ import json
 
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
+from emitfy.generated.models.dfe_aut_xml import DfeAutXml
 from emitfy.generated.models.dfe_tech_responsible import DfeTechResponsible
 from emitfy.generated.models.nfce_create_request_contingency import NfceCreateRequestContingency
+from emitfy.generated.models.nfce_create_request_intermediary import NfceCreateRequestIntermediary
+from emitfy.generated.models.nfce_create_request_payments_inner import NfceCreateRequestPaymentsInner
 from emitfy.generated.models.nfce_create_request_recipient import NfceCreateRequestRecipient
+from emitfy.generated.models.nfce_create_request_totals import NfceCreateRequestTotals
+from emitfy.generated.models.nfce_create_request_transport import NfceCreateRequestTransport
 from emitfy.generated.models.product_emit_item import ProductEmitItem
 from typing import Optional, Set
 from typing_extensions import Self
@@ -31,15 +36,24 @@ from pydantic_core import to_jsonable_python
 
 class NfceCreateRequest(BaseModel):
     """
-    Com `issueMode: offlineContingency` a validação exige `contingency`, `accessKey` (44 dígitos, modelo 65, tpEmis 9), `number`, `series` e `issuedAt` (ou `issueDate`). Falha → 422 `VALIDATION_ERROR`. 
+    Com `issueMode: offlineContingency` a validação exige `contingency`, `accessKey` (44 dígitos, modelo 65, tpEmis 9), `number`, `series` e `issuedAt` (ou `issueDate`). Falha → 422 `VALIDATION_ERROR`. Leiaute NFC-e (fase 5): 422 só para o que o leiaute do modelo 65 não admite — indPres ≠ 1/4/5 (717), tPag 90 (899), frete/transportadora sem entrega a domicílio (753/754), retTransp/veículo/reboque/vagão/balsa (755–759), IE/SUFRAMA do consumidor (729/730) e endereço do consumidor em outra UF (707). 
     """ # noqa: E501
-    payment_method: StrictStr = Field(alias="paymentMethod")
+    payment_method: Optional[StrictStr] = Field(default=None, description="Pagamento único com o total. Obrigatório quando não há `payments`", alias="paymentMethod")
+    payments: Optional[Annotated[List[NfceCreateRequestPaymentsInner], Field(max_length=100)]] = Field(default=None, description="Pagamentos detalhados (`pag/detPag`), mesmo formato da NF-e: vários meios, troco, cartão/TEF/POS (`integration` tpIntegra, `cardTaxId` CNPJ da credenciadora, `cardBrand` tBand, `authorization` cAut, `receiverTaxId` CNPJReceb, `terminalId` idTermPag), `paidOn`, `payerTaxId`/`payerState`. Pix dinâmico: method 17 + integration 1 + cardTaxId (CNPJ do PSP) + authorization (E2E/txid); Pix estático: method 20. Sem pagamento (90) → 422 (rejeição 899). ")
+    change: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Troco (vTroco) = soma(payments) − vNF. Sem troco sai `<vTroco>0.00</vTroco>`")
+    presence_type: Optional[StrictStr] = Field(default='presential', description="indPres na NFC-e: 1 presencial, 4 entrega a domicílio, 5 fora do estabelecimento (MOC B25b-20). internet/telephone/others (2/3/9) → 422 (rejeição 717): emita NF-e. ", alias="presenceType")
+    operation_nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, description="natOp (alias `nature`)", alias="operationNature")
+    discount: Optional[Union[Annotated[float, Field(strict=True, ge=0)], Annotated[int, Field(strict=True, ge=0)]]] = Field(default=None, description="Desconto da nota (rateado em vDesc)")
+    totals: Optional[NfceCreateRequestTotals] = None
+    transport: Optional[NfceCreateRequestTransport] = None
+    intermediary: Optional[NfceCreateRequestIntermediary] = None
+    aut_xml: Optional[List[DfeAutXml]] = Field(default=None, alias="autXml")
     items: Annotated[List[ProductEmitItem], Field(min_length=1)] = Field(description="Mesmo item da NF-e: `cest` (uma vez, antes do CFOP), `nve`, `extipi`, `discount`, `insurance`, `other`, `orderNumber`/`orderItem` e `additionalInfo` saem no prod/det e entram nos totais (vSeg/vDesc/vOutro). Grupos exclusivos da NF-e (`importDeclarations`, `exports`, `vehicle`, `weapons`, `taxReturn`, `icmsUfDest`, `ipi`, `importTax`, `referencedDocument`, `icmsForecast`) retornam 422 — emita uma NF-e (modelo 55). `icms` é aceito para ICMS próprio e ST retido (CST 60 / CSOSN 500); ST de substituto (CST 10/30/70, CSOSN 201/202/203), partilha e repasse → 422. `ibsCbs` e `selectiveTax` seguem a tabela oficial (cClassTrib de NFC-e). ")
     recipient: Optional[NfceCreateRequestRecipient] = None
-    nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = None
-    cfop: Optional[StrictStr] = None
+    nature: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=60)]] = Field(default=None, description="Alias de operationNature (natOp)")
+    cfop: Optional[StrictStr] = Field(default=None, description="CFOP padrão dos itens sem CFOP próprio")
     issue_date: Optional[datetime] = Field(default=None, alias="issueDate")
-    additional: Optional[Dict[str, Any]] = None
+    additional: Optional[Dict[str, Any]] = Field(default=None, description="complement (infCpl), fisco (infAdFisco), taxpayerNotes (obsCont), fiscoNotes (obsFisco), processReferences (procRef)")
     tech_responsible: Optional[DfeTechResponsible] = Field(default=None, alias="techResponsible")
     external_id: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100)]] = Field(default=None, description="Idempotência (o header `Idempotency-Key` tem prioridade)", alias="externalId")
     issue_mode: Optional[StrictStr] = Field(default='normal', alias="issueMode")
@@ -51,13 +65,26 @@ class NfceCreateRequest(BaseModel):
     signed_xml: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(default=None, description="XML já assinado pelo PDV (contingência offline), quando houver", alias="signedXml")
     transmit: Optional[StrictStr] = Field(default='now', description="`later` = cria sem transmitir; envie depois com `POST .../nfce/{id}/transmit`")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["paymentMethod", "items", "recipient", "nature", "cfop", "issueDate", "additional", "techResponsible", "externalId", "issueMode", "contingency", "accessKey", "number", "series", "issuedAt", "signedXml", "transmit"]
+    __properties: ClassVar[List[str]] = ["paymentMethod", "payments", "change", "presenceType", "operationNature", "discount", "totals", "transport", "intermediary", "autXml", "items", "recipient", "nature", "cfop", "issueDate", "additional", "techResponsible", "externalId", "issueMode", "contingency", "accessKey", "number", "series", "issuedAt", "signedXml", "transmit"]
 
     @field_validator('payment_method')
     def payment_method_validate_enum(cls, value):
         """Validates the enum"""
+        if value is None:
+            return value
+
         if value not in set(['credit_card', 'debit_card', 'pix', 'bank_transfer', 'cash', 'bank_slip', 'other']):
             raise ValueError("must be one of enum values ('credit_card', 'debit_card', 'pix', 'bank_transfer', 'cash', 'bank_slip', 'other')")
+        return value
+
+    @field_validator('presence_type')
+    def presence_type_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['presential', 'delivery', 'outsideEstablishment']):
+            raise ValueError("must be one of enum values ('presential', 'delivery', 'outsideEstablishment')")
         return value
 
     @field_validator('issue_mode')
@@ -121,6 +148,29 @@ class NfceCreateRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in payments (list)
+        _items = []
+        if self.payments:
+            for _item_payments in self.payments:
+                if _item_payments:
+                    _items.append(_item_payments.to_dict())
+            _dict['payments'] = _items
+        # override the default output from pydantic by calling `to_dict()` of totals
+        if self.totals:
+            _dict['totals'] = self.totals.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of transport
+        if self.transport:
+            _dict['transport'] = self.transport.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of intermediary
+        if self.intermediary:
+            _dict['intermediary'] = self.intermediary.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in aut_xml (list)
+        _items = []
+        if self.aut_xml:
+            for _item_aut_xml in self.aut_xml:
+                if _item_aut_xml:
+                    _items.append(_item_aut_xml.to_dict())
+            _dict['autXml'] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in items (list)
         _items = []
         if self.items:
@@ -155,6 +205,15 @@ class NfceCreateRequest(BaseModel):
 
         _obj = cls.model_validate({
             "paymentMethod": obj.get("paymentMethod"),
+            "payments": [NfceCreateRequestPaymentsInner.from_dict(_item) for _item in obj["payments"]] if obj.get("payments") is not None else None,
+            "change": obj.get("change"),
+            "presenceType": obj.get("presenceType") if obj.get("presenceType") is not None else 'presential',
+            "operationNature": obj.get("operationNature"),
+            "discount": obj.get("discount"),
+            "totals": NfceCreateRequestTotals.from_dict(obj["totals"]) if obj.get("totals") is not None else None,
+            "transport": NfceCreateRequestTransport.from_dict(obj["transport"]) if obj.get("transport") is not None else None,
+            "intermediary": NfceCreateRequestIntermediary.from_dict(obj["intermediary"]) if obj.get("intermediary") is not None else None,
+            "autXml": [DfeAutXml.from_dict(_item) for _item in obj["autXml"]] if obj.get("autXml") is not None else None,
             "items": [ProductEmitItem.from_dict(_item) for _item in obj["items"]] if obj.get("items") is not None else None,
             "recipient": NfceCreateRequestRecipient.from_dict(obj["recipient"]) if obj.get("recipient") is not None else None,
             "nature": obj.get("nature"),

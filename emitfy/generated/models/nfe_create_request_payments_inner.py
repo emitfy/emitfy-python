@@ -17,6 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
+from datetime import date
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional, Union
 from typing_extensions import Annotated
@@ -35,8 +36,14 @@ class NfeCreateRequestPaymentsInner(BaseModel):
     card_brand: Optional[StrictStr] = Field(default=None, description="tBand: visa, mastercard, amex, elo, hipercard… ou o código de 2 dígitos", alias="cardBrand")
     authorization: Optional[Annotated[str, Field(strict=True, max_length=128)]] = Field(default=None, description="cAut")
     card_tax_id: Optional[StrictStr] = Field(default=None, description="CNPJ da credenciadora (14 dígitos)", alias="cardTaxId")
+    integration: Optional[StrictStr] = Field(default=None, description="tpIntegra: 1/integrated/tef (TEF ou Pix dinâmico integrado) ou 2/notIntegrated/pos (padrão)")
+    receiver_tax_id: Optional[StrictStr] = Field(default=None, description="CNPJReceb — CNPJ do beneficiário do pagamento (14 dígitos)", alias="receiverTaxId")
+    terminal_id: Optional[Annotated[str, Field(strict=True, max_length=40)]] = Field(default=None, description="idTermPag — identificador do terminal/POS", alias="terminalId")
+    paid_on: Optional[date] = Field(default=None, description="dPag (AAAA-MM-DD)", alias="paidOn")
+    payer_tax_id: Optional[StrictStr] = Field(default=None, description="CNPJPag — CNPJ do pagador/transacional (14 dígitos", alias="payerTaxId")
+    payer_state: Optional[StrictStr] = Field(default=None, description="UFPag (junto com payerTaxId)", alias="payerState")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["method", "amount", "indicator", "description", "cardBrand", "authorization", "cardTaxId"]
+    __properties: ClassVar[List[str]] = ["method", "amount", "indicator", "description", "cardBrand", "authorization", "cardTaxId", "integration", "receiverTaxId", "terminalId", "paidOn", "payerTaxId", "payerState"]
 
     @field_validator('indicator')
     def indicator_validate_enum(cls, value):
@@ -112,7 +119,13 @@ class NfeCreateRequestPaymentsInner(BaseModel):
             "description": obj.get("description"),
             "cardBrand": obj.get("cardBrand"),
             "authorization": obj.get("authorization"),
-            "cardTaxId": obj.get("cardTaxId")
+            "cardTaxId": obj.get("cardTaxId"),
+            "integration": obj.get("integration"),
+            "receiverTaxId": obj.get("receiverTaxId"),
+            "terminalId": obj.get("terminalId"),
+            "paidOn": obj.get("paidOn"),
+            "payerTaxId": obj.get("payerTaxId"),
+            "payerState": obj.get("payerState")
         })
         # store additional fields in additional_properties
         for _key in obj.keys():

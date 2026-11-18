@@ -34,7 +34,7 @@ class NfeCreateRequestAdditional(BaseModel):
     fisco: Optional[Annotated[str, Field(strict=True, max_length=2000)]] = Field(default=None, description="infAdFisco")
     taxpayer_notes: Optional[Annotated[List[NfeCreateRequestAdditionalTaxpayerNotesInner], Field(max_length=10)]] = Field(default=None, description="obsCont", alias="taxpayerNotes")
     fisco_notes: Optional[Annotated[List[NfeCreateRequestAdditionalTaxpayerNotesInner], Field(max_length=10)]] = Field(default=None, description="obsFisco", alias="fiscoNotes")
-    process_references: Optional[Annotated[List[NfeCreateRequestAdditionalProcessReferencesInner], Field(max_length=100)]] = Field(default=None, description="procRef — processo referenciado (só NF-e; NFC-e → 422)", alias="processReferences")
+    process_references: Optional[Annotated[List[NfeCreateRequestAdditionalProcessReferencesInner], Field(max_length=100)]] = Field(default=None, description="procRef — processo referenciado (NF-e e NFC-e)", alias="processReferences")
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["complement", "fisco", "taxpayerNotes", "fiscoNotes", "processReferences"]
 
