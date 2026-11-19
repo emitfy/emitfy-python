@@ -358,7 +358,7 @@ class NfeApi:
     ) -> NfeCorrection200Response:
         """Issue NF-e correction letter (CC-e)
 
-        Carta de correção eletrônica de NF-e autorizada. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. 
+        Carta de correção eletrônica (evento 110110) de NF-e autorizada. Pode ser enviada a qualquer momento após a autorização, no prazo legal de 30 dias (720 horas), no máximo 20 vezes. O texto é cumulativo e substitui a CC-e anterior. NFC-e e NFS-e não admitem CC-e. Depois de uma CC-e, o cancelamento da nota não é mais permitido. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. Aliases: `POST /v1/invoices/{id}/correction` e `POST /v1/companies/{companyId}/invoices/{id}/correction`. 
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -437,7 +437,7 @@ class NfeApi:
     ) -> ApiResponse[NfeCorrection200Response]:
         """Issue NF-e correction letter (CC-e)
 
-        Carta de correção eletrônica de NF-e autorizada. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. 
+        Carta de correção eletrônica (evento 110110) de NF-e autorizada. Pode ser enviada a qualquer momento após a autorização, no prazo legal de 30 dias (720 horas), no máximo 20 vezes. O texto é cumulativo e substitui a CC-e anterior. NFC-e e NFS-e não admitem CC-e. Depois de uma CC-e, o cancelamento da nota não é mais permitido. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. Aliases: `POST /v1/invoices/{id}/correction` e `POST /v1/companies/{companyId}/invoices/{id}/correction`. 
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -516,7 +516,7 @@ class NfeApi:
     ) -> RESTResponseType:
         """Issue NF-e correction letter (CC-e)
 
-        Carta de correção eletrônica de NF-e autorizada. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. 
+        Carta de correção eletrônica (evento 110110) de NF-e autorizada. Pode ser enviada a qualquer momento após a autorização, no prazo legal de 30 dias (720 horas), no máximo 20 vezes. O texto é cumulativo e substitui a CC-e anterior. NFC-e e NFS-e não admitem CC-e. Depois de uma CC-e, o cancelamento da nota não é mais permitido. Não reprocessa nota rejected — para retry use `POST .../invoices/{id}/emit`. Aliases: `POST /v1/invoices/{id}/correction` e `POST /v1/companies/{companyId}/invoices/{id}/correction`. 
 
         :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
         :type company_id: UUID
@@ -639,6 +639,577 @@ class NfeApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/companies/{companyId}/nfe/{id}/correction',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def nfe_correction_xml(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        sequence: Annotated[int, Field(le=20, strict=True, ge=1)],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> str:
+        """Download CC-e event XML
+
+        XML do evento 110110 armazenado após o registro na SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param sequence: (required)
+        :type sequence: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_correction_xml_serialize(
+            company_id=company_id,
+            id=id,
+            sequence=sequence,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "str",
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def nfe_correction_xml_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        sequence: Annotated[int, Field(le=20, strict=True, ge=1)],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[str]:
+        """Download CC-e event XML
+
+        XML do evento 110110 armazenado após o registro na SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param sequence: (required)
+        :type sequence: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_correction_xml_serialize(
+            company_id=company_id,
+            id=id,
+            sequence=sequence,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "str",
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def nfe_correction_xml_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        sequence: Annotated[int, Field(le=20, strict=True, ge=1)],
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Download CC-e event XML
+
+        XML do evento 110110 armazenado após o registro na SEFAZ.
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param sequence: (required)
+        :type sequence: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_correction_xml_serialize(
+            company_id=company_id,
+            id=id,
+            sequence=sequence,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "str",
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _nfe_correction_xml_serialize(
+        self,
+        company_id,
+        id,
+        sequence,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        if id is not None:
+            _path_params['id'] = id
+        if sequence is not None:
+            _path_params['sequence'] = sequence
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/xml'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/nfe/{id}/corrections/{sequence}/xml',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def nfe_corrections_list(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> None:
+        """List NF-e correction letters (CC-e)
+
+        Histórico de CC-e da NF-e, com nSeqEvento, protocolo, texto cumulativo e `xmlUrl` do evento. `pdfUrl` é sempre null. Aliases: `GET /v1/invoices/{id}/corrections` e `GET /v1/companies/{companyId}/invoices/{id}/corrections`. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_corrections_list_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def nfe_corrections_list_with_http_info(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[None]:
+        """List NF-e correction letters (CC-e)
+
+        Histórico de CC-e da NF-e, com nSeqEvento, protocolo, texto cumulativo e `xmlUrl` do evento. `pdfUrl` é sempre null. Aliases: `GET /v1/invoices/{id}/corrections` e `GET /v1/companies/{companyId}/invoices/{id}/corrections`. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_corrections_list_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def nfe_corrections_list_without_preload_content(
+        self,
+        company_id: Annotated[UUID, Field(description="UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`. ")],
+        id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List NF-e correction letters (CC-e)
+
+        Histórico de CC-e da NF-e, com nSeqEvento, protocolo, texto cumulativo e `xmlUrl` do evento. `pdfUrl` é sempre null. Aliases: `GET /v1/invoices/{id}/corrections` e `GET /v1/companies/{companyId}/invoices/{id}/corrections`. 
+
+        :param company_id: UUID da empresa na Emitfy (campo `id` de `GET /companies`). Não é o CNPJ — CNPJ no path retorna 400 `INVALID_COMPANY_ID`.  (required)
+        :type company_id: UUID
+        :param id: (required)
+        :type id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._nfe_corrections_list_serialize(
+            company_id=company_id,
+            id=id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': None,
+            '400': None,
+            '404': None,
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _nfe_corrections_list_serialize(
+        self,
+        company_id,
+        id,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if company_id is not None:
+            _path_params['companyId'] = company_id
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'ApiKeyAuth', 
+            'ApiSecretAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/companies/{companyId}/nfe/{id}/corrections',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

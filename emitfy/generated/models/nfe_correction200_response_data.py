@@ -17,8 +17,9 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
@@ -28,11 +29,15 @@ class NfeCorrection200ResponseData(BaseModel):
     NfeCorrection200ResponseData
     """ # noqa: E501
     confirmed: Optional[StrictBool] = None
-    sequence: Optional[StrictInt] = None
+    status: Optional[StrictStr] = None
+    n_seq_evento: Optional[Annotated[int, Field(le=20, strict=True, ge=1)]] = Field(default=None, alias="nSeqEvento")
+    sequence: Optional[Annotated[int, Field(le=20, strict=True, ge=1)]] = None
     protocol: Optional[StrictStr] = None
     message: Optional[StrictStr] = None
     cumulative_text: Optional[StrictStr] = Field(default=None, description="Texto acumulado enviado (correções anteriores + esta)", alias="cumulativeText")
-    __properties: ClassVar[List[str]] = ["confirmed", "sequence", "protocol", "message", "cumulativeText"]
+    xml_url: Optional[StrictStr] = Field(default=None, description="Caminho autenticado do XML do evento", alias="xmlUrl")
+    pdf_url: Optional[StrictStr] = Field(default=None, description="Sempre null — a CC-e não tem DANFE/PDF próprio", alias="pdfUrl")
+    __properties: ClassVar[List[str]] = ["confirmed", "status", "nSeqEvento", "sequence", "protocol", "message", "cumulativeText", "xmlUrl", "pdfUrl"]
 
     @field_validator('confirmed')
     def confirmed_validate_enum(cls, value):
@@ -42,6 +47,16 @@ class NfeCorrection200ResponseData(BaseModel):
 
         if value not in set(['true']):
             raise ValueError("must be one of enum values ('true')")
+        return value
+
+    @field_validator('status')
+    def status_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(['registered']):
+            raise ValueError("must be one of enum values ('registered')")
         return value
 
     model_config = ConfigDict(
@@ -96,10 +111,14 @@ class NfeCorrection200ResponseData(BaseModel):
 
         _obj = cls.model_validate({
             "confirmed": obj.get("confirmed"),
+            "status": obj.get("status"),
+            "nSeqEvento": obj.get("nSeqEvento"),
             "sequence": obj.get("sequence"),
             "protocol": obj.get("protocol"),
             "message": obj.get("message"),
-            "cumulativeText": obj.get("cumulativeText")
+            "cumulativeText": obj.get("cumulativeText"),
+            "xmlUrl": obj.get("xmlUrl"),
+            "pdfUrl": obj.get("pdfUrl")
         })
         return _obj
 

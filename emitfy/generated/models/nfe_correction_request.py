@@ -28,7 +28,7 @@ class NfeCorrectionRequest(BaseModel):
     """
     NfeCorrectionRequest
     """ # noqa: E501
-    correction: Annotated[str, Field(min_length=15, strict=True, max_length=1000)] = Field(description="Texto da CC-e (NF-e autorizada). Não reprocessa rejeição.")
+    correction: Annotated[str, Field(min_length=15, strict=True, max_length=1000)] = Field(description="Texto da nova correção (15–1000). É somado às CC-e anteriores (texto cumulativo, no máximo 1000 no total). Só NF-e autorizada, no prazo de 30 dias (720h), no máximo 20 por nota. Não reprocessa rejeição. ")
     __properties: ClassVar[List[str]] = ["correction"]
 
     model_config = ConfigDict(
